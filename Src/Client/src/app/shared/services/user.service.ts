@@ -26,7 +26,7 @@ export class UserService{
                 lastName: 'Huy',
                 position: 'CEO',
                 sex: 'male',
-                Dob: new Date(),
+                doB: new Date(),
                 phoneNo: '123456789'
             },
             {
@@ -35,7 +35,7 @@ export class UserService{
                 lastName: 'Huy 2',
                 position: 'CEO',
                 sex: 'male',
-                Dob: new Date(),
+                doB: new Date(),
                 phoneNo: '123456789'
             },
             {
@@ -44,7 +44,7 @@ export class UserService{
                 lastName: 'Huy 3',
                 position: 'CEO',
                 sex: 'male',
-                Dob: new Date(),
+                doB: new Date(),
                 phoneNo: '123456789'
             }
         ];
@@ -61,7 +61,7 @@ export class UserModel{
     lastName: string;
     position: any;
     sex: any;
-    Dob: Date;
+    doB: Date;
     phoneNo: any;
 
     constructor(init?:Partial<UserModel>) {
