@@ -1,0 +1,216 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Logic\\Kloon.EmployeePerformance.Logic.csproj": {}
+  },
+  "projects": {
+    "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.DataAccess\\Kloon.EmployeePerformance.DataAccess.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.DataAccess\\Kloon.EmployeePerformance.DataAccess.csproj",
+        "projectName": "Kloon.EmployeePerformance.DataAccess",
+        "projectPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.DataAccess\\Kloon.EmployeePerformance.DataAccess.csproj",
+        "packagesPath": "C:\\Users\\pham.ngoc.dong\\.nuget\\packages\\",
+        "outputPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.DataAccess\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\pham.ngoc.dong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\Code\\Sources\\Common\\Development\\Packages": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[5.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational": {
+              "target": "Package",
+              "version": "[5.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.5, )"
+            },
+            "Microsoft.Extensions.Configuration.Binder": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Logic\\Kloon.EmployeePerformance.Logic.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Logic\\Kloon.EmployeePerformance.Logic.csproj",
+        "projectName": "Kloon.EmployeePerformance.Logic",
+        "projectPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Logic\\Kloon.EmployeePerformance.Logic.csproj",
+        "packagesPath": "C:\\Users\\pham.ngoc.dong\\.nuget\\packages\\",
+        "outputPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Logic\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\pham.ngoc.dong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\Code\\Sources\\Common\\Development\\Packages": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.DataAccess\\Kloon.EmployeePerformance.DataAccess.csproj": {
+                "projectPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.DataAccess\\Kloon.EmployeePerformance.DataAccess.csproj"
+              },
+              "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj": {
+                "projectPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj",
+        "projectName": "Kloon.EmployeePerformance.Models",
+        "projectPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj",
+        "packagesPath": "C:\\Users\\pham.ngoc.dong\\.nuget\\packages\\",
+        "outputPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\pham.ngoc.dong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\Code\\Sources\\Common\\Development\\Packages": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
