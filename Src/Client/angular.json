@@ -150,5 +150,8 @@
       }
     }
   },
-  "defaultProject": "EmployeePerformance"
+  "defaultProject": "EmployeePerformance",
+  "cli": {
+    "analytics": false
+  }
 }
