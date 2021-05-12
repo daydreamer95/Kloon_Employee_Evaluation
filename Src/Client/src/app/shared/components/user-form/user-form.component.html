@@ -1,0 +1,28 @@
+<dx-popup
+        [width]="300"
+        [height]="280"
+        [showTitle]="true"
+        [(title)]="popupTitle"
+        [dragEnabled]="true"
+        [closeOnOutsideClick]="true"
+        [showCloseButton]="true"
+        [(visible)]="popupVisible">
+        <dxi-toolbar-item
+            widget="dxButton"
+            toolbar="bottom"
+            location="before"
+            visible="{{model.state === formState.CREATE}}"
+            [options]="submitButtonOptions">
+        </dxi-toolbar-item>
+        <dxi-toolbar-item
+            widget="dxButton"
+            toolbar="bottom"
+            location="after"
+            [options]="closeButtonOptions">
+        </dxi-toolbar-item>
+        <div *dxTemplate="let data of 'content'">
+            <div>
+                {{model.data.email}}
+            </div>
+        </div>
+</dx-popup>
