@@ -1,0 +1,151 @@
+<h2 style="margin: 15px;">Criteria Manage</h2>
+<div>
+  <div style="position: relative; top:50px; left: 20px;"><dx-check-box (onValueChanged)="onCheckBoxDragChange($event)" [value]="isEnableDrag"text=" Re-arrange (Drag & Drop)"></dx-check-box></div>
+  <div class="input-group rowForm">
+  <div style="margin-right: 10px;">
+    <dx-button stylingMode="contained"
+      text="Add"
+      icon="plus"
+      type="success"
+      (onClick)="onClickAddType($event)">
+    </dx-button>
+  </div>
+  <div>
+    <dx-text-box placeholder="Search..."
+    (onEnterKey)="onSearch($event)"
+    width="auto"></dx-text-box>
+  </div>
+
+  </div>
+</div>
+<div>
+  <dx-tree-list
+        id="employees"
+        [dataSource]="employees"
+        rootValue="-1"
+        keyExpr="Id"
+        [showRowLines]="true"
+        [showBorders]="true"
+        parentIdExpr="TypeId"
+        [autoExpandAll]="false"
+        [columnAutoWidth]="true"
+        (onInitialized)="onInitTreeList($event)"
+        (onRowPrepared)="onRowPrepared($event)">
+        <dxo-row-dragging
+            [onDragChange]="onDragChange"
+            [onReorder]="onReorder"
+            [(allowDropInsideItem)]="isEnableDrag"
+            [(allowReordering)]="isEnableDrag"
+            [showDragIcons]="false"
+        ></dxo-row-dragging>
+        <dxi-column dataField="Name"></dxi-column>
+        <dxi-column dataField="Description"></dxi-column>
+        <dxi-column style="float: right;" cellTemplate="cellTemplate"></dxi-column>
+        <div *dxTemplate="let cell of 'cellTemplate'">
+          <div style="float: right; width: auto;">
+          <dx-button *ngIf="cell.data.TypeId === null" stylingMode="contained"
+          text="Add"
+          icon="plus"
+          type="success"
+          (onClick)="onClickAdd($event, cell.data)">
+        </dx-button>
+          <dx-button style="margin-left: 10px;" stylingMode="contained"
+          text="Edit"
+          icon="edit"
+          type="default"
+          (onClick)="onClickEdit($event, cell.data)">
+        </dx-button>
+        </div>
+      </div>
+    </dx-tree-list>
+  </div>
+  <dx-popup
+        [width]="700"
+        height="auto"
+        [showTitle]="true"
+        [dragEnabled]="false"
+        [showCloseButton]="false"
+        (onInitialized)="onInitPopup($event)"
+        (onHiding)="onHidingPopup($event)"
+        container=".dx-viewport"
+        [(visible)]="popupVisible">
+        <dxi-toolbar-item
+            widget="dxButton"
+            toolbar="bottom"
+            location="after"
+            [options]="saveButtonOptions">
+        </dxi-toolbar-item>
+        <dxi-toolbar-item
+            widget="dxButton"
+            toolbar="bottom"
+            location="after"
+            [options]="closeButtonOptions">
+        </dxi-toolbar-item>
+        <dxo-position
+            at="middler"
+            my="center">
+        </dxo-position>
+        <div *dxTemplate="let data of 'content'">
+          <p *ngIf="!isAddOrEditType">
+            Criteria Type:
+              <dx-select-box
+                [dataSource] = "lookupData"
+                displayExpr="Name"
+                valueExpr="Id"
+                [(value)] = "criteriaModel.TypeId"
+              >
+              <dx-validator>
+                <dxi-validation-rule type="required" message="Type is required"></dxi-validation-rule>
+            </dx-validator>
+            </dx-select-box>
+          </p>
+            <div *ngIf="isAddOrEditType">
+              Criteria Type Name:
+            </div>
+            <div *ngIf="!isAddOrEditType">
+              Criteria Name:
+            </div>
+            <dx-text-box
+              [(value)] = "criteriaModel.Name"
+              (onValueChanged)="onChangeSelect($event)"
+              >
+              <dx-validator>
+                <dxi-validation-rule type="required" message="Name is required"></dxi-validation-rule>
+                <dxi-validation-rule type="stringLength" [max]="255" message="Name length must be less than 255 characters"></dxi-validation-rule>
+            </dx-validator>
+            </dx-text-box>
+          <p>
+              Description:
+              <dx-text-area
+              [(value)] = "criteriaModel.Description"
+              ></dx-text-area>
+          </p>
+      </div>
+    </dx-popup>
+<style>
+  .rowForm{
+    padding: 15px;
+    height: 70px;
+  }
+  .input-group {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: flex-end;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 100%;
+    }
+    .dx-invalid-message > .dx-overlay-content {
+  z-index: 1501;
+    position: absolute;
+    width: auto;
+    height: 36px;
+    left: 0px;
+    top: 0px;
+    transform: translate(-1px, -35px);
+    transition: all 0s ease 0s;
+}
+</style>

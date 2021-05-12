@@ -18,5 +18,10 @@ export const navigation = [
       //   path: '/profile'
       // }
     ]
+  },
+  {
+    text: 'Criteria',
+    path: '/criteria',
+    icon: 'hierarchy'
   }
 ];

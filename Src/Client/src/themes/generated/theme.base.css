@@ -4593,8 +4593,11 @@
 }
 .dx-invalid-message > .dx-overlay-content {
   background-color: transparent;
-  color: #f44336;
-  padding: 6px 0 0;
+  color: #ffffff;
+  padding: 6px;
+  border: solid 0.5px;
+  border-radius: 5px;
+  background-color: #f44336;
 }
 .dx-validationsummary > .dx-validationsummary-item:not(:last-child) {
   margin-bottom: 10px;

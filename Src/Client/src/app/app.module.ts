@@ -13,6 +13,7 @@ import { ProjectComponent } from './pages/project/project.component';
 import { ErrorComponent } from './pages/error/error.component';
 import { ApiInterceptor } from './http-interceptor/api-interceptor';
 import { UserFormModule } from './shared/components/user-form/user-form.component';
+import { CriteriasModule } from './pages/criterias/criterias.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { UserFormModule } from './shared/components/user-form/user-form.componen
     AppRoutingModule,
     UserModule,
     HttpClientModule,
-    UserFormModule
+    UserFormModule,
+    CriteriasModule
   ],
   providers: [
     AuthService, ScreenService, AppInfoService,
