@@ -3,3 +3,8 @@
 ################################################################################
 
 /.vs
+
+/Src/Server/.vs
+/Src/Server/*/obj
+/Src/Server/*/bin
+/Src/Server/*/appsettings.json
