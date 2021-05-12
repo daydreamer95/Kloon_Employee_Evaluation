@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kloon.EmployeePerformance.DataAccess\Kloon.EmployeePerformance.DataAccess.csproj" />
+    <ProjectReference Include="..\Kloon.EmployeePerformance.Models\Kloon.EmployeePerformance.Models.csproj" />
+  </ItemGroup>
+
+</Project>

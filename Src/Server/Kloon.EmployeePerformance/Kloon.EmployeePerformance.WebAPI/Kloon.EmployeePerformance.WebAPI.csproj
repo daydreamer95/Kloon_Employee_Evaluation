@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kloon.EmployeePerformance.DataAccess\Kloon.EmployeePerformance.DataAccess.csproj" />
+    <ProjectReference Include="..\Kloon.EmployeePerformance.Logic\Kloon.EmployeePerformance.Logic.csproj" />
+  </ItemGroup>
+
+</Project>
