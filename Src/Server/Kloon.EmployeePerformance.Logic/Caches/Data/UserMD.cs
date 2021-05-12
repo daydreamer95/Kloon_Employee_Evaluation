@@ -13,5 +13,8 @@ namespace Kloon.EmployeePerformance.Logic.Caches.Data
         public DateTime DoB { get; set; }
         public string PhoneNo { get; set; }
         public int RoleId { get; set; }
+
+        public int? DeletedBy { get; set; }
+        public DateTime? DeletedDate { get; set; }
     }
 }

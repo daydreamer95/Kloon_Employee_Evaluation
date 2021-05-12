@@ -22,10 +22,14 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
         {
             if (_result.IsValid)
             {
-                // TODO: Chuyển về cache
-                var user = _result.Services.DbContext.GetRepository<User>().Query(x => x.Id == userId.Value && x.DeletedBy == null && x.DeletedDate == null).FirstOrDefault();
+                var user = _result.Services.Cache.Users.Get(userId.Value);
 
                 if (user == null)
+                {
+                    _result.Error = new ErrorModel(ErrorType.NOT_EXIST, "User not found");
+                }
+
+                if (user.DeletedBy != null && user.DeletedDate != null)
                 {
                     _result.Error = new ErrorModel(ErrorType.NOT_EXIST, "User not found");
                 }

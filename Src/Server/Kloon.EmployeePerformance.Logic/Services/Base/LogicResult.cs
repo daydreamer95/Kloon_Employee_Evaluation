@@ -47,7 +47,7 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
                 }
                 else
                 {
-                    var user = Services.DbContext.GetRepository<User>().Query(x => x.Id == CurrentUser.Id).FirstOrDefault();
+                    var user = Services.Cache.Users.Get(CurrentUser.Id);
                     if (user.DeletedBy != null && user.DeletedDate != null)
                     {
                         Error = new ErrorModel(ErrorType.NOT_EXIST, "Role not found");

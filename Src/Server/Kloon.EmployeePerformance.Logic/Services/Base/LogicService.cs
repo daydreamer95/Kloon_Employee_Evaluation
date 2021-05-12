@@ -1,4 +1,5 @@
 ﻿using Kloon.EmployeePerformance.DataAccess;
+using Kloon.EmployeePerformance.Logic.Caches;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,9 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
         public LogicService(
              IServiceProvider serviceProvider,
              IUnitOfWork<EmployeePerformanceContext> dbContext,
+             CacheProvider cacheProvider,
              ILoggerFactory loggerFactory
-        ) : base(serviceProvider, dbContext, loggerFactory.CreateLogger<T>())
+        ) : base(serviceProvider, dbContext, cacheProvider, loggerFactory.CreateLogger<T>())
         {
         }
 

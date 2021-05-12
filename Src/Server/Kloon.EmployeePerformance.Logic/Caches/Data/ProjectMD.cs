@@ -1,4 +1,6 @@
-﻿namespace Kloon.EmployeePerformance.Logic.Caches.Data
+﻿using System;
+
+namespace Kloon.EmployeePerformance.Logic.Caches.Data
 {
     public partial class ProjectMD
     {
@@ -8,5 +10,7 @@
         public int Status { get; set; }
 
         public int? ProjectRoleId { get; set; }
+        public int? DeletedBy { get; set; }
+        public DateTime? DeletedDate { get; set; }
     }
 }
