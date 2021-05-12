@@ -1,7 +1,7 @@
 import { UserModel } from './../../services/user.service';
-import { Component, EventEmitter, Input, NgModule, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { DxButtonModule, DxDataGridModule, DxPopupModule } from 'devextreme-angular';
+import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule } from 'devextreme-angular';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -12,10 +12,12 @@ import { UserService } from '../../services/user.service';
 export class UserFormComponent implements OnInit {
   @Input() model: UserFormModel;
   @Output() onSubmitForm = new EventEmitter();
-
+  @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
+  
   formState = FormState;
   popupVisible = false;
-  popupTitle = 'haha';
+  popupTitle = '';
+  currUser:UserModel;
 
   constructor(userService: UserService) { 
     
@@ -34,6 +36,8 @@ export class UserFormComponent implements OnInit {
         break;
     }
     this.popupVisible = true;
+    this.currUser = this.model.data;
+    this.myform.instance._refresh();
   }
 
   //#region Options
@@ -44,11 +48,12 @@ export class UserFormComponent implements OnInit {
     }
   };
 
-  submitButtonOptions = {
+  createButtonOptions = {
     icon: 'save',
     text: 'Submit',
     onClick: (e) => {
-      this.popupVisible = false;
+      this.myform.instance.validate();
+      // this.popupVisible = false;
     }
   };
 
@@ -72,7 +77,8 @@ export class UserFormComponent implements OnInit {
     BrowserModule,
     DxDataGridModule,
     DxButtonModule,
-    DxPopupModule
+    DxPopupModule,
+    DxFormModule
   ],
   declarations: [UserFormComponent],
   exports: [UserFormComponent]
