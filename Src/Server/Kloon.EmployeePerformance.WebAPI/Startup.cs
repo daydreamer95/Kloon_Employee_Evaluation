@@ -1,3 +1,4 @@
+using Kloon.EmployeePerformance.DataAccess;
 using Kloon.EmployeePerformance.DataAccess.Extentions;
 using Kloon.EmployeePerformance.Logic.Common;
 using Kloon.EmployeePerformance.Logic.Services;
@@ -27,6 +28,8 @@ namespace Kloon.EmployeePerformance.WebAPI
         {
             Configuration = configuration;
         }
+        public ServiceProvider ServiceProvider { get; private set; }
+
 
         public IConfiguration Configuration { get; }
 
@@ -34,7 +37,8 @@ namespace Kloon.EmployeePerformance.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers(options =>
+                options.Filters.Add(new HttpResponseExceptionFilter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployeePerformance.WebAPI", Version = "v1" });
@@ -111,7 +115,9 @@ namespace Kloon.EmployeePerformance.WebAPI
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpContextAccessor();
 
+            ServiceProvider = services.BuildServiceProvider();
 
+            EmployeePerformanceDataInitializer.Initialize(ServiceProvider);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -128,6 +134,7 @@ namespace Kloon.EmployeePerformance.WebAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

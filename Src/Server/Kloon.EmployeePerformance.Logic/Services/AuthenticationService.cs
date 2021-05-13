@@ -31,6 +31,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             _identityService = identityService;
             _dbContext = dbContext;
             _users = _dbContext.GetRepository<User>();
+            _logicService = logicService;
         }
 
         public ResultModel<UserAuthModel> Login(string email, string password)

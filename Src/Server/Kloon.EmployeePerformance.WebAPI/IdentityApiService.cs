@@ -50,7 +50,7 @@ namespace Kloon.EmployeePerformance.WebAPI
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Role = (Roles)Enum.Parse(typeof(Roles), tokenRoleName.ToString().ToUpper()),
-                ProjectRole = lstProject.Select(t => new ProjectRoleModel
+                ProjectRole = lstProject?.Select(t => new ProjectRoleModel
                 {
                     ProjectId = t.Id,
                     ProjectRoleId = (ProjectRoles)t.ProjectRoleId
