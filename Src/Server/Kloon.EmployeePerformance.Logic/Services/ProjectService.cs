@@ -1,9 +1,11 @@
 ﻿using Kloon.EmployeePerformance.DataAccess;
 using Kloon.EmployeePerformance.DataAccess.Domain;
 using Kloon.EmployeePerformance.Logic.Caches.Data;
+using Kloon.EmployeePerformance.Logic.Common;
 using Kloon.EmployeePerformance.Logic.Services.Base;
 using Kloon.EmployeePerformance.Models.Common;
 using Kloon.EmployeePerformance.Models.Project;
+using Kloon.EmployeePerformance.Models.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
 {
     public interface IProjectService
     {
-        ResultModel<ProjectViewModel> GetAll(string searchText = "");
+        ResultModel<List<ProjectModel>> GetAll(string searchText = "");
         ResultModel<ProjectModel> GetById(int projectId);
         ResultModel<ProjectModel> Create(ProjectModel projectModel);
         ResultModel<ProjectModel> Update(ProjectModel projectModel);
@@ -38,7 +40,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             _projects = _dbContext.GetRepository<Project>();
         }
 
-        public ResultModel<ProjectViewModel> GetAll(string searchText = "")
+        public ResultModel<List<ProjectModel>> GetAll(string searchText = "")
         {
             var result = _logicService
                 .Start()
@@ -46,7 +48,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenValidate(current => null)
                 .ThenImplement(current =>
                 {
-                    ProjectViewModel projectViewModel = new ProjectViewModel();
                     var query = _logicService.Cache.Projects.GetValues();
                     var record = query
                         .OrderBy(x => x.Name)
@@ -58,8 +59,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                             Status = t.Status
                         })
                         .ToList();
-                    projectViewModel.ProjectModels = record;
-                    return projectViewModel;
+                    return record;
                 });
             return result;
         }
