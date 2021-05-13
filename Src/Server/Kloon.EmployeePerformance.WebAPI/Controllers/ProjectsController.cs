@@ -20,7 +20,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
         }
 
         [HttpGet]
-        public ProjectViewModel GetAll([FromQuery] string searchText)
+        public List<ProjectModel> GetAll([FromQuery] string searchText)
         {
             var result = _projectService.GetAll(searchText);
             return result.ToResponse();
