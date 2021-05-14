@@ -19,7 +19,7 @@ namespace Kloon.EmployeePerformance.WebAPI
                     PositionId = 1,
                     Email = "Admin@admin.com",
                     FirstName = "ABCD",
-                    LastName = "ÁDmin",
+                    LastName = "ADmin",
                     Role = Models.Common.Roles.ADMINISTRATOR
                 }
             };

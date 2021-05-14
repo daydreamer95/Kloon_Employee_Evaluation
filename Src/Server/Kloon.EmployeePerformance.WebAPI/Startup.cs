@@ -42,6 +42,7 @@ namespace Kloon.EmployeePerformance.WebAPI
             services.AddCustomizedService<IdentityApiService>();
 
             services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<ICriteriaService, CriteriaService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +56,10 @@ namespace Kloon.EmployeePerformance.WebAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(builder => builder.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             app.UseRouting();
 

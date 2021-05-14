@@ -8,5 +8,20 @@ namespace Kloon.EmployeePerformance.Models.Criteria
 {
     public class CriteriaModel
     {
+        public Guid Id { get; set; }
+        public int OrderNo { get; set; }
+        public Guid? TypeId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+    public class CriteriaTypeModel
+    {
+        public Guid Id { get; set; }
+        public int OrderNo { get; set; }
+        public Guid? TypeId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+
+        public List<CriteriaModel> Criterias { set; get; }
     }
 }
