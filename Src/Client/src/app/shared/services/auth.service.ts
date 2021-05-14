@@ -3,17 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 
-const defaultPath = '/';
+const defaultPath = '/home';
 const defaultUser = {
   email: 'sandra@example.com',
   avatarUrl: 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/06.png'
 };
-
-//#region API Url
-export const apiUrl = {
-  urlLogin: 'account/login'
-}
-//#endregion API Url
 
 @Injectable()
 export class AuthService {
@@ -28,34 +22,30 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router, private httpClient:HttpClient, private userService:UserService) { }
+  constructor(private router: Router, private httpClient: HttpClient, private userService: UserService) { }
 
   async logIn(email: string, password: string) {
 
     try {
-      // Send request
-      this.userService.login(email,password).subscribe(res=>{
+      return this.userService.login(email, password).toPromise().then(res => {
         console.log(res);
-        debugger;
+        this._user = { ...defaultUser, email };
         this._isSuccessLogin = true;
-       },
-       err=>{
-         console.log(err);
-         debugger;
-         //Notify error
-       })
-
-      console.log(email, password);
-      this._user = { ...defaultUser, email };
-
-      if(this._isSuccessLogin){
         this.router.navigate([this._lastAuthenticatedPath]);
-      }
-
-      return {
-        isOk: this._isSuccessLogin,
-        data: this._user
-      };
+        return {
+          isOk: this._isSuccessLogin,
+          data: this._user,
+          message: ''
+        };
+      },
+        err => {
+          this._isSuccessLogin = false;
+          return {
+            isOk: this._isSuccessLogin,
+            data: this._user,
+            message: err.error
+          };
+        });
     }
     catch {
       return {
