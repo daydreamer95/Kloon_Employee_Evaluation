@@ -209,6 +209,8 @@ namespace Kloon.EmployeePerformance.Test
                 return;
 
             if (!string.IsNullOrEmpty(headerParam.Token))
+                client.DefaultRequestHeaders.Remove("Authorization");
+                client.DefaultRequestHeaders.Remove("Authorization");
                 client.DefaultRequestHeaders.Add("Authorization", headerParam.Token);
 
 
