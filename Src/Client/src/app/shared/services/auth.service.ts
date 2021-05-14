@@ -1,7 +1,9 @@
+import { UserApp } from './../models/user-app.model';
 import { UserService } from './user.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 const defaultPath = '/home';
 const defaultUser = {
@@ -11,10 +13,12 @@ const defaultUser = {
 
 @Injectable()
 export class AuthService {
-  private _user = null;
-  private _isSuccessLogin = false;
+  // private _user = null;
+  private userSubject: BehaviorSubject<UserApp>;
+  public user: Observable<UserApp>;
+
   get loggedIn(): boolean {
-    return !!this._user;
+    return !!this.userSubject.value;
   }
 
   private _lastAuthenticatedPath: string = defaultPath;
@@ -22,28 +26,33 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router, private httpClient: HttpClient, private userService: UserService) { }
+  constructor(private router: Router, private httpClient: HttpClient, private userService: UserService) {
+    this.userSubject = new BehaviorSubject<UserApp>(JSON.parse(localStorage.getItem('user')));
+    this.user = this.userSubject.asObservable();
+  }
 
   async logIn(email: string, password: string) {
 
     try {
       return this.userService.login(email, password).toPromise().then(res => {
-        console.log(res);
-        this._user = { ...defaultUser, email };
-        this._isSuccessLogin = true;
+
+        let user = new UserApp(res);
+        this.userSubject.next(user);
+        localStorage.setItem('user', JSON.stringify(res));
+
         this.router.navigate([this._lastAuthenticatedPath]);
         return {
-          isOk: this._isSuccessLogin,
-          data: this._user,
+          isOk: true,
+          data: user,
           message: ''
         };
       },
         err => {
-          this._isSuccessLogin = false;
+          let msgError = typeof (err.error) == 'string' ? err.error : err.message;
           return {
-            isOk: this._isSuccessLogin,
-            data: this._user,
-            message: err.error
+            isOk: false,
+            data: this.userSubject.value,
+            message: msgError
           };
         });
     }
@@ -58,10 +67,9 @@ export class AuthService {
   async getUser() {
     try {
       // Send request
-
       return {
         isOk: true,
-        data: this._user
+        data: this.userSubject.value
       };
     }
     catch {
@@ -124,7 +132,8 @@ export class AuthService {
   }
 
   async logOut() {
-    this._user = null;
+    localStorage.removeItem('user');
+    this.userSubject.next(null);
     this.router.navigate(['/login-form']);
   }
 }

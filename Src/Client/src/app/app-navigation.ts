@@ -1,5 +1,10 @@
 export const navigation = [
   {
+    text: 'Home',
+    path: '/home',
+    icon: 'home'
+  },
+  {
     text: 'User',
     path: '/user',
     icon: 'user'

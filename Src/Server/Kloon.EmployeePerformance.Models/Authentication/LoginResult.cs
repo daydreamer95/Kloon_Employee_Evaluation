@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Kloon.EmployeePerformance.Models.Common;
+using Kloon.EmployeePerformance.Models.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +10,13 @@ namespace Kloon.EmployeePerformance.Models.Authentication
 {
     public class LoginResult
     {
-        public bool Successful { get; set; }
-        public string Error { get; set; }
+        public bool IsSuccessful { get; set; }
         public string Token { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Email { get; set; }
+        public Roles AppRole { get; set; }
+        public List<ProjectRoleModel> ProjectRoles { get; set; }
         public string FullName
         {
             get
