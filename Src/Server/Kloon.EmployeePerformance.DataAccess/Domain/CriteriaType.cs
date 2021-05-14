@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Kloon.EmployeePerformance.DataAccess.Domain
 {
-    public class CriteriaType : AuditedEntity<int>, IDeleteable
+    public class CriteriaType : AuditedEntity<Guid>, IDeleteable
     {
         public string Name { get; set; }
         public string Description { get; set; }

@@ -1,8 +1,9 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-
-/.vs
+.vs
+bin
+obj
 
 /Src/Server/.vs
 /Src/Server/*/obj
@@ -10,10 +11,9 @@
 /Src/Server/*/appsettings.json
 
 # Build results
-bin
-obj
 # build folder is nowadays used for build scripts and should not be ignored
 /Src/Server/Kloon.EmployeePerformance.DataAccess/obj
 /Src/Server/Kloon.EmployeePerformance.Logic/obj
 /Src/Server/Kloon.EmployeePerformance.Models/obj
 /Src/Server/Kloon.EmployeePerformance.WebAPI/obj
+
