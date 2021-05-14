@@ -34,7 +34,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
         public CriteriaTypeAllCache CriteriaTypes { get; private set; }
 
-        private DataKeyCache<int, List<CriteriaMD>> _criterias = new DataKeyCache<int, List<CriteriaMD>>();
+        private DataKeyCache<Guid, List<CriteriaMD>> _criterias = new DataKeyCache<Guid, List<CriteriaMD>>();
 
         public CriteriaAllCache Criterias { get; private set; } = new CriteriaAllCache();
 
@@ -207,7 +207,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
         #region Criteria
 
-        private Dictionary<int, CriteriaTypeMD> CriteriaTypes_OnNeedResource(object sender, params object[] paramArrs)
+        private Dictionary<Guid, CriteriaTypeMD> CriteriaTypes_OnNeedResource(object sender, params object[] paramArrs)
         {
             return UserDbContext(dbContext =>
             {
@@ -230,7 +230,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
         {
             return UserDbContext(dbContext =>
             {
-                var criteriaTypeId = (int)paramArrs.First();
+                var criteriaTypeId = (Guid)paramArrs.First();
                 var result = dbContext.GetRepository<Criteria>()
                     .Query(t => t.CriteriaTypeId == criteriaTypeId && t.DeletedBy != null && t.DeletedDate != null)
                     .Select(t => new CriteriaMD
@@ -247,11 +247,11 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             });
         }
 
-        private Dictionary<int, CriteriaMD> Criterias_OnNeedResource(object sender, params object[] paramArrs)
+        private Dictionary<Guid, CriteriaMD> Criterias_OnNeedResource(object sender, params object[] paramArrs)
         {
             return UserDbContext(dbContext =>
             {
-                var result = dbContext.GetRepository<CriteriaMD>()
+                var result = dbContext.GetRepository<Criteria>()
                     .Query()
                     .ToDictionary(t => t.Id, t => new CriteriaMD
                     {
@@ -360,7 +360,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
         }
 
-        public class CriteriaTypeAllCache : DataAllCache<int, CriteriaTypeMD>
+        public class CriteriaTypeAllCache : DataAllCache<Guid, CriteriaTypeMD>
         {
             private readonly CacheProvider _provider;
             public CriteriaTypeAllCache(CacheProvider provider)
@@ -368,13 +368,13 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                 _provider = provider;
             }
 
-            public List<CriteriaMD> GetCriterias(int criteriaTypeId)
+            public List<CriteriaMD> GetCriterias(Guid criteriaTypeId)
             {
                 var criterias = _provider._criterias.Get(criteriaTypeId);
                 return criterias;
             }
 
-            public override bool Remove(int criteriaTypeId)
+            public override bool Remove(Guid criteriaTypeId)
             {
                 base.Remove(criteriaTypeId);
                 _provider._criterias.Remove(criteriaTypeId);
@@ -389,7 +389,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             }
         }
 
-        public class CriteriaAllCache : DataAllCache<int, CriteriaMD>
+        public class CriteriaAllCache : DataAllCache<Guid, CriteriaMD>
         {
         }
 

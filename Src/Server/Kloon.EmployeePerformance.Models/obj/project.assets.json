@@ -8,25 +8,25 @@
     "net5.0": []
   },
   "packageFolders": {
-    "C:\\Users\\pham.ngoc.dong\\.nuget\\packages\\": {},
+    "C:\\Users\\tran.duc.huy\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj",
+      "projectUniqueName": "E:\\EmployeePerformance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj",
       "projectName": "Kloon.EmployeePerformance.Models",
-      "projectPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj",
-      "packagesPath": "C:\\Users\\pham.ngoc.dong\\.nuget\\packages\\",
-      "outputPath": "D:\\Kloon_Employee_Performance\\Src\\Server\\Kloon.EmployeePerformance.Models\\obj\\",
+      "projectPath": "E:\\EmployeePerformance\\Src\\Server\\Kloon.EmployeePerformance.Models\\Kloon.EmployeePerformance.Models.csproj",
+      "packagesPath": "C:\\Users\\tran.duc.huy\\.nuget\\packages\\",
+      "outputPath": "E:\\EmployeePerformance\\Src\\Server\\Kloon.EmployeePerformance.Models\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\Offline Packages",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\pham.ngoc.dong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\tran.duc.huy\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 20.2.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -36,7 +36,7 @@
       "sources": {
         "C:\\Program Files (x86)\\DevExpress 20.2\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "D:\\Code\\Sources\\Common\\Development\\Packages": {},
+        "E:\\Back\\Common\\Packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -69,7 +69,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   }

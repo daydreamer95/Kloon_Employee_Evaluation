@@ -10,7 +10,7 @@ namespace Kloon.EmployeePerformance.DataAccess.Domain
     public class CriteriaTypeQuarterEvaluation : AuditedEntity<Guid>
     {
         public Guid QuarterEvaluationId { get; set; }
-        public int CriteriaTypeId { get; set; }
+        public Guid CriteriaTypeId { get; set; }
         public double PointAverage { get; set; }
         public virtual CriteriaType CriteriaType { get; set; }
         public virtual QuarterEvaluation QuarterEvaluation { get; set; }

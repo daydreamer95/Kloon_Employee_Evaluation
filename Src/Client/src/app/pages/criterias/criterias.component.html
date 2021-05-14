@@ -23,10 +23,10 @@
         id="employees"
         [dataSource]="employees"
         rootValue="-1"
-        keyExpr="Id"
+        keyExpr="id"
         [showRowLines]="true"
         [showBorders]="true"
-        parentIdExpr="TypeId"
+        parentIdExpr="typeId"
         [autoExpandAll]="false"
         [columnAutoWidth]="true"
         (onInitialized)="onInitTreeList($event)"
@@ -38,12 +38,12 @@
             [(allowReordering)]="isEnableDrag"
             [showDragIcons]="false"
         ></dxo-row-dragging>
-        <dxi-column dataField="Name"></dxi-column>
-        <dxi-column dataField="Description"></dxi-column>
+        <dxi-column dataField="name"></dxi-column>
+        <dxi-column dataField="description"></dxi-column>
         <dxi-column style="float: right;" cellTemplate="cellTemplate"></dxi-column>
         <div *dxTemplate="let cell of 'cellTemplate'">
           <div style="float: right; width: auto;">
-          <dx-button *ngIf="cell.data.TypeId === null" stylingMode="contained"
+          <dx-button *ngIf="cell.data.typeId === null" stylingMode="contained"
           text="Add"
           icon="plus"
           type="success"
@@ -90,9 +90,9 @@
             Criteria Type:
               <dx-select-box
                 [dataSource] = "lookupData"
-                displayExpr="Name"
-                valueExpr="Id"
-                [(value)] = "criteriaModel.TypeId"
+                displayExpr="name"
+                valueExpr="id"
+                [(value)] = "criteriaModel.typeId"
               >
               <dx-validator>
                 <dxi-validation-rule type="required" message="Type is required"></dxi-validation-rule>
@@ -106,7 +106,7 @@
               Criteria Name:
             </div>
             <dx-text-box
-              [(value)] = "criteriaModel.Name"
+              [(value)] = "criteriaModel.name"
               (onValueChanged)="onChangeSelect($event)"
               >
               <dx-validator>
@@ -117,7 +117,7 @@
           <p>
               Description:
               <dx-text-area
-              [(value)] = "criteriaModel.Description"
+              [(value)] = "criteriaModel.description"
               ></dx-text-area>
           </p>
       </div>
