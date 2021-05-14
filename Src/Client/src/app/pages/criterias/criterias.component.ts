@@ -1,6 +1,7 @@
 import { Component, OnInit, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Service, Criteria } from './service';
+import { HttpParams } from '@angular/common/http';
 import {
   DxTreeListModule,
   DxButtonModule,
@@ -12,7 +13,7 @@ import {
   DxValidatorModule,
   DxValidationSummaryModule
 } from 'devextreme-angular';
-// import { Console } from 'console';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-criterias',
@@ -21,9 +22,11 @@ import {
   providers: [Service],
 })
 export class CriteriasComponent implements OnInit {
-  employees: Array<Criteria>;
+  employees: any;
   criteriaModel = new Criteria();
   lookupData: any;
+  mode: any;
+  validationGR: any;
   isEnableDrag = false;
   isAddOrEditType = false;
   popupVisible = false;
@@ -33,8 +36,8 @@ export class CriteriasComponent implements OnInit {
   closeButtonOptions = {
     text: 'Close', icon: 'remove',
     onClick: (e: any) => {
-      e.validationGroup.reset();
       this.popupComp.hide();
+      e.validationGroup.reset();
     }
   };
   saveButtonOptions = {
@@ -44,20 +47,26 @@ export class CriteriasComponent implements OnInit {
 
   expandedRowKeys: Array<number> = [1, 2];
   constructor(private service: Service) {
-    this.employees = service.getEmployees();
   }
 
   ngOnInit(): void {
-    this.lookupData = this.employees.filter(x => x.TypeId == null);
+    this.employees = new DataSource({
+      load: async (options: any) => {
+        const params = new HttpParams();
+        const data = await this.service.getCriterias(params).toPromise();
+        this.lookupData = data.filter(x => x.typeId == null);
+        return data;
+      }
+    });
   }
 
   onDragChange(e: any): any {
     const visibleRows = e.component.getVisibleRows();
-    const sourceNode = e.component.getNodeByKey(e.itemData.Id);
+    const sourceNode = e.component.getNodeByKey(e.itemData.id);
     let targetNode = visibleRows[e.toIndex].node;
 
     while (targetNode && targetNode.data) {
-      if (targetNode.data.Id === sourceNode.data.Id) {
+      if (targetNode.data.id === sourceNode.data.id) {
         e.cancel = true;
         break;
       }
@@ -65,6 +74,7 @@ export class CriteriasComponent implements OnInit {
     }
   }
   onSave = (e: any) => {
+    this.validationGR = e.validationGroup;
     const validateData = e.validationGroup.validate();
     if (validateData && validateData.brokenRules && validateData.brokenRules.length > 0) {
       validateData.brokenRules[0].validator.focus();
@@ -72,12 +82,27 @@ export class CriteriasComponent implements OnInit {
     if (validateData.isValid) {
       const data = new Criteria();
       Object.assign(data, this.criteriaModel);
-      this.service.saveCriteria(data)
-        .subscribe((result: any) => {
-          this.treeListComp.refresh();
-        },
-          (err: any) => { }
-        );
+      if (this.mode === 'Add') {
+        this.service.addCriteria(data)
+          .subscribe((result: any) => {
+            this.treeListComp.refresh();
+            this.popupComp.hide();
+          },
+            (err: any) => {
+              this.popupComp.hide();
+            }
+          );
+      }
+      else {
+        this.service.editCriteria(data)
+          .subscribe((result: any) => {
+            this.treeListComp.refresh();
+            this.popupComp.hide();
+          },
+            (err: any) => { this.popupComp.hide(); }
+          );
+      }
+
     }
   }
   onInitTreeList = (e: any) => {
@@ -88,11 +113,7 @@ export class CriteriasComponent implements OnInit {
   }
   onHidingPopup = (e: any) => {
     this.criteriaModel = new Criteria();
-    // this.criteriaModel.Id = null;
-    // this.criteriaModel.Name = '';
-    // this.criteriaModel.Description = '';
-    // this.criteriaModel.TypeId = null;
-    // this.criteriaModel.OrderNo = null;
+    this.validationGR.reset();
   }
   onChangeSelect = (e: any) => {
     const a = 1;
@@ -100,24 +121,24 @@ export class CriteriasComponent implements OnInit {
   onClickAdd = (e: any, data: any) => {
     this.isAddOrEditType = false;
     this.onShowPopup('add', false);
-    this.criteriaModel.TypeId = data.Id;
+    this.criteriaModel.typeId = data.id;
   }
   onClickAddType = (e: any) => {
     this.isAddOrEditType = true;
     this.onShowPopup('add', true);
   }
   onClickEdit = (e: any, data: any) => {
-    const isType = data.TypeId === null;
+    const isType = data.typeId === null;
     this.isAddOrEditType = isType;
     this.onBindingModel(data);
     this.onShowPopup('edit', isType);
   }
   onBindingModel = (data: Criteria) => {
-    this.criteriaModel.Id = data.Id;
-    this.criteriaModel.TypeId = data.TypeId;
-    this.criteriaModel.Name = data.Name;
-    this.criteriaModel.Description = data.Description;
-    this.criteriaModel.OrderNo = data.OrderNo;
+    this.criteriaModel.id = data.id;
+    this.criteriaModel.typeId = data.typeId;
+    this.criteriaModel.name = data.name;
+    this.criteriaModel.description = data.description;
+    this.criteriaModel.orderNo = data.orderNo;
   }
   onShowPopup = (mode: any, isType: boolean) => {
     let strTitle = 'Criteria';
@@ -126,6 +147,7 @@ export class CriteriasComponent implements OnInit {
     strTitle = titleMode + ' ' + strTitle + ' ' + strType;
     this.popupComp.option('title', strTitle);
     this.popupComp.show();
+    this.mode = mode === 'add' ? 'Add' : 'Edit';
   }
   onCheckBoxDragChange = (e: any) => {
     this.isEnableDrag = e.value;
@@ -136,37 +158,36 @@ export class CriteriasComponent implements OnInit {
     }
   }
   onRowPrepared = (e: any) => {
-    if (e.rowType === 'data' && e.data.TypeId === null) {
+    if (e.rowType === 'data' && e.data.typeId === null) {
       e.rowElement.style.backgroundColor = '#d1bdbd';
       e.rowElement.style.fontWeight = 'bold';
     }
   }
   onSearch = (e: any) => {
     this.searchValue = e.component.option('value');
-    this.employees = this.service.getEmployees().filter(x => x.Name.toLocaleLowerCase().indexOf(this.searchValue.toLocaleLowerCase()) > -1);
     // reload dataSource
   }
-  onReorder = (e: any): any => {
+  onReorder = (e: any) => {
     const visibleRows = e.component.getVisibleRows();
     const sourceData = e.itemData;
     const targetData = visibleRows[e.toIndex].data;
     if (e.dropInsideItem) {
-      if (targetData.TypeId !== (null) || e.itemData.TypeId === null) { return; }
-      e.itemData.TypeId = targetData.Id;
+      if (targetData.typeId !== (null) || e.itemData.typeId === null) { return; }
+      e.itemData.typeId = targetData.id;
       e.component.refresh();
     } else {
       const sourceIndex = this.employees.indexOf(sourceData);
       let targetIndex = this.employees.indexOf(targetData);
       // cannot drop to chill
-      if (sourceData.TypeId === null && targetData.TypeId !== null) {
+      if (sourceData.typeId === null && targetData.typeId !== null) {
         return;
       }
       // cannot drop chill to parrent
-      if (sourceData.TypeId !== null && targetData.TypeId === null) {
+      if (sourceData.typeId !== null && targetData.typeId === null) {
         return;
       }
-      if (sourceData.TypeId !== targetData.TypeId) {
-        sourceData.TypeId = targetData.TypeId;
+      if (sourceData.typeId !== targetData.typeId) {
+        sourceData.typeId = targetData.typeId;
         if (e.toIndex > e.fromIndex) {
           targetIndex++;
         }

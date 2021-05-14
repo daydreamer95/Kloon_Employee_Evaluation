@@ -16,5 +16,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches.Data
 
         public int? DeletedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
+
+        public int? ProjectRoleId { get; set; }
     }
 }
