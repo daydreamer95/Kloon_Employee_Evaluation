@@ -20,8 +20,8 @@ namespace Kloon.EmployeePerformance.Models.User
             public string LastName { get; set; }
             public int? PositionId { get; set; }
             public Roles Role { get; set; }
-            public List<int> ProjectIds { get; set; }
-            public List<ProjectRoles> ProjectRole { get; set; }
+            //public List<int> ProjectIds { get; set; }
+            public List<ProjectRoleModel> ProjectRole { get; set; }
             public string FullName
             {
                 get
@@ -30,5 +30,11 @@ namespace Kloon.EmployeePerformance.Models.User
                 }
             }
         }
+    }
+
+    public class ProjectRoleModel
+    {
+        public int ProjectId { get; set; }
+        public ProjectRoles ProjectRoleId { get; set; }
     }
 }

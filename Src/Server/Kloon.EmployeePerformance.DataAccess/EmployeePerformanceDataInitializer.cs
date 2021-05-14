@@ -84,7 +84,7 @@ namespace Kloon.EmployeePerformance.DataAccess
                         RoleId = 1,
                         PositionId = 1,
                         Sex = true,
-                        PasswordHash = "7CD4A46E7B0F31EFBFBD1F2B5E7969EFBFBD4EEFBFBDEFBFBDEFBFBD6A6E15EFBFBDEFBFBD3DEFBFBD30D69E44EFBFBD4425", //123456
+                        PasswordHash = "26EFBFBDEFBFBDEFBFBDEFBFBD5FEFBFBD76EFBFBDEFBFBD4774365754EFBFBDEFBFBDEFBFBD5EEFBFBD5B05EFBFBD620373384313EFBFBD22EFBFBD", //123456
                         PasswordSalt ="84b32f39-a6d5-4d5a-908c-538fea22b3d9",
                         CreatedDate = createDate,
                         CreatedBy = 1,

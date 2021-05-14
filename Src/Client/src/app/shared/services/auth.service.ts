@@ -1,3 +1,5 @@
+import { UserService } from './user.service';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 
@@ -7,9 +9,16 @@ const defaultUser = {
   avatarUrl: 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/06.png'
 };
 
+//#region API Url
+export const apiUrl = {
+  urlLogin: 'account/login'
+}
+//#endregion API Url
+
 @Injectable()
 export class AuthService {
-  private _user = defaultUser;
+  private _user = null;
+  private _isSuccessLogin = false;
   get loggedIn(): boolean {
     return !!this._user;
   }
@@ -19,18 +28,32 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private httpClient:HttpClient, private userService:UserService) { }
 
   async logIn(email: string, password: string) {
 
     try {
       // Send request
+      this.userService.login(email,password).subscribe(res=>{
+        console.log(res);
+        debugger;
+        this._isSuccessLogin = true;
+       },
+       err=>{
+         console.log(err);
+         debugger;
+         //Notify error
+       })
+
       console.log(email, password);
       this._user = { ...defaultUser, email };
-      this.router.navigate([this._lastAuthenticatedPath]);
+
+      if(this._isSuccessLogin){
+        this.router.navigate([this._lastAuthenticatedPath]);
+      }
 
       return {
-        isOk: true,
+        isOk: this._isSuccessLogin,
         data: this._user
       };
     }

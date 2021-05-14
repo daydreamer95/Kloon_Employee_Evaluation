@@ -1,4 +1,5 @@
 ﻿using Kloon.EmployeePerformance.DataAccess;
+using Kloon.EmployeePerformance.Logic.Caches;
 using Kloon.EmployeePerformance.Models.User;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,8 +22,9 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
             IIdentityService identityService,
             IServiceProvider serviceProvider,
             IUnitOfWork<EmployeePerformanceContext> dbContext,
+            CacheProvider cacheProvider,
             ILoggerFactory loggerFactory
-        ) : base(serviceProvider, dbContext, loggerFactory.CreateLogger<T>())
+        ) : base(serviceProvider, dbContext, cacheProvider, loggerFactory.CreateLogger<T>())
         {
             _identityService = identityService;
         }

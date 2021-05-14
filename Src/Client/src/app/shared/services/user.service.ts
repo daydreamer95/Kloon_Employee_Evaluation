@@ -1,3 +1,4 @@
+import { LoginModel } from './../models/login.model';
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
@@ -12,8 +13,18 @@ const apiUrl = {
     providedIn: 'root',
   })
 export class UserService{
+    loginModel = new LoginModel();
+
     constructor(private router: Router,private httpClient: HttpClient) { 
-        
+    }
+
+    public login(username, password)
+    {
+        this.loginModel.email = username;
+        this.loginModel.password = password;
+        this.loginModel.rememberMe = false;
+
+        return this.httpClient.post(`api/account`, this.loginModel);
     }
 
     //#region GET
@@ -26,7 +37,7 @@ export class UserService{
                 lastName: 'Huy',
                 position: 'CEO',
                 sex: 'male',
-                Dob: new Date(),
+                doB: new Date(),
                 phoneNo: '123456789'
             },
             {
@@ -35,7 +46,7 @@ export class UserService{
                 lastName: 'Huy 2',
                 position: 'CEO',
                 sex: 'male',
-                Dob: new Date(),
+                doB: new Date(),
                 phoneNo: '123456789'
             },
             {
@@ -44,7 +55,7 @@ export class UserService{
                 lastName: 'Huy 3',
                 position: 'CEO',
                 sex: 'male',
-                Dob: new Date(),
+                doB: new Date(),
                 phoneNo: '123456789'
             }
         ];
@@ -61,7 +72,7 @@ export class UserModel{
     lastName: string;
     position: any;
     sex: any;
-    Dob: Date;
+    doB: Date;
     phoneNo: any;
 
     constructor(init?:Partial<UserModel>) {

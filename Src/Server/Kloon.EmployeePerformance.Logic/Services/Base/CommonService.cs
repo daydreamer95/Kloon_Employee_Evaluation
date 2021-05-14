@@ -1,4 +1,5 @@
 ﻿using Kloon.EmployeePerformance.DataAccess;
+using Kloon.EmployeePerformance.Logic.Caches;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -8,6 +9,7 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
     {
         IServiceProvider ServiceProvider { get; }
         IUnitOfWork<EmployeePerformanceContext> DbContext { get; }
+        public CacheProvider Cache { get; }
         ILogger Logger { get; }
     }
     public class CommonService : ICommonService
@@ -19,17 +21,22 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
 
         IUnitOfWork<EmployeePerformanceContext> ICommonService.DbContext { get { return _dbContext; } }
 
+        private readonly CacheProvider _cacheProvider;
+        CacheProvider ICommonService.Cache { get { return _cacheProvider; } }
+
         private readonly ILogger _logger;
         ILogger ICommonService.Logger { get { return _logger; } }
 
         public CommonService(
             IServiceProvider serviceProvider,
             IUnitOfWork<EmployeePerformanceContext> dbContext,
+            CacheProvider cacheProvider,
             ILogger logger
         )
         {
             _serviceProvider = serviceProvider;
             _dbContext = dbContext;
+            _cacheProvider = cacheProvider;
             _logger = logger;
         }
     }
