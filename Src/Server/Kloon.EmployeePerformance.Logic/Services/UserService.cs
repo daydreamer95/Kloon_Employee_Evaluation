@@ -1,5 +1,6 @@
 ﻿using Kloon.EmployeePerformance.DataAccess;
 using Kloon.EmployeePerformance.DataAccess.Domain;
+using Kloon.EmployeePerformance.Logic.Caches.Data;
 using Kloon.EmployeePerformance.Logic.Services.Base;
 using Kloon.EmployeePerformance.Models.Common;
 using Kloon.EmployeePerformance.Models.User;
@@ -70,17 +71,112 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
         public ResultModel<bool> Delete(int userId)
         {
-            throw new NotImplementedException();
+            var now = DateTime.Now;
+            User user = null;
+            var result = _logicService
+                .Start()
+                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenValidate(currentUser =>
+                {
+                    user = _users
+                        .Query(x => x.Id == userId && x.DeletedBy != null && x.DeletedDate != null)
+                        .FirstOrDefault();
+                    if (user == null)
+                    {
+                        return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
+                    }
+                    return null;
+                })
+                .ThenImplement(currentUser =>
+                {
+                    user.DeletedBy = currentUser.Id;
+                    user.DeletedDate = now;
+
+                    int result = _dbContext.Save();
+
+                    _logicService.Cache.Users.Clear();
+                    return true;
+                });
+            return result;
         }
 
         public ResultModel<List<UserModel>> GetAll(string searchText)
         {
-            throw new NotImplementedException();
+            var result = _logicService
+                .Start()
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenValidate(current => null)
+                .ThenImplement(current =>
+                {
+
+                    var query = _logicService.Cache.Users.GetValues().AsEnumerable();
+                    if (!string.IsNullOrWhiteSpace(searchText))
+                    {
+                        query = query.Where(t => t.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                                                || t.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                                                || t.Email.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    var record = query.OrderBy(x => x.FirstName)
+                                      .Select(t => new UserModel
+                                      {
+                                          Id = t.Id,
+                                          Email = t.Email,
+                                          FirstName = t.FirstName,
+                                          LastName = t.LastName,
+                                          PositionId = t.PositionId,
+                                          Sex = t.Sex,
+                                          DoB = t.DoB,
+                                          PhoneNo = t.PhoneNo,
+                                          RoleId = t.RoleId
+                                      }).ToList();
+                    //record = current.Role == Roles.USER ? record.Where(t => t.RoleId != (int)Roles.ADMINISTRATOR).ToList() : record;
+
+                    return record;
+
+                });
+            return result;
         }
 
         public ResultModel<UserModel> GetById(int userId)
         {
-            throw new NotImplementedException();
+            UserMD userMD = null;
+            var result = _logicService
+                        .Start()
+                        .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                        .ThenValidate(current =>
+                        {
+                            userMD = _logicService.Cache.Users.Get(userId);
+                            if (userMD == null)
+                            {
+                                return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
+                            }
+                            if (userMD.DeletedBy == null && userMD.DeletedDate == null)
+                            {
+                                return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
+                            }
+
+                            return null;
+                        })
+                        .ThenImplement(current =>
+                        {
+                            var user = new UserModel()
+                            {
+                                Id = userMD.Id,
+                                Email = userMD.Email,
+                                FirstName = userMD.FirstName,
+                                LastName = userMD.LastName,
+                                PositionId = userMD.PositionId,
+                                Sex = userMD.Sex,
+                                DoB = userMD.DoB,
+                                PhoneNo = userMD.PhoneNo,
+                                RoleId = userMD.RoleId
+
+
+                            };
+                            return user;
+                        });
+            return result;
         }
 
         public ResultModel<UserModel> Update(UserModel userModel)
