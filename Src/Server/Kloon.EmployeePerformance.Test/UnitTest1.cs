@@ -1,5 +1,6 @@
 using Kloon.EmployeePerformance.Models.Criteria;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace Kloon.EmployeePerformance.Test
 {
@@ -9,9 +10,8 @@ namespace Kloon.EmployeePerformance.Test
         [TestMethod]
         public void TestMethod1()
         {
-            Helper.UserGet<CriteriaModel>("");
-            Helper.AdminGet<CriteriaModel>("");
-            Helper.AdminPost<CriteriaModel>("", new object { });
+            var data = Helper.UserGet<List<CriteriaModel>>("/Criteria");
+            Assert.AreEqual<int>(1, 1);
         }
     }
 }
