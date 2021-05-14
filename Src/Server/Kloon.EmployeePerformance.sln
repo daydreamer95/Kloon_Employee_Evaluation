@@ -11,9 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kloon.EmployeePerformance.L
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kloon.EmployeePerformance.Models", "Kloon.EmployeePerformance.Models\Kloon.EmployeePerformance.Models.csproj", "{76D614FC-B4D7-42A1-BAC7-BC19E2E0AE52}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeEvaluationServerTest", "..\..\..\Internal\EmployeePerformance\ServerTest\EmployeeEvaluationServerTest.csproj", "{27497806-8E7F-4B79-B5F0-05EF1B5F095D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kloon.EmployeePerformance.Test", "Kloon.EmployeePerformance.Test\Kloon.EmployeePerformance.Test.csproj", "{ADC4FC65-BF30-419D-8959-50842AEC9221}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kloon.EmployeePerformance.Test", "Kloon.EmployeePerformance.Test\Kloon.EmployeePerformance.Test.csproj", "{ADC4FC65-BF30-419D-8959-50842AEC9221}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +35,6 @@ Global
 		{76D614FC-B4D7-42A1-BAC7-BC19E2E0AE52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76D614FC-B4D7-42A1-BAC7-BC19E2E0AE52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76D614FC-B4D7-42A1-BAC7-BC19E2E0AE52}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27497806-8E7F-4B79-B5F0-05EF1B5F095D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27497806-8E7F-4B79-B5F0-05EF1B5F095D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27497806-8E7F-4B79-B5F0-05EF1B5F095D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27497806-8E7F-4B79-B5F0-05EF1B5F095D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ADC4FC65-BF30-419D-8959-50842AEC9221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ADC4FC65-BF30-419D-8959-50842AEC9221}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADC4FC65-BF30-419D-8959-50842AEC9221}.Release|Any CPU.ActiveCfg = Release|Any CPU
