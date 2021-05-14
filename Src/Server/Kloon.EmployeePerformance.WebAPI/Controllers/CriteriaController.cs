@@ -12,36 +12,52 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CriteriaController: ControllerBase
+    public class CriteriaController : ControllerBase
     {
         private readonly ICriteriaService _criteriaService;
-        public CriteriaController(ICriteriaService criteriaService)
+        private readonly Guid _UserId;
+        public CriteriaController(ICriteriaService criteriaService, IHttpContextAccessor httpContextAccessor)
         {
             _criteriaService = criteriaService;
         }
 
         [HttpGet]
-        public ActionResult<List<CriteriaModel>> GetAll()
+        public ActionResult<List<CriteriaModel>> GetAll(string key)
         {
-            return _criteriaService.GetAll();
+            var a = HttpContext.Request;
+            return _criteriaService.GetAll(key).ToResponse();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<CriteriaModel> Get(Guid Id)
+        {
+            var a = HttpContext.Request;
+            return _criteriaService.Get(Id).ToResponse();
         }
 
         [HttpPost]
         public ActionResult<CriteriaModel> Add(CriteriaModel model)
         {
-            return _criteriaService.Add(model);
+            return _criteriaService.Add(model).ToResponse();
         }
 
         [HttpPut]
         public ActionResult<CriteriaModel> Edit(CriteriaModel model)
         {
-            return _criteriaService.Edit(model);
+            return _criteriaService.Edit(model).ToResponse();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult<bool> Delete(Guid Id)
         {
-            return _criteriaService.Delete(Id);
+            return _criteriaService.Delete(Id).ToResponse();
+        }
+
+        [HttpPost("Order")]
+        public ActionResult<bool> ReOrder(List<CriteriaModel> models) 
+        {
+            _criteriaService.ReOrder(models).ToResponse();
+            return true;
         }
     }
 }

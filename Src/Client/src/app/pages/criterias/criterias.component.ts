@@ -1,3 +1,4 @@
+import { CommonService } from './../../shared/services/common.service';
 import { Component, OnInit, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Service, Criteria } from './service';
@@ -46,18 +47,19 @@ export class CriteriasComponent implements OnInit {
   };
 
   expandedRowKeys: Array<number> = [1, 2];
-  constructor(private service: Service) {
+  constructor(private service: Service, private common: CommonService) {
   }
 
   ngOnInit(): void {
-    this.employees = new DataSource({
-      load: async (options: any) => {
-        const params = new HttpParams();
-        const data = await this.service.getCriterias(params).toPromise();
-        this.lookupData = data.filter(x => x.typeId == null);
-        return data;
-      }
-    });
+    const params = new HttpParams();
+    this.service.getCriterias(params)
+      .subscribe((result: any) => {
+        this.employees = result;
+      },
+        (err: any) => {
+          this.common.UI.toastMessage('Load data fail!!!', 'error', 2000);
+        }
+      );
   }
 
   onDragChange(e: any): any {
@@ -90,6 +92,7 @@ export class CriteriasComponent implements OnInit {
           },
             (err: any) => {
               this.popupComp.hide();
+              this.common.UI.toastMessage('Add Error', 'error', 2000);
             }
           );
       }
@@ -99,7 +102,10 @@ export class CriteriasComponent implements OnInit {
             this.treeListComp.refresh();
             this.popupComp.hide();
           },
-            (err: any) => { this.popupComp.hide(); }
+            (err: any) => {
+              this.popupComp.hide();
+              this.common.UI.toastMessage('Edit Error!', 'error', 2000);
+            }
           );
       }
 
@@ -153,7 +159,13 @@ export class CriteriasComponent implements OnInit {
     this.isEnableDrag = e.value;
     if (!e.value && e.previousValue) {
       // save change
-      // const data = this.treeListComp !== null ? this.treeListComp.getDataSource()._store._array : [];
+      const data = this.treeListComp !== null ? this.treeListComp.getDataSource()._store._array : [];
+      this.service.orderCriteria(data)
+        .subscribe((result: any) => {
+          this.treeListComp.refresh();
+        },
+          (err: any) => { }
+        );
       return;
     }
   }

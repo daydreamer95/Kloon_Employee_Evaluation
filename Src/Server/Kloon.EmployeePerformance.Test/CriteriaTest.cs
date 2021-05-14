@@ -9,13 +9,14 @@ namespace Kloon.EmployeePerformance.Test
     public class CriteriaTest : TestBase
     {
         private readonly Random _rand = new Random();
-        const string url = "/Criteria";
+        const string _url = "/Criteria";
         public List<Guid> dataInit = new List<Guid>();
+
         [TestMethod]
         public void Criteria_GetAll_When_VailidData_Then_Success()
         {
             InitData();
-            var result = Helper.UserGet<List<CriteriaModel>>("/Criteria");
+            var result = Helper.UserGet<List<CriteriaModel>>(_url);
             Assert.IsNotNull(result.Data);
             Assert.IsTrue(result.Data.Count > 0);
             Clear();
@@ -38,12 +39,12 @@ namespace Kloon.EmployeePerformance.Test
         private void InitData()
         {
             var criteriaType = BuildCriteriaTypeModel();
-            var createTypeResult = Helper.UserPost<CriteriaModel>(url, criteriaType);
+            var createTypeResult = Helper.UserPost<CriteriaModel>(_url, criteriaType);
             if (createTypeResult.Error == null)
             {
                 dataInit.Add(createTypeResult.Data.Id);
                 var criteriaModel = BuildCriteriaModel(createTypeResult.Data.Id);
-                var createResult = Helper.UserPost<CriteriaModel>(url, criteriaModel);
+                var createResult = Helper.UserPost<CriteriaModel>(_url, criteriaModel);
                 if (createResult.Error == null)
                 {
                     dataInit.Add(createResult.Data.Id);
@@ -54,7 +55,7 @@ namespace Kloon.EmployeePerformance.Test
         private void Clear() 
         {
             dataInit.ForEach(x => {
-                var uri = url + "/" + x;
+                var uri = _url + "/" + x;
                 Helper.UserDelete<bool>(uri);
             });
         }

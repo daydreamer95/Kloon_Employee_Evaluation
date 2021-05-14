@@ -28,27 +28,27 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router, private httpClient:HttpClient, private userService:UserService) { }
+  constructor(private router: Router, private httpClient: HttpClient, private userService: UserService) { }
 
   async logIn(email: string, password: string) {
 
     try {
       // Send request
-      this.userService.login(email,password).subscribe(res=>{
+      this.userService.login(email, password).subscribe(res => {
         console.log(res);
         debugger;
         this._isSuccessLogin = true;
-       },
-       err=>{
-         console.log(err);
-         debugger;
-         //Notify error
-       })
+      },
+        err => {
+          console.log(err);
+          debugger;
+          //Notify error
+        })
 
       console.log(email, password);
       this._user = { ...defaultUser, email };
 
-      if(this._isSuccessLogin){
+      if (this._isSuccessLogin) {
         this.router.navigate([this._lastAuthenticatedPath]);
       }
 
