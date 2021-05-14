@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+﻿using Kloon.EmployeePerformance.Models.Authentication;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -43,16 +41,48 @@ namespace Kloon.EmployeePerformance.Test
         }
         public Helper()
         {
-            InitToken();
             _config = new TestSetting { ApiUrl = "http://localhost:31102/" };
             _client = new HttpClient();
+            _headerparam = new HeaderParam();
+            InitToken();
         }
 
         public void InitToken()
         {
-            //var authenResult = Post<TestSetting>()
-            _userToken = "hihi";
-            _adminToken = "hihi";
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(_config.ApiUrl);
+            var loginUrl = "api/Account";
+            if (string.IsNullOrEmpty(_adminToken))
+            {
+
+                var adminLogin = new LoginModel
+                {
+                    Email = "admin@kloon.com",
+                    Password = "123456"
+                };
+                var adminResult = client.PostAsJsonAsync(loginUrl, adminLogin).Result;
+                if (adminResult.IsSuccessStatusCode)
+                {
+                    var data = JsonConvert.DeserializeObject<LoginResult>(adminResult.Content.ReadAsStringAsync().Result);
+                    _adminToken = data != null ? data.Token : string.Empty;
+                }
+            }
+
+            if (string.IsNullOrEmpty(_userToken))
+            {
+                var userLogin = new LoginModel
+                {
+                    Email = "user@kloon.com",
+                    Password = "123456"
+                };
+                var userResult = client.PostAsJsonAsync(loginUrl, userLogin).Result;
+                if (userResult.IsSuccessStatusCode)
+                {
+                    var data = JsonConvert.DeserializeObject<LoginResult>(userResult.Content.ReadAsStringAsync().Result);
+                    _userToken = data != null ? data.Token : string.Empty;
+                }
+            }
+
         }
 
         public void GetToken(RoleType type)
@@ -179,6 +209,8 @@ namespace Kloon.EmployeePerformance.Test
                 return;
 
             if (!string.IsNullOrEmpty(headerParam.Token))
+                client.DefaultRequestHeaders.Remove("Authorization");
+                client.DefaultRequestHeaders.Remove("Authorization");
                 client.DefaultRequestHeaders.Add("Authorization", headerParam.Token);
 
 

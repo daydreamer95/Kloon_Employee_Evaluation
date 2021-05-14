@@ -88,6 +88,21 @@ namespace Kloon.EmployeePerformance.DataAccess
                         PasswordSalt ="84b32f39-a6d5-4d5a-908c-538fea22b3d9",
                         CreatedDate = createDate,
                         CreatedBy = 1,
+                    },
+                    new User
+                    {
+                        Email = "user@kloon.com",
+                        FirstName ="Admin",
+                        LastName = "Admin",
+                        DoB = new DateTime(1980,1,1),
+                        PhoneNo = "123456789",
+                        RoleId = 2,
+                        PositionId = 1,
+                        Sex = true,
+                        PasswordHash = "26EFBFBDEFBFBDEFBFBDEFBFBD5FEFBFBD76EFBFBDEFBFBD4774365754EFBFBDEFBFBDEFBFBD5EEFBFBD5B05EFBFBD620373384313EFBFBD22EFBFBD", //123456
+                        PasswordSalt ="84b32f39-a6d5-4d5a-908c-538fea22b3d9",
+                        CreatedDate = createDate,
+                        CreatedBy = 1,
                     }
                 };
                 users.InsertRange(data);
