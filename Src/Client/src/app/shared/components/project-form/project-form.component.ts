@@ -15,14 +15,15 @@ import { confirm } from "devextreme/ui/dialog";
 export class ProjectFormComponent implements OnInit {
 
     @Input() model: ProjectFormModel;
-    @Output() onSubmitForm = new EventEmitter();
+    @Input() selectedIndex: number = 0;
+    @Output() onSubmitForm: EventEmitter<ProjectModel> = new EventEmitter<ProjectModel>();
+    @Output() onConfirmDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
     @ViewChild(DxFormComponent, { static: false }) myForm: DxFormComponent;
 
     formState = ProjectFormState;
     popupVisible = false;
     popupTitle = '';
     currentProject: ProjectModel;
-    selectedIndex: number = 0;
 
     constructor() {
 
@@ -63,6 +64,10 @@ export class ProjectFormComponent implements OnInit {
 
     }
 
+    close() {
+        this.popupVisible = false;
+    }
+
     // #region Options
 
     closeButtonOption = {
@@ -76,15 +81,19 @@ export class ProjectFormComponent implements OnInit {
         icon: 'save',
         text: 'Submit',
         onClick: (e) => {
-            this.myForm.instance.validate();
-        }
+            if (this.myForm.instance.validate().isValid) {
+                this.onSubmitForm.emit(this.currentProject);
+            };
+        },
     }
 
     editButtonOptions = {
         icon: 'save',
         text: 'Submit',
         onClick: (e) => {
-            this.myForm.instance.validate();
+            if (this.myForm.instance.validate().isValid) {
+                this.onSubmitForm.emit(this.currentProject);
+            };
         }
     }
 
@@ -103,9 +112,10 @@ export class ProjectFormComponent implements OnInit {
         text: 'Delete',
         onClick: (e) => {
             var result = confirm("Are you want to delete this record?", "Delete");
-            //result.then(function (dialogResult) {
-            //    alert(dialogResult ? "Yes" : "No");
-            //});
+            var app = this;
+            result.then(function (dialogResult) {
+                app.onConfirmDelete.emit(dialogResult);
+            });
         }
     }
 

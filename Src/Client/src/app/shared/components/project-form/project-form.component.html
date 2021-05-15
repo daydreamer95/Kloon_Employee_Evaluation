@@ -20,6 +20,7 @@
             <dxi-item [(title)]="popupTitle">
                 <div *dxTemplate="let data of 'content'">
                     <dx-form id="form" [formData]="currentProject" [colCount]="1" [readOnly]="model.state === formState.DETAIL">
+                        <dxi-item dataField="id" editorType="dxNumberBox" [visible]="false"></dxi-item>
                         <dxi-item dataField="name">
                             <dxi-validation-rule type="required" message="Name is required"
                                 [visible]="model.state === formState.DETAIL"></dxi-validation-rule>

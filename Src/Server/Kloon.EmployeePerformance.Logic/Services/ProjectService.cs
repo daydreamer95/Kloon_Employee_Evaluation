@@ -51,6 +51,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     var query = _logicService.Cache.Projects.GetValues();
                     var record = query
                         .OrderBy(x => x.Name)
+                        .Where(x => x.DeletedBy == null && x.DeletedDate == null)
                         .Select(t => new ProjectModel
                         {
                             Id = t.Id,
@@ -115,6 +116,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                    var hasSameProjectName = _logicService.Cache
                         .Projects
                         .GetValues()
+                        .Where(x => x.DeletedDate == null && x.DeletedBy == null)
                         .Any(x => x.Name.Equals(projectModel.Name, StringComparison.OrdinalIgnoreCase));
                    if (hasSameProjectName)
                    {
@@ -133,7 +135,9 @@ namespace Kloon.EmployeePerformance.Logic.Services
                        CreatedDate = now
                    };
                    _projects.Add(project);
+
                    int result = _dbContext.Save();
+                   _logicService.Cache.Projects.Clear();
                    return projectModel;
                });
             return result;
@@ -149,7 +153,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenValidate(currentUser =>
                 {
                     project = _projects
-                        .Query(x => x.Id == id && x.DeletedBy != null && x.DeletedDate != null)
+                        .Query(x => x.Id == id && x.DeletedBy == null && x.DeletedDate == null)
                         .FirstOrDefault();
                     if (project == null)
                     {
@@ -189,6 +193,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                    var hasSameProjectName = _logicService.Cache
                         .Projects
                         .GetValues()
+                         .Where(x => x.DeletedDate == null && x.DeletedBy == null)
                         .Any(x => x.Id != projectModel.Id && x.Name.Equals(projectModel.Name, StringComparison.OrdinalIgnoreCase));
                    if (hasSameProjectName)
                    {
@@ -214,6 +219,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
                    project.ModifiedBy = current.Id;
                    project.ModifiedDate = now;
                    int result = _dbContext.Save();
+
+                   _logicService.Cache.Projects.Clear();
                    return projectModel;
                });
             return result;
@@ -229,7 +236,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "Name is required");
             }
-            if (projectModel.Name.Length > 0)
+            if (projectModel.Name.Length > 50)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "Max length of Project name is 50");
             }
