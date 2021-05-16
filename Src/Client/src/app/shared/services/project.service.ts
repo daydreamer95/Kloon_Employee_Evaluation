@@ -9,7 +9,7 @@ const apiUrl = {
   urlProjectEdit: '/Projects',
   urlProjectDelete: '/Projects',
   urlProjectGetAll: '/Projects',
-  urlProjectGetById: ''
+  urlProjectGetById: '/Projects'
 }
 
 @Injectable({
@@ -25,6 +25,11 @@ export class ProjectService {
   public getProjects() {
     return this.httpClient.get<ProjectModel[]>(apiUrl.urlProjectGetAll);
   }
+
+  public getProjectById(id: number){
+    return this.httpClient.get<ProjectModel>(apiUrl.urlProjectGetById + "/" + id);
+  }
+
   //#endregion
 
   //#region POST

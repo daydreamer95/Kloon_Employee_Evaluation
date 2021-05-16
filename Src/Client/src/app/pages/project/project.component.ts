@@ -81,10 +81,23 @@ export class ProjectComponent implements OnInit {
   }
 
   onOpenDetailButton(e, data): void {
-    this.currentProject.state = ProjectFormState.DETAIL;
-    this.currentProject.data = new ProjectModel(data.data);
+    this.projectService.getProjectById(data.data.id).toPromise().then(
+      ((responeseData: ProjectModel) => {
+        this.currentProject.state = ProjectFormState.DETAIL;
+        this.currentProject.data = new ProjectModel(responeseData);
+        this.projectFormComponent.open();
+        this.selectedIndex = 0;
+      }),
+      (
+        error => {
+          setTimeout(() => {
+            this.loading = false;
+            notify(error.message, 'error', 5000);
+          }, 1000);
+        }
+      )
+    )
 
-    this.projectFormComponent.open();
 
   }
 
@@ -139,8 +152,8 @@ export class ProjectComponent implements OnInit {
     }
   }
 
-  deleteProject(data: boolean){
-    if (data){
+  deleteProject(data: boolean) {
+    if (data) {
       this.projectService.delete(this.currentProject.data.id).toPromise().then(
         (() => {
           setTimeout(() => {
