@@ -40,8 +40,12 @@ import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
     CriteriasModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: function  tokenGetter() { 
-        return localStorage.getItem('user');
+        tokenGetter: function  tokenGetter() {
+          if(localStorage.getItem('user') == null || localStorage.getItem('user') == undefined)
+          {
+            return 'a';
+          } 
+          return JSON.parse(localStorage.getItem('user'))['token'];
         } 
       }
     })
