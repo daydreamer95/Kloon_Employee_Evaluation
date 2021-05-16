@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 const defaultPath = '/home';
 const defaultUser = {
@@ -64,19 +65,27 @@ export class AuthService {
     }
   }
 
-  async getUser() {
-    try {
-      // Send request
-      return {
-        isOk: true,
-        data: this.userSubject.value
-      };
-    }
-    catch {
-      return {
-        isOk: false
-      };
-    }
+  get getUserValue(){
+    return this.userSubject.value;
+  }
+
+  // async getUser() {
+  //   try {
+  //     // Send request
+  //     return {
+  //       isOk: true,
+  //       data: this.userSubject.value
+  //     };
+  //   }
+  //   catch {
+  //     return {
+  //       isOk: false
+  //     };
+  //   }
+  // }
+
+  get getUser(){
+    return this.userSubject.value;
   }
 
   async createAccount(email, password) {
@@ -140,7 +149,7 @@ export class AuthService {
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private jwtHelperService: JwtHelperService) { }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const isLoggedIn = this.authService.loggedIn;
@@ -161,10 +170,38 @@ export class AuthGuardService implements CanActivate {
       this.router.navigate(['/login-form']);
     }
 
-    if (isLoggedIn) {
+    const isAuthorizeRouting = this.isAuthorized(route.data.allowedRoles);
+
+    if (isLoggedIn && isAuthorizeRouting) {
       this.authService.lastAuthenticatedPath = route.routeConfig.path;
     }
 
+    if(isLoggedIn && !isAuthorizeRouting){
+      this.router.navigate([defaultPath]);
+    }
+
     return isLoggedIn || isAuthForm;
+  }
+
+  isAuthorized(allowedRoles: Int32Array[]): boolean {
+    // check if the list of allowed roles is empty, if empty, authorize the user to access the page
+    if (allowedRoles == null || allowedRoles.length === 0) {
+      return true;
+    }
+  
+    // get token from local storage or state management
+   const token = this.authService.getUserValue.token;
+  
+      // decode token to read the payload details
+    const decodeToken = this.jwtHelperService.decodeToken(token);
+  
+  // check if it was decoded successfully, if not the token is not valid, deny access
+    if (!decodeToken) {
+      console.log('Invalid token');
+      return false;
+    }
+  
+  // check if the user roles is in the list of allowed roles, return true if allowed and false if not allowed
+    return allowedRoles.includes(decodeToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
   }
 }

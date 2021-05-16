@@ -67,7 +67,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
 
             var user = result;
 
-            var roles = user.Data.Role;
+            var roles =(int) user.Data.Role;
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Sid, user.Data.Id.ToString()));
             claims.Add(new Claim(ClaimTypes.Email, login.Email));

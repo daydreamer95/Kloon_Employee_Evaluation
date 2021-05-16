@@ -14,6 +14,7 @@ import { ErrorComponent } from './pages/error/error.component';
 import { ApiInterceptor } from './http-interceptor/api-interceptor';
 import { UserFormModule } from './shared/components/user-form/user-form.component';
 import { CriteriasModule } from './pages/criterias/criterias.component';
+import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
 
 @NgModule({
   declarations: [
@@ -36,10 +37,17 @@ import { CriteriasModule } from './pages/criterias/criterias.component';
     ProjectModule,
     HttpClientModule,
     UserFormModule,
-    CriteriasModule
+    CriteriasModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: function  tokenGetter() { 
+        return localStorage.getItem('user');
+        } 
+      }
+    })
   ],
   providers: [
-    AuthService, ScreenService, AppInfoService,
+    AuthService, ScreenService, AppInfoService,JwtHelperService,
     { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

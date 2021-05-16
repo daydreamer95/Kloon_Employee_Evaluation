@@ -9,22 +9,32 @@ import { HomeComponent } from './pages/home/home.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
 import { CriteriasComponent } from './pages/criterias/criterias.component';
+import { AppRoutingRole } from './shared/common/enum-app-routing-role';
 
 const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      allowedRoles: [AppRoutingRole.ADMINISTRATOR, AppRoutingRole.USER]
+    }
   },
   {
     path: 'criteria',
     component: CriteriasComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      allowedRoles: [AppRoutingRole.ADMINISTRATOR]
+    }
   },
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      allowedRoles: [AppRoutingRole.ADMINISTRATOR, AppRoutingRole.USER]
+    }
   },
   {
     path: 'login-form',
@@ -49,12 +59,18 @@ const routes: Routes = [
   {
     path: 'user',
     component: UserComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      allowedRoles: [AppRoutingRole.ADMINISTRATOR, AppRoutingRole.USER]
+    }
   },
   {
     path: 'project',
     component: ProjectComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [ AuthGuardService ],
+    data: {
+      allowedRoles: [AppRoutingRole.ADMINISTRATOR]
+    }
   },
   {
     path: 'error',

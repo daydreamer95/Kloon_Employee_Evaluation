@@ -5,6 +5,7 @@ export class UserApp {
     projectRole: ProjectRoleModel;
     isSuccessful: boolean;
     email: string;
+    token:string;
 
     constructor(init?: Partial<UserApp>) {
         Object.assign(this, init);
