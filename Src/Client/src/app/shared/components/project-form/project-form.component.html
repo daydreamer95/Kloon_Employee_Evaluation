@@ -1,46 +1,106 @@
-<dx-popup width="auto" height="auto" [showTitle]="false" title="Project" [dragEnabled]="true"
-    [closeOnOutsideClick]="true" [showCloseButton]="false" [(visible)]="popupVisible">
-    <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="before" [visible]="model.state === formState.CREATE"
-        [options]="createButtonOptions">
-    </dxi-toolbar-item>
-    <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="before" [visible]="model.state === formState.EDIT"
-        [options]="editButtonOptions">
-    </dxi-toolbar-item>
-    <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="before" [visible]="model.state === formState.DETAIL"
-        [options]="editButtonOnDetailOptions">
-    </dxi-toolbar-item>
-    <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="before" [visible]="model.state === formState.DETAIL"
-        [options]="deleteButtonOnDetailOptions">
-    </dxi-toolbar-item>
-    <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="after" [options]="closeButtonOption">
-    </dxi-toolbar-item>
+<dx-popup
+  width="auto"
+  height="auto"
+  [showTitle]="false"
+  title="Project"
+  [dragEnabled]="true"
+  [closeOnOutsideClick]="true"
+  [showCloseButton]="false"
+  [(visible)]="popupVisible"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="before"
+    [visible]="model.state === formState.CREATE"
+    [options]="createButtonOptions"
+  >
+  </dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="before"
+    [visible]="model.state === formState.EDIT"
+    [options]="editButtonOptions"
+  >
+  </dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="before"
+    [visible]="model.state === formState.DETAIL  && selectedIndex === 0"
+    [options]="editButtonOnDetailOptions"
+  >
+  </dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="before"
+    [visible]="model.state === formState.DETAIL && selectedIndex === 0"
+    [options]="deleteButtonOnDetailOptions"
+  >
+  </dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="closeButtonOption"
+  >
+  </dxi-toolbar-item>
 
-    <div *dxTemplate="let data of 'content'">
-        <dx-tab-panel #tabpanel [(selectedIndex)]="selectedIndex">
-            <dxi-item [(title)]="popupTitle">
-                <div *dxTemplate="let data of 'content'">
-                    <dx-form id="form" [formData]="currentProject" [colCount]="1" [readOnly]="model.state === formState.DETAIL">
-                        <dxi-item dataField="name">
-                            <dxi-validation-rule type="required" message="Name is required"
-                                [visible]="model.state === formState.DETAIL"></dxi-validation-rule>
-                        </dxi-item>
-                        <dxi-item dataField="description" editorType="dxTextArea"
-                            [editorOptions]="{ height: 90, maxLength: 500}">
-                        </dxi-item>
-                        <dxi-item dataField="status" editorType="dxSelectBox"
-                            [editorOptions]="{ items: listStatus, displayExpr: 'status', valueExpr: 'id'}">
-                            <dxi-validation-rule type="required" message="Status is required"
-                                [visible]="model.state === formState.DETAIL">
-                            </dxi-validation-rule>
-                        </dxi-item>
-                    </dx-form>
-                </div>
+  <div *dxTemplate="let data of 'content'">
+    <dx-tab-panel #tabpanel [(selectedIndex)]="selectedIndex">
+      <dxi-item [(title)]="popupTitle">
+        <div *dxTemplate="let data of 'content'">
+          <dx-form
+            id="form"
+            [formData]="currentProject"
+            [colCount]="1"
+            [readOnly]="model.state === formState.DETAIL"
+          >
+            <dxi-item
+              dataField="id"
+              editorType="dxNumberBox"
+              [visible]="false"
+            ></dxi-item>
+            <dxi-item dataField="name">
+              <dxi-validation-rule
+                type="required"
+                message="Name is required"
+                [visible]="model.state === formState.DETAIL"
+              ></dxi-validation-rule>
             </dxi-item>
-            <dxi-item title="Project Member" [(disabled)]="model.state !== formState.DETAIL">
-                <div *dxTemplate="let data of 'content'">
-                </div>
+            <dxi-item
+              dataField="description"
+              editorType="dxTextArea"
+              [editorOptions]="{ height: 90, maxLength: 500 }"
+            >
             </dxi-item>
-        </dx-tab-panel>
-
-    </div>
+            <dxi-item
+              dataField="status"
+              editorType="dxSelectBox"
+              [editorOptions]="{
+                items: listStatus,
+                displayExpr: 'status',
+                valueExpr: 'id'
+              }"
+            >
+              <dxi-validation-rule
+                type="required"
+                message="Status is required"
+                [visible]="model.state === formState.DETAIL"
+              >
+              </dxi-validation-rule>
+            </dxi-item>
+          </dx-form>
+        </div>
+      </dxi-item>
+      <dxi-item
+        title="Project Member"
+        [(disabled)]="model.state !== formState.DETAIL"
+      >
+        <div *dxTemplate="let data of 'content'"></div>
+      </dxi-item>
+    </dx-tab-panel>
+  </div>
 </dx-popup>

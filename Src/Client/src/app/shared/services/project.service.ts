@@ -1,13 +1,15 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { environment } from "../../../environments/environment";
+import { ApiResponse } from "../models/api-response.model";
 
 const apiUrl = {
-  urlProjectCreate: '',
-  urlProjectEdit: '',
-  urlProjectDelete: '',
-  urlProjectGetAll: '',
-  urlProjectGetById: ''
+  urlProjectCreate: `/Projects`,
+  urlProjectEdit: '/Projects',
+  urlProjectDelete: '/Projects',
+  urlProjectGetAll: '/Projects',
+  urlProjectGetById: '/Projects'
 }
 
 @Injectable({
@@ -21,38 +23,37 @@ export class ProjectService {
   //#region GET
 
   public getProjects() {
-    let data: ProjectModel[] = [
-      {
-        id: 1,
-        name: 'Rethink',
-        description: 'Dự án của Agenda4',
-        status: 1,
-        statusText: "Open"
-      },
-      {
-        id: 2,
-        name: 'Abacus',
-        description: 'Dự án của Abacus',
-        status: 2,
-        statusText: "Pending"
-      },
-      {
-        id: 3,
-        name: 'Internal',
-        description: 'Dự án nội bộ của Kloon',
-        status: 3,
-        statusText: "Closed"
-      },
-      {
-        id: 4,
-        name: 'OSE',
-        description: 'Thi Tiếng anh trực tuyến',
-        status: 3,
-        statusText: 'Closed'
-      }
-    ];
-    return data;
+    return this.httpClient.get<ProjectModel[]>(apiUrl.urlProjectGetAll);
   }
+
+  public getProjectById(id: number){
+    return this.httpClient.get<ProjectModel>(apiUrl.urlProjectGetById + "/" + id);
+  }
+
+  //#endregion
+
+  //#region POST
+
+  public add(entity: ProjectModel) {
+    return this.httpClient.post<ProjectModel>(apiUrl.urlProjectCreate, entity);
+  }
+
+  //#endregion
+
+  //#region PUT
+
+  public edit(entity: ProjectModel) {
+    return this.httpClient.put<ProjectModel>(apiUrl.urlProjectEdit, entity);
+  }
+
+  //#endregion
+
+  //#region PUT
+
+  public delete(id: number) {
+    return this.httpClient.delete<boolean>(apiUrl.urlProjectDelete + `/${id}`);
+  }
+
   //#endregion
 }
 
@@ -63,7 +64,7 @@ export class ProjectModel {
   status: number;
   statusText: string;
 
-  constructor(init?:Partial<ProjectModel>){
+  constructor(init?: Partial<ProjectModel>) {
     Object.assign(this, init);
   }
 }
