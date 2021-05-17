@@ -42,7 +42,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenValidate(x => null)
                 .ThenImplement(x =>
                 {
-                    var data = _criteriaTypeRepository.Query()
+                    var data = _logicService.Cache.CriteriaTypes.GetValues()
                 .Where(x => !x.DeletedDate.HasValue)
                 .Select(x => new CriteriaModel
                 {
@@ -52,7 +52,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     OrderNo = x.OrderNo,
                     Name = x.Name
                 })
-                .Union(_criteriaRepository.Query().Where(x => !x.DeletedDate.HasValue)
+                .Union(_logicService.Cache.Criterias.GetValues().Where(x => !x.DeletedDate.HasValue)
                 .Select(x => new CriteriaModel
                 {
                     Id = x.Id,
@@ -86,10 +86,10 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 })
                 .ThenImplement(x => {
                     var data = new CriteriaModel();
-                    var criteriaType = _criteriaTypeRepository.Query().Where(t => t.Id == id && !t.DeletedDate.HasValue).FirstOrDefault();
+                    var criteriaType = _logicService.Cache.CriteriaTypes.Get(id);
                     if (criteriaType == null)
                     {
-                        var criteria = _criteriaRepository.Query().Where(t => t.Id == id && !t.DeletedDate.HasValue).FirstOrDefault();
+                        var criteria = _logicService.Cache.Criterias.Get(id);
                         if (criteria == null)
                             return null;
                         data.Id = criteria.Id;
@@ -108,6 +108,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         data.OrderNo = criteriaType.OrderNo;
                     }
 
+                    _logicService.Cache.Criterias.Clear();
+                    _logicService.Cache.CriteriaTypes.Clear();
                     return data;
                 });
             return result;
@@ -176,6 +178,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     }
                     _dbContext.Save();
                     model.Id = id;
+                    _logicService.Cache.Criterias.Clear();
+                    _logicService.Cache.CriteriaTypes.Clear();
                     return model;
                 });
 
@@ -188,8 +192,14 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(x => {
                     if (Id == Guid.Empty)
-                    {
                         return new ErrorModel(ErrorType.BAD_REQUEST, "Invalid_Id");
+
+                    var isType = _criteriaTypeRepository.Query().Any(x => x.Id == Id && !x.DeletedDate.HasValue);
+                    if (!isType)
+                    {
+                        var isCriteria = _criteriaRepository.Query().Any(x => x.Id == Id && !x.DeletedDate.HasValue);
+                        if (!isCriteria)
+                            return new ErrorModel(ErrorType.BAD_REQUEST, "NotFound");
                     }
                     return null;
                 })
@@ -214,6 +224,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         _criteriaRepository.Edit(citeria);
                     }
                     _dbContext.Save();
+                    _logicService.Cache.Criterias.Clear();
+                    _logicService.Cache.CriteriaTypes.Clear();
                     return true;
                 });
             return result;
@@ -231,16 +243,16 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
                     if (model.TypeId == null)
                     {
-                        var isExis = _criteriaTypeRepository.Query().Any(x => x.Name.Equals(model.Name) && !x.DeletedDate.HasValue);
-                        if (isExis)
+                        var isExis = _criteriaTypeRepository.Query().Any(x => x.Id == model.Id && !x.DeletedDate.HasValue);
+                        if (!isExis)
                         {
                             return new ErrorModel(ErrorType.NOT_EXIST, "NotFound_CriteriaType");
                         }
                     }
                     else
                     {
-                        var isExis = _criteriaRepository.Query().Any(x => x.CriteriaTypeId == model.TypeId && x.Name.Equals(model.Name) && !x.DeletedDate.HasValue);
-                        if (isExis)
+                        var isExis = _criteriaRepository.Query().Any(x => x.CriteriaTypeId == model.TypeId && x.Id == model.Id && !x.DeletedDate.HasValue);
+                        if (!isExis)
                         {
                             return new ErrorModel(ErrorType.NOT_EXIST, "NotFound_Criteria");
                         }
@@ -274,69 +286,12 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         _criteriaRepository.Edit(entity);
                     }
                     _dbContext.Save();
+                    _logicService.Cache.Criterias.Clear();
+                    _logicService.Cache.CriteriaTypes.Clear();
                     return model;
                 });
             return result;
-            //if (model.TypeId == null)
-            //{
-            //    var maxOrderType = _criteriaTypeRepository.Query().Max(t => t.OrderNo);
-            //    var entity = _criteriaTypeRepository.Query().Where(x => x.Id.Equals(model.Id) && !x.DeletedDate.HasValue).FirstOrDefault();
-            //    if (entity == null)
-            //    {
-            //        throw new Exception("NotFound_CriteriaType");
-            //    }
-            //    entity.Name = model.Name;
-            //    entity.Description = model.Description;
-            //    entity.ModifiedDate = DateTime.UtcNow;
-            //    _criteriaTypeRepository.Edit(entity);
-            //    _dbContext.Save();
-
-            //    return new CriteriaModel
-            //    {
-            //        Description = entity.Description,
-            //        Id = entity.Id,
-            //        Name = entity.Name,
-            //        TypeId = null,
-            //        OrderNo = entity.OrderNo
-            //    };
-            //}
-            //else
-            //{
-            //    var entity = _criteriaRepository.Query().Where(x => x.Id.Equals(model.Id) && !x.DeletedDate.HasValue).FirstOrDefault();
-            //    if (entity == null)
-            //    {
-            //        throw new Exception("NotFound_CriteriaType");
-            //    }
-
-            //    var maxOrderType = _criteriaRepository.Query().Where(x => x.CriteriaTypeId == model.TypeId).Count() > 0 ?
-            //        _criteriaRepository.Query().Where(x => x.CriteriaTypeId == model.TypeId).Max(t => t.OrderNo) : 0;
-
-            //    //Update Order change criteria type
-            //    if (entity.CriteriaTypeId != model.TypeId)
-            //        entity.OrderNo = maxOrderType + 1;
-
-            //    entity.Name = model.Name;
-            //    entity.Description = model.Description;
-            //    entity.ModifiedDate = DateTime.UtcNow;
-            //    entity.CriteriaTypeId = model.TypeId.Value;
-
-
-
-            //    _criteriaRepository.Edit(entity);
-            //    _dbContext.Save();
-
-            //    return new CriteriaModel
-            //    {
-            //        Description = entity.Description,
-            //        Id = entity.Id,
-            //        Name = entity.Name,
-            //        TypeId = null,
-            //        OrderNo = entity.OrderNo
-            //    };
-            //}
         }
-
-       
 
         public ResultModel<bool> ReOrder(List<CriteriaModel> models)
         {
@@ -369,6 +324,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         }
                     });
                     _dbContext.Save();
+                    _logicService.Cache.Criterias.Clear();
+                    _logicService.Cache.CriteriaTypes.Clear();
                     return true;
                 });
             return result;

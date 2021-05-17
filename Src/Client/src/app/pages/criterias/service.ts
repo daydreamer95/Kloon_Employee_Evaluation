@@ -3,7 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 
 const mainUrl = '/Criteria';
-const gettUrl = '/Criteria';
 export class Criteria {
   id: number;
   typeId: number;
@@ -16,11 +15,8 @@ export class Criteria {
 })
 export class Service {
   getCriterias(params: HttpParams): any {
-    return this.http.get(gettUrl, { params });
+    return this.http.get(mainUrl, { params });
   }
-  // getEmployees(): Criteria[] {
-  //   return datas;
-  // }
   addCriteria(data: any): any {
     return this.http.post(mainUrl, data);
   }

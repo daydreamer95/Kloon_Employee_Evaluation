@@ -15,6 +15,7 @@ import {
   DxValidationSummaryModule
 } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
+import { O_NONBLOCK } from 'constants';
 
 @Component({
   selector: 'app-criterias',
@@ -55,6 +56,7 @@ export class CriteriasComponent implements OnInit {
     this.service.getCriterias(params)
       .subscribe((result: any) => {
         this.employees = result;
+        this.lookupData = result.filter(x => x.typeId === null);
       },
         (err: any) => {
           this.common.UI.toastMessage('Load data fail!!!', 'error', 2000);
@@ -62,6 +64,19 @@ export class CriteriasComponent implements OnInit {
       );
   }
 
+  init(): any {
+    const params = new HttpParams();
+    params.set('key', this.searchValue);
+    this.service.getCriterias(params)
+      .subscribe((result: any) => {
+        this.employees = result;
+        this.lookupData = result.filter(x => x.typeId === null);
+      },
+        (err: any) => {
+          this.common.UI.toastMessage('Load data fail!!!', 'error', 2000);
+        }
+      );
+  }
   onDragChange(e: any): any {
     const visibleRows = e.component.getVisibleRows();
     const sourceNode = e.component.getNodeByKey(e.itemData.id);
@@ -87,7 +102,7 @@ export class CriteriasComponent implements OnInit {
       if (this.mode === 'Add') {
         this.service.addCriteria(data)
           .subscribe((result: any) => {
-            this.treeListComp.refresh();
+            this.init();
             this.popupComp.hide();
           },
             (err: any) => {
@@ -99,7 +114,7 @@ export class CriteriasComponent implements OnInit {
       else {
         this.service.editCriteria(data)
           .subscribe((result: any) => {
-            this.treeListComp.refresh();
+            this.init();
             this.popupComp.hide();
           },
             (err: any) => {
@@ -119,7 +134,7 @@ export class CriteriasComponent implements OnInit {
   }
   onHidingPopup = (e: any) => {
     this.criteriaModel = new Criteria();
-    this.validationGR.reset();
+    if (this.validationGR != null) { this.validationGR.reset(); }
   }
   onChangeSelect = (e: any) => {
     const a = 1;
@@ -162,7 +177,7 @@ export class CriteriasComponent implements OnInit {
       const data = this.treeListComp !== null ? this.treeListComp.getDataSource()._store._array : [];
       this.service.orderCriteria(data)
         .subscribe((result: any) => {
-          this.treeListComp.refresh();
+          this.init();
         },
           (err: any) => { }
         );
@@ -177,7 +192,7 @@ export class CriteriasComponent implements OnInit {
   }
   onSearch = (e: any) => {
     this.searchValue = e.component.option('value');
-    // reload dataSource
+    this.init();
   }
   onReorder = (e: any) => {
     const visibleRows = e.component.getVisibleRows();
