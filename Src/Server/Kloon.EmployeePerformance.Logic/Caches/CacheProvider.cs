@@ -107,7 +107,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                         PhoneNo = t.PhoneNo,
                         PositionId = t.PositionId,
                         RoleId = t.RoleId,
-                        Sex = t.Sex,
+                        Sex = t.Sex.Value,
                         DeletedBy = t.DeletedBy,
                         DeletedDate = t.DeletedDate
                     });
@@ -176,8 +176,10 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
                 var data = dbContext.GetRepository<ProjectUser>()
                     .Query(x => x.ProjectId == projectId)
+                    .Where( x => x.DeletedBy ==  null && x.DeletedDate == null)
                     .ToDictionary(t => t.UserId, t => new
                     {
+                        ProjectUserId = t.Id,
                         UserId = t.UserId,
                         ProjectRoleId = t.ProjectRoleId
                     });
@@ -194,10 +196,11 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                         PhoneNo = t.PhoneNo,
                         PositionId = t.PositionId,
                         RoleId = t.RoleId,
-                        Sex = t.Sex,
+                        Sex = t.Sex.Value,
                         DeletedBy = t.DeletedBy,
                         DeletedDate = t.DeletedDate,
                         ProjectRoleId = data.Where(x => x.Key == t.Id).First().Value.ProjectRoleId,
+                        ProjectUserId = data.Where(x => x.Key == t.Id).First().Value.ProjectUserId
                     }).ToList();
 
                 return result;

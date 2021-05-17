@@ -38,7 +38,7 @@ BEGIN
         [FirstName] [nvarchar](50) NOT NULL,
         [LastName] [nvarchar](50) NOT NULL,
         [PositionId] [int] NOT NULL,
-        [Sex] [bit] NULL,
+        [Sex] [int] NULL,
         [DoB] [datetime] NOT NULL,
         [PhoneNo] [nvarchar](10) NOT NULL,
         [RoleId] [int] NOT NULL,

@@ -9,7 +9,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches.Data
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int PositionId { get; set; }
-        public bool Sex { get; set; }
+        public int Sex { get; set; }
         public DateTime DoB { get; set; }
         public string PhoneNo { get; set; }
         public int RoleId { get; set; }
@@ -18,5 +18,6 @@ namespace Kloon.EmployeePerformance.Logic.Caches.Data
         public DateTime? DeletedDate { get; set; }
 
         public int? ProjectRoleId { get; set; }
+        public Guid? ProjectUserId { get; set; }
     }
 }
