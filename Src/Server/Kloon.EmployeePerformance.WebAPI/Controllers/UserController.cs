@@ -23,7 +23,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
         {
             return _userService.GetAll(searchText);
         }
-        [HttpGet]
+        [HttpGet("{id}")]
         public ResultModel<UserModel> GetById(int id)
         {
             return _userService.GetById(id);
