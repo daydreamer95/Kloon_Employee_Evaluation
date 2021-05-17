@@ -20,14 +20,14 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
         }
 
         [HttpGet]
-        public List<ProjectModel> GetAll([FromQuery] string searchText)
+        public ActionResult<List<ProjectModel>> GetAll([FromQuery] string searchText)
         {
             var result = _projectService.GetAll(searchText);
             return result.ToResponse();
         }
 
         [HttpGet("{projectId:int}")]
-        public ProjectModel GetById(int projectId)
+        public ActionResult<ProjectModel> GetById(int projectId)
         {
             var result = _projectService.GetById(projectId);
             return result.ToResponse();
@@ -52,7 +52,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
         /// <response code="409">Data is conflicted</response>
         /// <response code="500">Server side error</response>
         [HttpPost]
-        public ProjectModel Create(ProjectModel model)
+        public ActionResult<ProjectModel> Create(ProjectModel model)
         {
             var result = _projectService.Create(model);
             return result.ToResponse();
@@ -79,7 +79,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
         /// <response code="409">Data is conflicted</response>
         /// <response code="500">Server side error</response>
         [HttpPut]
-        public ProjectModel Update(ProjectModel model)
+        public ActionResult<ProjectModel> Update(ProjectModel model)
         {
             var result = _projectService.Update(model);
             return result.ToResponse();
@@ -106,7 +106,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
         /// <response code="409">Data is conflicted</response>
         /// <response code="500">Server side error</response>
         [HttpDelete("{projectId:int}")]
-        public bool Delete(int projectId)
+        public ActionResult<bool> Delete(int projectId)
         {
             var result = _projectService.Delete(projectId);
             return result.ToResponse();
