@@ -2,24 +2,20 @@ import { LoginModel } from './../models/login.model';
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { NgIf } from '@angular/common';
 
-const apiUrl = {
-    urlCreateUser: '',
-    urlDeleteUser: '',
-    urlEditUser: ''
-};
+const apiUrl = '/user'
 
 @Injectable({
     providedIn: 'root',
-  })
-export class UserService{
+})
+export class UserService {
     loginModel = new LoginModel();
 
-    constructor(private router: Router,private httpClient: HttpClient) { 
+    constructor(private router: Router, private httpClient: HttpClient) {
     }
 
-    public login(username, password)
-    {
+    public login(username, password) {
         this.loginModel.email = username;
         this.loginModel.password = password;
         this.loginModel.rememberMe = false;
@@ -27,46 +23,37 @@ export class UserService{
         return this.httpClient.post(`/account`, this.loginModel);
     }
 
-    //#region GET
-    public getUsers()
-    {
-        let tempListUser: UserModel[] = [
-            {
-                email: 'lehuy1@gmail.com',
-                firstName: 'Le',
-                lastName: 'Huy',
-                position: 'CEO',
-                sex: 'male',
-                doB: new Date(),
-                phoneNo: '123456789'
-            },
-            {
-                email: 'lehuy2@gmail.com',
-                firstName: 'Le',
-                lastName: 'Huy 2',
-                position: 'CEO',
-                sex: 'male',
-                doB: new Date(),
-                phoneNo: '123456789'
-            },
-            {
-                email: 'lehuy3@gmail.com',
-                firstName: 'Le',
-                lastName: 'Huy 3',
-                position: 'CEO',
-                sex: 'male',
-                doB: new Date(),
-                phoneNo: '123456789'
-            }
-        ];
-        return tempListUser;
+    // GET
+    public getUsers(stringText) {
+        let queryString = !stringText && stringText.length === 0 ? "" : '?searchText=${stringText}';
+        return this.httpClient.get<UserModel[]>(apiUrl + queryString);
     }
 
-    //#endregion
+    public getUserById(id: number) {
+        return this.httpClient.get<UserModel>(apiUrl + '/' + id);
+    }
+
+    //POST
+
+    public add(entity: UserModel) {
+        return this.httpClient.post<UserModel>(apiUrl, entity);
+    }
+
+    //PUT
+
+    public edit(entity: UserModel) {
+        return this.httpClient.put<UserModel>(apiUrl, entity);
+    }
+
+    //DELETE
+
+    public delete(id: number) {
+        return this.httpClient.delete<boolean>(apiUrl + + `/${id}`);
+    }
 
 }
 
-export class UserModel{
+export class UserModel {
     email: string;
     firstName: string;
     lastName: string;
@@ -75,7 +62,7 @@ export class UserModel{
     doB: Date;
     phoneNo: any;
 
-    constructor(init?:Partial<UserModel>) {
+    constructor(init?: Partial<UserModel>) {
         Object.assign(this, init);
     }
 }
