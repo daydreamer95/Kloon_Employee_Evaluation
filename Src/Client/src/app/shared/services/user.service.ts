@@ -24,7 +24,7 @@ export class UserService{
         this.loginModel.password = password;
         this.loginModel.rememberMe = false;
 
-        return this.httpClient.post(`api/account`, this.loginModel);
+        return this.httpClient.post(`/account`, this.loginModel);
     }
 
     //#region GET

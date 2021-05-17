@@ -1,6 +1,8 @@
-﻿using Kloon.EmployeePerformance.Logic.Services;
+﻿using Kloon.EmployeePerformance.Logic.Caches;
+using Kloon.EmployeePerformance.Logic.Services;
 using Kloon.EmployeePerformance.Models.Authentication;
 using Kloon.EmployeePerformance.Models.Common;
+using Kloon.EmployeePerformance.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +24,13 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IAuthenticationService _authenticationService;
+        private readonly CacheProvider _cache;
 
-        public AccountController(IConfiguration configuration, IAuthenticationService authenticationService)
+        public AccountController(IConfiguration configuration, IAuthenticationService authenticationService,CacheProvider cacheProvider)
         {
             _authenticationService = authenticationService;
             _configuration = configuration;
+            _cache = cacheProvider;
         }
 
 
@@ -63,7 +67,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
 
             var user = result;
 
-            var roles = user.Data.Role;
+            var roles =(int) user.Data.Role;
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Sid, user.Data.Id.ToString()));
             claims.Add(new Claim(ClaimTypes.Email, login.Email));
@@ -71,7 +75,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurityKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expiry = DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["JwtExpiryInMinutes"]));
+            var expiry = DateTime.Now.AddHours(Convert.ToInt32(_configuration["JwtExpiryInDays"]));
 
             var token = new JwtSecurityToken(
                 _configuration["JwtIssuer"],
@@ -80,12 +84,22 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
                 expires: expiry,
                 signingCredentials: creds
             );
+
+            var projectRole = _cache.Users.GetProjects(user.Data.Id);
+
             var results = new LoginResult
             {
-                Successful = true,
+                IsSuccessful = true,
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 FirstName = user.Data.FirstName,
                 LastName = user.Data.LastName,
+                AppRole = user.Data.Role,
+                Email = user.Data.Email,
+                ProjectRoles = projectRole?.Select(t => new ProjectRoleModel
+                { 
+                    ProjectId = t.Id,
+                    ProjectRoleId = (ProjectRoles)t.ProjectRoleId
+                }).ToList()
             };
             return Ok(results);
         }

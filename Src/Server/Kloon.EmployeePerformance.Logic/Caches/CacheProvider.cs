@@ -23,6 +23,13 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
         #endregion
 
+        #region Projects
+
+        public ProjectAllCache Projects { get; private set; }
+        private DataKeyCache<int, List<UserMD>> _projectUser = new DataKeyCache<int, List<UserMD>>();
+
+        #endregion
+
         #region Criterias
 
         public CriteriaTypeAllCache CriteriaTypes { get; private set; }
@@ -35,7 +42,6 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
         #region Other
 
-        public ProjectAllCache Projects { get; private set; } = new ProjectAllCache();
         public PositionAllCache Position { get; private set; } = new PositionAllCache();
 
         #endregion
@@ -47,6 +53,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             _serviceProvider = serviceProvider;
 
             Users = new UserAllCache(this);
+            Projects = new ProjectAllCache(this);
             CriteriaTypes = new CriteriaTypeAllCache(this);
 
             RegisterData();
@@ -72,8 +79,11 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             Criterias.OnNeedResource += Criterias_OnNeedResource;
 
             Projects.OnNeedResource += Projects_OnNeedResource;
+            _projectUser.OnNeedValueIfKeyNotFound += _projectUser_OnNeedValueIfKeyNotFound;
+
             Position.OnNeedResource += Position_OnNeedResource;
         }
+
 
         #endregion
 
@@ -136,6 +146,63 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             });
         }
 
+        #endregion
+
+        #region Project
+        private Dictionary<int, ProjectMD> Projects_OnNeedResource(object sender, params object[] paramArrs)
+        {
+            return UserDbContext(dbContext =>
+            {
+                var result = dbContext.GetRepository<Project>()
+                    .Query()
+                    .ToDictionary(t => t.Id, t => new ProjectMD
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        Description = t.Description,
+                        Status = t.Status,
+                        DeletedBy = t.DeletedBy,
+                        DeletedDate = t.DeletedDate
+                    });
+                return result;
+            });
+        }
+
+        private List<UserMD> _projectUser_OnNeedValueIfKeyNotFound(object sender, params object[] paramArrs)
+        {
+            return UserDbContext(dbContext =>
+            {
+                var projectId = (int)paramArrs.First();
+
+                var data = dbContext.GetRepository<ProjectUser>()
+                    .Query(x => x.ProjectId == projectId)
+                    .ToDictionary(t => t.UserId, t => new
+                    {
+                        UserId = t.UserId,
+                        ProjectRoleId = t.ProjectRoleId
+                    });
+
+                var result = dbContext.GetRepository<User>()
+                    .Query(x => data.ContainsKey(x.Id))
+                    .Select(t => new UserMD()
+                    {
+                        Id = t.Id,
+                        FirstName = t.FirstName,
+                        LastName = t.LastName,
+                        Email = t.Email,
+                        DoB = t.DoB,
+                        PhoneNo = t.PhoneNo,
+                        PositionId = t.PositionId,
+                        RoleId = t.RoleId,
+                        Sex = t.Sex,
+                        DeletedBy = t.DeletedBy,
+                        DeletedDate = t.DeletedDate,
+                        ProjectRoleId = data.Where(x => x.Key == t.Id).First().Value.ProjectRoleId,
+                    }).ToList();
+
+                return result;
+            });
+        }
         #endregion
 
         #region Criteria
@@ -203,24 +270,6 @@ namespace Kloon.EmployeePerformance.Logic.Caches
         #endregion
 
         #region Others
-        private Dictionary<int, ProjectMD> Projects_OnNeedResource(object sender, params object[] paramArrs)
-        {
-            return UserDbContext(dbContext =>
-            {
-                var result = dbContext.GetRepository<Project>()
-                    .Query()
-                    .ToDictionary(t => t.Id, t => new ProjectMD
-                    {
-                        Id = t.Id,
-                        Name = t.Name,
-                        Description = t.Description,
-                        Status = t.Status,
-                        DeletedBy = t.DeletedBy,
-                        DeletedDate = t.DeletedDate
-                    });
-                return result;
-            });
-        }
 
         private Dictionary<int, PositionMD> Position_OnNeedResource(object sender, params object[] paramArrs)
         {
@@ -283,7 +332,28 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
         public class ProjectAllCache : DataAllCache<int, ProjectMD>
         {
-            
+            private readonly CacheProvider _provider;
+            public ProjectAllCache(CacheProvider provider)
+            {
+                _provider = provider;
+            }
+            public List<UserMD> GetUsers(int projectId)
+            {
+                return _provider._projectUser.Get(projectId);
+            }
+
+            public override bool Remove(int userId)
+            {
+                base.Remove(userId);
+                _provider._userProjects.Remove(userId);
+                return true;
+            }
+            public override void Clear()
+            {
+                base.Clear();
+
+                _provider._userProjects.Clear();
+            }
         }
         public class PositionAllCache : DataAllCache<int, PositionMD>
         {

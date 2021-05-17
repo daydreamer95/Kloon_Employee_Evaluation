@@ -3,6 +3,8 @@ import { DxTreeViewModule, DxTreeViewComponent } from 'devextreme-angular/ui/tre
 import { navigation } from '../../../app-navigation';
 
 import * as events from 'devextreme/events';
+import { Router } from '@angular/router';
+import { AuthGuardService } from '../../services';
 
 @Component({
   selector: 'app-side-navigation-menu',
@@ -33,15 +35,68 @@ export class SideNavigationMenuComponent implements AfterViewInit, OnDestroy {
   private _items;
   get items() {
     if (!this._items) {
-      this._items = navigation.map((item) => {
+      let navigationList = this.getItemMenuByRole();
+
+      this._items = navigationList.map((item) => {
         if(item.path && !(/^\//.test(item.path))){ 
           item.path = `/${item.path}`;
         }
          return { ...item, expanded: !this._compactMode }
         });
     }
-
     return this._items;
+  }
+
+  getItemMenuByRole(){
+    let result = navigation.filter(item => {
+      //Parent menu have list item
+      if(item.path == undefined && item.items){
+        item.items = this.getAllowedPages(item.items);
+      }
+
+      if(item.path == undefined && item.items.length == 0)
+      {
+        return true;
+      }
+      var pathString = item.path.substring(1,item.path.length);
+      const itemRouteConfig = this.router.config.filter(function(routeConfig){
+        return routeConfig.path == pathString;
+      });
+
+      //
+      if(itemRouteConfig && itemRouteConfig.length > 0){
+        let pathAllowedRoles = itemRouteConfig[0]['data']['allowedRoles'];
+
+        var isAllowedAccess = this.authGuardService.isAuthorized(pathAllowedRoles);
+        return isAllowedAccess;
+      }
+      
+      return false;
+    })
+    return result;
+  }
+
+  getAllowedPages(arrayItems: any[]){
+    if(arrayItems.length == 0)
+      return [];
+
+    let result = arrayItems.filter(item =>{
+      const itemRouteConfig = this.router.config.filter(function(routeConfig){
+        if(item.path.includes("/")){
+          item.path = item.path.substring(1, item.path.length);
+        }
+        return routeConfig.path == item.path;
+      });
+
+      if(itemRouteConfig && itemRouteConfig.length > 0){
+        let pathAllowedRoles = itemRouteConfig[0]['data']['allowedRoles'];
+
+        var isAllowedAccess = this.authGuardService.isAuthorized(pathAllowedRoles);
+        return isAllowedAccess;
+      }
+      return false;
+    })
+    return result;
   }
 
   private _compactMode = false;
@@ -63,7 +118,7 @@ export class SideNavigationMenuComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(private elementRef: ElementRef, private router: Router, private authGuardService:AuthGuardService) { }
 
   onItemClick(event) {
     this.selectedItemChanged.emit(event);

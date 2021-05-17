@@ -348,28 +348,3 @@ GO
 IF NOT EXISTS (SELECT 1 FROM Position Where Name = 'Intern')
 	INSERT INTO Position (Name, CreatedBy, CreatedDate) VALUES ('Intern', 1, GETDATE())
 GO
-
--- DEFAULT ADMIN
-IF NOT EXISTS (SELECT * FROM [User] WHERE [Email] = 'admin@kloon.com')
-BEGIN
-	DECLARE @positionId INT
-	SELECT @positionId = Id FROM Position WHERE Name = 'Admin'
-
-	INSERT INTO [User] (Email, FirstName, LastName, DoB, PhoneNo, RoleId, PositionId, Sex, PasswordHash, PasswordSalt, CreatedDate, CreatedBy)
-	VALUES
-	(
-		'admin@kloon.vn',
-		'Admin',
-		'Admin',
-		'1980-1-1',
-		'123456789',
-		1,
-		@positionId,
-		1,
-		'7CD4A46E7B0F31EFBFBD1F2B5E7969EFBFBD4EEFBFBDEFBFBDEFBFBD6A6E15EFBFBDEFBFBD3DEFBFBD30D69E44EFBFBD4425',
-		'84b32f39-a6d5-4d5a-908c-538fea22b3d9',
-		GETDATE(),
-		1
-	)
-END
-GO

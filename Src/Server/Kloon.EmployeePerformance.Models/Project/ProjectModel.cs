@@ -14,5 +14,19 @@ namespace Kloon.EmployeePerformance.Models.Project
         public int Status { get; set; }
         //public int? DeletedBy { get; set; }
         //public DateTime? DeletedDate { get; set; }
+
+        public string StatusText
+        {
+            get
+            {
+                if (Status == 1)
+                    return "Open";
+                else if (Status == 2)
+                    return "Pending";
+                else if (Status == 3)
+                    return "Closed";
+                return "";
+            }
+        }
     }
 }
