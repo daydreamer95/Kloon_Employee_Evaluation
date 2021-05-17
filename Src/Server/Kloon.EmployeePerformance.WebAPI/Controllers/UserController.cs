@@ -38,7 +38,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
         {
             return _userService.Update(userModel).ToResponse();
         }
-        [HttpDelete]
+        [HttpDelete("{id:int}")]
         public ActionResult<bool> Delete(int id)
         {
             return _userService.Delete(id).ToResponse();

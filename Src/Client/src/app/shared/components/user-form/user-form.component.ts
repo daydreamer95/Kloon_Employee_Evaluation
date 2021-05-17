@@ -15,7 +15,7 @@ import { UserService } from '../../services/user.service';
 })
 export class UserFormComponent implements OnInit {
   @Input() model: UserFormModel;
-  @Output() onSubmitForm = new EventEmitter();
+  @Input() onRefreshGrid = new EventEmitter();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
 
   formState = FormState;
@@ -34,7 +34,7 @@ export class UserFormComponent implements OnInit {
 
   positionDateSource: PositionModel[];
 
-  constructor(userService: UserService, positionService: PositionService) {
+  constructor(private userService: UserService, private positionService: PositionService) {
     positionService.getPositions().subscribe(
       next => {
         this.positionDateSource = next;
@@ -63,6 +63,7 @@ export class UserFormComponent implements OnInit {
   //#region Options
   closeButtonOptions = {
     text: "Close",
+    icon: 'close',
     onClick: (e) => {
       this.popupVisible = false;
     }
@@ -72,16 +73,63 @@ export class UserFormComponent implements OnInit {
     icon: 'save',
     text: 'Submit',
     onClick: (e) => {
-      this.myform.instance.validate();
-      // this.popupVisible = false;
+      var instance = this.myform.instance.validate();
+      if (!instance.isValid) {
+        return;
+      }
+
+      this.userService.add(this.currUser).subscribe(
+        next => {
+          //TODO: Call refresh grid
+          this.popupVisible = false;
+          this.onRefreshGrid;
+        },
+        error => { }
+      )
     }
   };
+
+  deleteButtonOptions = {
+    icon: 'trash',
+    text: 'Delete',
+    onClick: (e) => {
+      debugger;
+      this.userService.delete(this.currUser.id).subscribe(
+        next => {
+          //TODO: Call refresh grid
+          this.popupVisible = false;
+        },
+        error => {
+
+        }
+      )
+    }
+  };
+
+  enterEditFormButtonOptions = {
+    icon: 'edit',
+    text: 'Edit',
+    onClick: (e) => {
+      this.model.state = FormState.DETAIL;
+      this.myform.instance._refresh();
+    }
+  }
 
   editButtonOptions = {
     icon: 'save',
     text: 'Edit',
     onClick: (e) => {
-      this.popupVisible = false;
+      this.userService.edit(this.currUser).subscribe(
+        next => {
+          debugger;
+          //TODO: Call refresh grid
+          this.popupVisible = false;
+          this.myform.instance._refresh();
+        },
+        error => {
+
+        }
+      )
     }
   }
   ////#endregion

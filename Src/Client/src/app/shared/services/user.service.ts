@@ -48,7 +48,7 @@ export class UserService {
     //DELETE
 
     public delete(id: number) {
-        return this.httpClient.delete<boolean>(apiUrl + + `/${id}`);
+        return this.httpClient.delete<boolean>(apiUrl + `/` + id);
     }
 
 }

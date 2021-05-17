@@ -19,7 +19,7 @@ export class UserComponent implements OnInit {
   currUser: UserFormModel = new UserFormModel();
   //#endregion
 
-  constructor(userService: UserService) {
+  constructor(private userService: UserService) {
     userService.getUsers("").subscribe(
       next => {
         this.dataSource = next;
@@ -61,7 +61,18 @@ export class UserComponent implements OnInit {
     this.userFormComponent.open();
   }
 
+  onRefreshGrid() {
+    debugger;
+    this.userService.getUsers("").subscribe(
+      next => {
+        this.dataSource = next;
+        debugger;
+      },
+      error => {
 
+      }
+    );
+  }
   //#endregion
 
   ngOnInit(): void {
