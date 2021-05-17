@@ -40,18 +40,17 @@ import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
     CriteriasModule,
     JwtModule.forRoot({
       config: {
-        tokenGetter: function  tokenGetter() {
-          if(localStorage.getItem('user') == null || localStorage.getItem('user') == undefined)
-          {
+        tokenGetter: function tokenGetter() {
+          if (localStorage.getItem('user') == null || localStorage.getItem('user') == undefined) {
             return 'a';
-          } 
+          }
           return JSON.parse(localStorage.getItem('user'))['token'];
-        } 
+        }
       }
     })
   ],
   providers: [
-    AuthService, ScreenService, AppInfoService,JwtHelperService,
+    AuthService, ScreenService, AppInfoService, JwtHelperService,
     { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

@@ -34,6 +34,83 @@ namespace Kloon.EmployeePerformance.Logic.Services
             _logicService = logicService;
         }
 
+        #region GET
+        public ResultModel<List<CriteriaModel>> GetAll(string key)
+        {
+            var result = _logicService.Start()
+                .ThenAuthorize()
+                .ThenValidate(x => null)
+                .ThenImplement(x =>
+                {
+                    var data = _criteriaTypeRepository.Query()
+                .Where(x => !x.DeletedDate.HasValue)
+                .Select(x => new CriteriaModel
+                {
+                    Id = x.Id,
+                    TypeId = null,
+                    Description = x.Description,
+                    OrderNo = x.OrderNo,
+                    Name = x.Name
+                })
+                .Union(_criteriaRepository.Query().Where(x => !x.DeletedDate.HasValue)
+                .Select(x => new CriteriaModel
+                {
+                    Id = x.Id,
+                    TypeId = x.CriteriaTypeId,
+                    Description = x.Description,
+                    OrderNo = x.OrderNo,
+                    Name = x.Name
+                }))
+                .OrderBy(x => x.OrderNo)
+                .ToList();
+                    if (!string.IsNullOrEmpty(key))
+                    {
+                        data = data.Where(x => x.Name.Contains(key, StringComparison.OrdinalIgnoreCase)).ToList();
+                    }
+                    return data;
+                });
+            return result;
+        }
+
+        public ResultModel<CriteriaModel> Get(Guid id)
+        {
+            var result = _logicService.Start()
+                .ThenAuthorize()
+                .ThenValidate(x =>
+                {
+                    if (id == Guid.Empty)
+                    {
+                        return new ErrorModel(ErrorType.BAD_REQUEST, "Invalid_Id");
+                    }
+                    return null;
+                })
+                .ThenImplement(x => {
+                    var data = new CriteriaModel();
+                    var criteriaType = _criteriaTypeRepository.Query().Where(t => t.Id == id && !t.DeletedDate.HasValue).FirstOrDefault();
+                    if (criteriaType == null)
+                    {
+                        var criteria = _criteriaRepository.Query().Where(t => t.Id == id && !t.DeletedDate.HasValue).FirstOrDefault();
+                        if (criteria == null)
+                            return null;
+                        data.Id = criteria.Id;
+                        data.Description = criteria.Description;
+                        data.TypeId = criteria.CriteriaTypeId;
+                        data.Name = criteria.Name;
+                        data.OrderNo = criteria.OrderNo;
+                    }
+
+                    data.Id = criteriaType.Id;
+                    data.Description = criteriaType.Description;
+                    data.TypeId = null;
+                    data.Name = criteriaType.Name;
+                    data.OrderNo = criteriaType.OrderNo;
+
+                    return data;
+                });
+            return result;
+        }
+        #endregion
+
         public ResultModel<CriteriaModel> Add(CriteriaModel model)
         {
             var result = _logicService
@@ -41,6 +118,9 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(current =>
                 {
+                    if (string.IsNullOrEmpty(model.Name))
+                        return new ErrorModel(ErrorType.NOT_EXIST, "Invalid_Model");
+
                     if (model.TypeId == null)
                     {
                         var isExis = _criteriaTypeRepository.Query().Any(x => x.Name.Equals(model.Name) && !x.DeletedDate.HasValue);
@@ -137,6 +217,9 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(x =>
                 {
+                    if (string.IsNullOrEmpty(model.Name))
+                        return new ErrorModel(ErrorType.NOT_EXIST, "Invalid_Model");
+
                     if (model.TypeId == null)
                     {
                         var isExis = _criteriaTypeRepository.Query().Any(x => x.Name.Equals(model.Name) && !x.DeletedDate.HasValue);
@@ -244,80 +327,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             //}
         }
 
-        public ResultModel<List<CriteriaModel>> GetAll(string key)
-        {
-            var result = _logicService.Start()
-                .ThenAuthorize()
-                .ThenValidate(x => null)
-                .ThenImplement(x =>
-                {
-                    var data = _criteriaTypeRepository.Query()
-                .Where(x => !x.DeletedDate.HasValue)
-                .Select(x => new CriteriaModel
-                {
-                    Id = x.Id,
-                    TypeId = null,
-                    Description = x.Description,
-                    OrderNo = x.OrderNo,
-                    Name = x.Name
-                })
-                .Union(_criteriaRepository.Query().Where(x => !x.DeletedDate.HasValue)
-                .Select(x => new CriteriaModel
-                {
-                    Id = x.Id,
-                    TypeId = x.CriteriaTypeId,
-                    Description = x.Description,
-                    OrderNo = x.OrderNo,
-                    Name = x.Name
-                }))
-                .OrderBy(x => x.OrderNo)
-                .ToList();
-                    if (!string.IsNullOrEmpty(key))
-                    {
-                        data = data.Where(x => x.Name.Contains(key, StringComparison.OrdinalIgnoreCase)).ToList();
-                    }
-                    return data;
-                });
-            return result;
-        }
-
-        public ResultModel<CriteriaModel> Get(Guid id)
-        {
-            var result = _logicService.Start()
-                .ThenAuthorize()
-                .ThenValidate(x =>
-                {
-                    if (id == Guid.Empty)
-                    {
-                        return new ErrorModel(ErrorType.BAD_REQUEST, "Invalid_Id");
-                    }
-                    return null;
-                })
-                .ThenImplement(x => {
-                    var data = new CriteriaModel();
-                    var criteriaType = _criteriaTypeRepository.Query().Where(t => t.Id == id && !t.DeletedDate.HasValue).FirstOrDefault();
-                    if (criteriaType == null)
-                    {
-                        var criteria = _criteriaRepository.Query().Where(t => t.Id == id && !t.DeletedDate.HasValue).FirstOrDefault();
-                        if (criteria == null)
-                            return null;
-                        data.Id = criteria.Id;
-                        data.Description = criteria.Description;
-                        data.TypeId = criteria.CriteriaTypeId;
-                        data.Name = criteria.Name;
-                        data.OrderNo= criteria.OrderNo;
-                    }
-
-                    data.Id = criteriaType.Id;
-                    data.Description = criteriaType.Description;
-                    data.TypeId = null;
-                    data.Name = criteriaType.Name;
-                    data.OrderNo = criteriaType.OrderNo;
-
-                    return data;
-                });
-            return result;
-        }
+       
 
         public ResultModel<bool> ReOrder(List<CriteriaModel> models)
         {

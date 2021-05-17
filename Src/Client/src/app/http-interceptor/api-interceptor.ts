@@ -8,13 +8,13 @@ export const rootApi = `${environment.apiUrl}`;
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
-  constructor(private authService:AuthService){
+  constructor(private authService: AuthService) {
 
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const apiReq = req.clone({ 
-        url: `${rootApi}${req.url}`
+    const apiReq = req.clone({
+      url: `${rootApi}${req.url}`
     });
     return next.handle(apiReq);
   }
