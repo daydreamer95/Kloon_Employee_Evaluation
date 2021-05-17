@@ -19,11 +19,11 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
             _userService = userService;
         }
         [HttpGet]
-        public ResultModel<List<UserModel>> GetAll(string searchText)
+        public ResultModel<List<UserModel>> GetAll([FromQuery] string searchText)
         {
             return _userService.GetAll(searchText);
         }
-        [HttpGet("{id:int}")]
+        [HttpGet]
         public ResultModel<UserModel> GetById(int id)
         {
             return _userService.GetById(id);
@@ -39,9 +39,9 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
             return _userService.Update(userModel);
         }
         [HttpDelete]
-        public ActionResult<bool> Delete(int id)
+        public ResultModel<bool> Delete(int id)
         {
-            return _userService.Delete(id).ToResponse();
+            return _userService.Delete(id);
         }
     }
 }
