@@ -2,7 +2,7 @@ import { LoginModel } from './../models/login.model';
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { NgIf } from '@angular/common';
+import { UserModel } from '../models/user.model';
 
 const apiUrl = '/user'
 
@@ -51,18 +51,4 @@ export class UserService {
         return this.httpClient.delete<boolean>(apiUrl + + `/${id}`);
     }
 
-}
-
-export class UserModel {
-    email: string;
-    firstName: string;
-    lastName: string;
-    position: any;
-    sex: any;
-    doB: Date;
-    phoneNo: any;
-
-    constructor(init?: Partial<UserModel>) {
-        Object.assign(this, init);
-    }
 }

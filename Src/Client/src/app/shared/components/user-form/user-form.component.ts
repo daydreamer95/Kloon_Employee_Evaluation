@@ -1,7 +1,11 @@
-import { UserModel } from './../../services/user.service';
+import { PositionModel } from './../../models/position.model';
+import { PositionService } from './../../services/position.service';
+import { AppRolesEnum } from './../../models/user-app.model';
+import { EnumUserSex } from './../../models/user.model';
 import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule } from 'devextreme-angular';
+import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -13,19 +17,35 @@ export class UserFormComponent implements OnInit {
   @Input() model: UserFormModel;
   @Output() onSubmitForm = new EventEmitter();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
-  
+
   formState = FormState;
   popupVisible = false;
   popupTitle = '';
-  currUser:UserModel;
+  currUser: UserModel;
+  sexDataSource = [
+    { caption: 'Male', value: EnumUserSex.MALE },
+    { caption: 'Female', value: EnumUserSex.FEMALE }
+  ]
 
-  constructor(userService: UserService) { 
-    
+  roleDataSource = [
+    { caption: 'ADMINISTRATOR', value: AppRolesEnum.ADMINISTRATOR },
+    { caption: 'USER', value: AppRolesEnum.USER }
+  ]
+
+  positionDateSource: PositionModel[];
+
+  constructor(userService: UserService, positionService: PositionService) {
+    positionService.getPositions().subscribe(
+      next => {
+        this.positionDateSource = next;
+      },
+      error => { }
+    );
   }
 
-  open(){
-    switch(this.model.state){
-      case FormState.CREATE: 
+  open() {
+    switch (this.model.state) {
+      case FormState.CREATE:
         this.popupTitle = 'CREATE USER';
         break;
       case FormState.DETAIL:
@@ -44,7 +64,7 @@ export class UserFormComponent implements OnInit {
   closeButtonOptions = {
     text: "Close",
     onClick: (e) => {
-        this.popupVisible = false;
+      this.popupVisible = false;
     }
   };
 
@@ -73,7 +93,7 @@ export class UserFormComponent implements OnInit {
 
 
 @NgModule({
-  imports:[
+  imports: [
     BrowserModule,
     DxDataGridModule,
     DxButtonModule,
@@ -83,17 +103,17 @@ export class UserFormComponent implements OnInit {
   declarations: [UserFormComponent],
   exports: [UserFormComponent]
 })
-export class UserFormModule{
+export class UserFormModule {
 
 }
 
-export class UserFormModel{
+export class UserFormModel {
   state: FormState;
   data: UserModel
 
-  constructor(init?:Partial<UserFormModel>) {
+  constructor(init?: Partial<UserFormModel>) {
     Object.assign(this, init);
-}
+  }
 }
 
 export enum FormState {

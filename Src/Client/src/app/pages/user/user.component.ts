@@ -1,10 +1,9 @@
 import { UserFormComponent, UserFormModule, UserFormModel, FormState } from './../../shared/components/user-form/user-form.component';
-import { element } from 'protractor';
-import { UserModel, UserService } from './../../shared/services/user.service';
+import { UserService } from './../../shared/services/user.service';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxPopupModule } from 'devextreme-angular';
-import { NgIf } from '@angular/common';
+import { UserModel } from 'src/app/shared/models/user.model';
 
 @Component({
   selector: 'app-user',
