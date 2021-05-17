@@ -38,7 +38,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
         public ResultModel<List<CriteriaModel>> GetAll(string key)
         {
             var result = _logicService.Start()
-                .ThenAuthorize()
+                .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(x => null)
                 .ThenImplement(x =>
                 {
@@ -75,7 +75,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
         public ResultModel<CriteriaModel> Get(Guid id)
         {
             var result = _logicService.Start()
-                .ThenAuthorize()
+                .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(x =>
                 {
                     if (id == Guid.Empty)
@@ -98,12 +98,15 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         data.Name = criteria.Name;
                         data.OrderNo = criteria.OrderNo;
                     }
+                    else
+                    {
 
-                    data.Id = criteriaType.Id;
-                    data.Description = criteriaType.Description;
-                    data.TypeId = null;
-                    data.Name = criteriaType.Name;
-                    data.OrderNo = criteriaType.OrderNo;
+                        data.Id = criteriaType.Id;
+                        data.Description = criteriaType.Description;
+                        data.TypeId = null;
+                        data.Name = criteriaType.Name;
+                        data.OrderNo = criteriaType.OrderNo;
+                    }
 
                     return data;
                 });
@@ -183,7 +186,13 @@ namespace Kloon.EmployeePerformance.Logic.Services
         {
             var result = _logicService.Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR)
-                .ThenValidate(x => null)
+                .ThenValidate(x => {
+                    if (Id == Guid.Empty)
+                    {
+                        return new ErrorModel(ErrorType.BAD_REQUEST, "Invalid_Id");
+                    }
+                    return null;
+                })
                 .ThenImplement(x =>
                 {
                     var entity = _criteriaTypeRepository.Query().Where(x => x.Id == Id && !x.DeletedDate.HasValue).FirstOrDefault();
