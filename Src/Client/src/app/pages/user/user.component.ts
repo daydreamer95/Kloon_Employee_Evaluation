@@ -62,11 +62,10 @@ export class UserComponent implements OnInit {
   }
 
   onRefreshGrid() {
-    debugger;
+    console.log('haha');
     this.userService.getUsers("").subscribe(
       next => {
         this.dataSource = next;
-        debugger;
       },
       error => {
 

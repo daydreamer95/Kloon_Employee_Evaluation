@@ -88,6 +88,10 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(currentUser =>
                 {
+                    if (currentUser.Id == userId)
+                    {
+                        return new ErrorModel(ErrorType.CONFLICTED, "Cannot delete yourself");
+                    }
                     user = _users
                         .Query(x => x.Id == userId && x.DeletedBy == null && x.DeletedDate == null)
                         .FirstOrDefault();
@@ -294,7 +298,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             //    return new ErrorModel(ErrorType.BAD_REQUEST, "Email must have a correct format");
             //}
 
-            var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Email.Equals(userModel.Email));
+            var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Id != x.Id && x.Email.Equals(userModel.Email));
             if (registedEmail)
             {
                 return new ErrorModel(ErrorType.DUPLICATED, "Email has been taken!");
@@ -315,11 +319,11 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.DUPLICATED, "Phone must follow Vietnam format!");
             }
-            var takenPhone = _logicService.Cache.Users.GetValues().Any(x => x.PhoneNo.Equals(userModel.PhoneNo));
-            if (takenPhone)
-            {
-                return new ErrorModel(ErrorType.DUPLICATED, "Phone has been taken!");
-            }
+            //var takenPhone = _logicService.Cache.Users.GetValues().Any(x => x.PhoneNo.Equals(userModel.PhoneNo));
+            //if (takenPhone)
+            //{
+            //    return new ErrorModel(ErrorType.DUPLICATED, "Phone has been taken!");
+            //}
             #endregion
 
             #region Selectable Attribute

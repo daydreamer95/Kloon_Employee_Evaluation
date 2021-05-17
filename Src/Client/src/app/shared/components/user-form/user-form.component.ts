@@ -15,11 +15,12 @@ import { UserService } from '../../services/user.service';
 })
 export class UserFormComponent implements OnInit {
   @Input() model: UserFormModel;
-  @Input() onRefreshGrid = new EventEmitter();
+  @Output() onRefreshGrid = new EventEmitter<void>();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
 
   formState = FormState;
   popupVisible = false;
+  popupConfirmDeleteVisible = false;
   popupTitle = '';
   currUser: UserModel;
   sexDataSource = [
@@ -57,7 +58,7 @@ export class UserFormComponent implements OnInit {
     }
     this.popupVisible = true;
     this.currUser = this.model.data;
-    this.myform.instance._refresh();
+    // this.myform.instance._refresh();
   }
 
   //#region Options
@@ -82,7 +83,7 @@ export class UserFormComponent implements OnInit {
         next => {
           //TODO: Call refresh grid
           this.popupVisible = false;
-          this.onRefreshGrid;
+          this.onRefreshGrid.emit();
         },
         error => { }
       )
@@ -93,16 +94,7 @@ export class UserFormComponent implements OnInit {
     icon: 'trash',
     text: 'Delete',
     onClick: (e) => {
-      debugger;
-      this.userService.delete(this.currUser.id).subscribe(
-        next => {
-          //TODO: Call refresh grid
-          this.popupVisible = false;
-        },
-        error => {
-
-        }
-      )
+      this.popupConfirmDeleteVisible = true;
     }
   };
 
@@ -110,8 +102,9 @@ export class UserFormComponent implements OnInit {
     icon: 'edit',
     text: 'Edit',
     onClick: (e) => {
-      this.model.state = FormState.DETAIL;
+      this.model.state = FormState.EDIT;
       this.myform.instance._refresh();
+      this.myform.instance.repaint();
     }
   }
 
@@ -124,7 +117,7 @@ export class UserFormComponent implements OnInit {
           debugger;
           //TODO: Call refresh grid
           this.popupVisible = false;
-          this.myform.instance._refresh();
+          this.onRefreshGrid.emit();
         },
         error => {
 
@@ -132,6 +125,29 @@ export class UserFormComponent implements OnInit {
       )
     }
   }
+
+  closeDeletePopupButtonOptions = {
+    text: "Close",
+    icon: 'close',
+    onClick: (e) => {
+      this.popupConfirmDeleteVisible = false;
+    }
+  };
+
+  confirmDeleteButtonOptions = {
+    icon: 'save',
+    text: 'Submit',
+    onClick: (e) => {
+      this.userService.delete(this.currUser.id).subscribe(
+        next => {
+          this.popupConfirmDeleteVisible = false;
+          this.popupVisible = false;
+          this.onRefreshGrid.emit();
+        },
+        error => {}
+      )
+    }
+  };
   ////#endregion
 
   ngOnInit(): void {
