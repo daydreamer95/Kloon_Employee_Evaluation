@@ -107,6 +107,12 @@ namespace Kloon.EmployeePerformance.Test
             return HttpExtension.Get<T>(_config, _headerparam, _client, url);
         }
 
+        public ResultModel<T> AdminGet<T>(string url)
+        {
+            GetToken(RoleType.ADMIN);
+            return HttpExtension.Get<T>(_config, _headerparam, _client, url);
+        }
+
         public ResultModel<T> UserPost<T>(string url, object model)
         {
             GetToken(RoleType.USER);
@@ -125,27 +131,21 @@ namespace Kloon.EmployeePerformance.Test
             return HttpExtension.Delete<T>(_config, _headerparam, _client, url);
         }
 
-        public ResultModel<T> AdminGet<T>(string url)
-        {
-            GetToken(RoleType.USER);
-            return HttpExtension.Get<T>(_config, _headerparam, _client, url);
-        }
-
         public ResultModel<T> AdminPost<T>(string url, object model)
         {
-            GetToken(RoleType.USER);
+            GetToken(RoleType.ADMIN);
             return HttpExtension.Post<T>(_config, _headerparam, _client, url, model);
         }
 
         public ResultModel<T> AdminPut<T>(string url, object model)
         {
-            GetToken(RoleType.USER);
+            GetToken(RoleType.ADMIN);
             return HttpExtension.Put<T>(_config, _headerparam, _client, url, model);
         }
 
         public ResultModel<T> AdminDelete<T>(string url)
         {
-            GetToken(RoleType.USER);
+            GetToken(RoleType.ADMIN);
             return HttpExtension.Delete<T>(_config, _headerparam, _client, url);
         }
 
@@ -210,7 +210,7 @@ namespace Kloon.EmployeePerformance.Test
 
             if (!string.IsNullOrEmpty(headerParam.Token))
                 client.DefaultRequestHeaders.Remove("Authorization");
-                client.DefaultRequestHeaders.Add("Authorization", headerParam.Token);
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + headerParam.Token);
 
 
             if (!string.IsNullOrEmpty(headerParam.SecurityKey))
