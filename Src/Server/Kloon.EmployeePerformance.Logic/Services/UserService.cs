@@ -56,7 +56,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                        FirstName = userModel.FirstName.Trim(),
                        LastName = userModel.LastName.Trim(),
                        PositionId = userModel.PositionId,
-                       Sex = userModel.Sex,
+                       Sex = (int)userModel.Sex,
                        DoB = userModel.DoB,
                        PhoneNo = userModel.PhoneNo,
                        RoleId = userModel.RoleId,
@@ -125,7 +125,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                                           FirstName = t.FirstName,
                                           LastName = t.LastName,
                                           PositionId = t.PositionId,
-                                          Sex = t.Sex,
+                                          Sex = (SexEnum)t.Sex,
                                           DoB = t.DoB,
                                           PhoneNo = t.PhoneNo,
                                           RoleId = t.RoleId
@@ -167,7 +167,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                                 FirstName = userMD.FirstName,
                                 LastName = userMD.LastName,
                                 PositionId = userMD.PositionId,
-                                Sex = userMD.Sex,
+                                Sex = (SexEnum)userMD.Sex,
                                 DoB = userMD.DoB,
                                 PhoneNo = userMD.PhoneNo,
                                 RoleId = userMD.RoleId
@@ -211,7 +211,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     user.FirstName = userModel.FirstName.Trim();
                     user.LastName = userModel.LastName.Trim();
                     user.PositionId = userModel.PositionId;
-                    user.Sex = userModel.Sex;
+                    user.Sex = (int)userModel.Sex;
                     user.DoB = userModel.DoB;
                     user.PhoneNo = userModel.PhoneNo;
                     user.RoleId = userModel.RoleId;
