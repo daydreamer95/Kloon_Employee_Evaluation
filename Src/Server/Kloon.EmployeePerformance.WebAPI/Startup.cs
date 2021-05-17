@@ -110,6 +110,7 @@ namespace Kloon.EmployeePerformance.WebAPI
             services.AddCustomizedService<IdentityApiService>();
 
             services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
