@@ -16,7 +16,7 @@ export class UserComponent implements OnInit {
   //#region Init variable
   dataSource: UserModel[]
   positionDataSource: PositionModel[];
-  title='lONG DEP TRAI';
+ 
   
   gridColumns: ['email', 'firstName', 'lastName', 'position', 'phoneNo'];
 

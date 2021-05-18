@@ -18,7 +18,8 @@
         </dxi-column>
         <dxi-column dataField="phoneNo" dataType="string"> </dxi-column>
 
-        <dxi-column cellTemplate="cellTemplate">
+        <dxi-column cellTemplate="cellTemplate" caption="Action">
+        
         </dxi-column>
 
         <div *dxTemplate="let data of 'cellTemplate'">
@@ -34,7 +35,7 @@
 <app-user-form
     [model]="currUser"
     (onRefreshGrid)="onRefreshGrid()"
-    [text]="title"
+    
     [position]="positionDataSource"
 ></app-user-form>
 

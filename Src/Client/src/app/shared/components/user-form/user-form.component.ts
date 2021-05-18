@@ -15,7 +15,7 @@ import { UserService } from '../../services/user.service';
 })
 export class UserFormComponent implements OnInit {
   @Input() model: UserFormModel;
-  @Input() text:string;
+
   @Input() position:PositionModel[];
   @Output() onRefreshGrid = new EventEmitter<void>();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
@@ -61,7 +61,7 @@ export class UserFormComponent implements OnInit {
 
   //#region Options
   closeButtonOptions = {
-    text: "Close",
+    text: "Cancel",
     icon: 'close',
     onClick: (e) => {
       this.popupVisible = false;
@@ -70,7 +70,7 @@ export class UserFormComponent implements OnInit {
 
   createButtonOptions = {
     icon: 'save',
-    text: 'Submit',
+    text: 'Save',
     onClick: (e) => {
       var instance = this.myform.instance.validate();
       if (!instance.isValid) {
@@ -82,8 +82,9 @@ export class UserFormComponent implements OnInit {
           //TODO: Call refresh grid
           this.popupVisible = false;
           this.onRefreshGrid.emit();
+          console.log(next)
         },
-        error => { }
+        error => { alert(error)}
       )
     }
   };
@@ -108,7 +109,7 @@ export class UserFormComponent implements OnInit {
 
   editButtonOptions = {
     icon: 'save',
-    text: 'Edit',
+    text: 'Save',
     onClick: (e) => {
       this.userService.edit(this.currUser).subscribe(
         next => {
@@ -125,7 +126,7 @@ export class UserFormComponent implements OnInit {
   }
 
   closeDeletePopupButtonOptions = {
-    text: "Close",
+    text: "Cancel",
     icon: 'close',
     onClick: (e) => {
       this.popupConfirmDeleteVisible = false;
