@@ -33,12 +33,12 @@ export class UserFormComponent implements OnInit {
     { caption: 'USER', value: AppRolesEnum.USER }
   ]
 
-  positionDateSource: PositionModel[];
+  positionDataSource: PositionModel[];
 
   constructor(private userService: UserService, private positionService: PositionService) {
-    positionService.getPositions().subscribe(
+    this.positionService.getPositions().subscribe(
       next => {
-        this.positionDateSource = next;
+        this.positionDataSource = next;
       },
       error => { }
     );
