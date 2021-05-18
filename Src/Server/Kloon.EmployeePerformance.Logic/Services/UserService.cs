@@ -49,7 +49,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Email.Equals(userModel.Email));
                     if (registedEmail)
                     {
-                        return new ErrorModel(ErrorType.DUPLICATED, "Email has been taken!");
+                        return new ErrorModel(ErrorType.DUPLICATED, "INVALID_MODEL_DUPLICATED_EMAIL");
                     }
                     return null;
                 })
@@ -214,7 +214,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Id != userModel.Id && x.Email.Equals(userModel.Email));
                     if (registedEmail)
                     {
-                        return new ErrorModel(ErrorType.DUPLICATED, "Email has been taken!");
+                        return new ErrorModel(ErrorType.DUPLICATED, "INVALID_MODEL_DUPLICATED_EMAIL");
                     }
                     user = _users.Query(x => x.Id == userModel.Id).FirstOrDefault();
                     if (user == null)
