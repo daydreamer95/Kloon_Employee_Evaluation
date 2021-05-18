@@ -12,8 +12,12 @@
         <dxi-column dataField="email" dataType="string"></dxi-column>
         <dxi-column dataField="firstName" dataType="string"></dxi-column>
         <dxi-column dataField="lastName" dataType="string"></dxi-column>
-        <dxi-column dataField="position" dataType="string"></dxi-column>
-        <dxi-column dataField="phoneNo" dataType="string"></dxi-column>
+       
+        <dxi-column dataField="positionId" caption="Position">  
+        <dxo-lookup [dataSource]="positionDataSource" valueExpr="id" displayExpr="name"></dxo-lookup>
+        </dxi-column>
+        <dxi-column dataField="phoneNo" dataType="string"> </dxi-column>
+
         <dxi-column cellTemplate="cellTemplate">
         </dxi-column>
 

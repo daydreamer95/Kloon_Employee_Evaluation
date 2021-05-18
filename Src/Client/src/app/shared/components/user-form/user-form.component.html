@@ -81,7 +81,16 @@
                         valueExpr: 'value'}">
                             <dxi-validation-rule type="required" message="Sex is required"></dxi-validation-rule>
                     </dxi-item>
-
+                    <dxi-item 
+                    dataField="positionId"
+                    [label]="{text: 'Position'}"
+                    editorType="dxSelectBox"
+                    [editorOptions]="{ 
+                        dataSource: positionDataSource,
+                        displayExpr: 'name',
+                        valueExpr: 'id'}">
+                        <dxi-validation-rule type="required" message="Position is required"></dxi-validation-rule>
+                     </dxi-item>
                     <dxi-item dataField="phoneNo">
                     </dxi-item>
 
@@ -89,17 +98,10 @@
                         <dxi-validation-rule type="required" message="Date of birth is required"></dxi-validation-rule>
                     </dxi-item>
 
-                    <dxi-item 
-                        dataField="positionId"
-                        [label]="{text: 'Position'}"
-                        editorType="dxSelectBox"
-                        [editorOptions]="{ 
-                            dataSource: positionDateSource,
-                            displayExpr: 'name',
-                            valueExpr: 'id'}">
-                            <dxi-validation-rule type="required" message="Position is required"></dxi-validation-rule>
-                    </dxi-item>
+                   
                 </dx-form>
+
+               
         </div>
 </dx-popup>
 

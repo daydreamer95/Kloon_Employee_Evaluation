@@ -4,6 +4,8 @@ import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxPopupModule } from 'devextreme-angular';
 import { UserModel } from 'src/app/shared/models/user.model';
+import { PositionModel } from 'src/app/shared/models/position.model';
+import { PositionService } from 'src/app/shared/services/position.service';
 
 @Component({
   selector: 'app-user',
@@ -13,13 +15,16 @@ import { UserModel } from 'src/app/shared/models/user.model';
 export class UserComponent implements OnInit {
   //#region Init variable
   dataSource: UserModel[]
+  positionDataSource: PositionModel[];
+
+  
   gridColumns: ['email', 'firstName', 'lastName', 'position', 'phoneNo'];
 
   @ViewChild(UserFormComponent) userFormComponent: UserFormComponent;
   currUser: UserFormModel = new UserFormModel();
   //#endregion
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService,private positionService: PositionService) {
     userService.getUsers("").subscribe(
       next => {
         this.dataSource = next;
@@ -30,8 +35,16 @@ export class UserComponent implements OnInit {
       }
     );
 
+    this.positionService.getPositions().subscribe(
+      next => {
+        this.positionDataSource = next;
+      },
+      error => { }
+    );
   }
 
+  
+   
   onToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
       location: 'after',

@@ -4,7 +4,7 @@ export class UserModel {
     email: string;
     firstName: string;
     lastName: string;
-    positionId: any;
+    positionId: number;
     sex: EnumUserSex;
     doB: Date;
     phoneNo: any;
