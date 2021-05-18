@@ -1,5 +1,4 @@
-﻿using Kloon.EmployeePerformance.Logic.Services;
-using Kloon.EmployeePerformance.Models.Common;
+﻿using Kloon.EmployeePerformance.Models.Common;
 using Kloon.EmployeePerformance.Models.User;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -11,7 +10,6 @@ namespace Kloon.EmployeePerformance.Test.Api
     public class UserService_Test : TestBase
     {
         private readonly Random _rand = new Random();
-        private IUserService _userService;
         const string _url = "/User";
         public List<UserModel> dataInit = new List<UserModel>();
 

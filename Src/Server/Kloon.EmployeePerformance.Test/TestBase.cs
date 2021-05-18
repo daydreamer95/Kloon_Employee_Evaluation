@@ -1,5 +1,4 @@
 ﻿using Kloon.EmployeePerformance.Models.Authentication;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.IO;
