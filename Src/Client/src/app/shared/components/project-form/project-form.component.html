@@ -1,5 +1,5 @@
 <dx-popup
-  width="auto"
+  width="60%"
   height="auto"
   [showTitle]="false"
   title="Project"
@@ -28,7 +28,7 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="model.state === formState.DETAIL  && selectedIndex === 0"
+    [visible]="model.state === formState.DETAIL && selectedIndex === 0"
     [options]="editButtonOnDetailOptions"
   >
   </dxi-toolbar-item>
@@ -95,12 +95,130 @@
           </dx-form>
         </div>
       </dxi-item>
+
       <dxi-item
         title="Project Member"
         [(disabled)]="model.state !== formState.DETAIL"
       >
-        <div *dxTemplate="let data of 'content'"></div>
+        <div *dxTemplate="let data of 'content'">
+          <div class="projectMember">
+            <dx-data-grid
+              class="girdContainer"
+              [dataSource]="dataSource"
+              [columns]="gridColumns"
+              [showBorders]="true"
+              (onToolbarPreparing)="onToolbarPreparing($event)"
+              [(disabled)]="loading"
+            >
+              <dxo-search-panel
+                [visible]="true"
+                [width]="240"
+                placeholder="Search"
+              >
+              </dxo-search-panel>
+
+              <dxi-column dataField="email" dataType="string"></dxi-column>
+              <dxi-column dataField="firstName" dataType="string"></dxi-column>
+              <dxi-column dataField="lastName" dataType="string"></dxi-column>
+              <dxi-column
+                dataField="projectRole"
+                dataType="string"
+              ></dxi-column>
+              <dxi-column cellTemplate="cellTemplate"> </dxi-column>
+
+              <div *dxTemplate="let data of 'cellTemplate'">
+                <dx-button
+                  stylingMode="contained"
+                  text="DETAIL"
+                  type="default"
+                  [width]="100"
+                  (onClick)="onOpenDetailProjectUserButton($event, data)"
+                >
+                </dx-button>
+              </div>
+            </dx-data-grid>
+          </div>
+
+          <dx-load-panel
+            #loadPanel
+            shadingColor="rgba(0,0,0,0.4)"
+            [position]="{ of: '#project' }"
+            [(visible)]="loading"
+            [showIndicator]="true"
+            [showPane]="true"
+            [shading]="true"
+            [closeOnOutsideClick]="false"
+          >
+          </dx-load-panel>
+        </div>
       </dxi-item>
     </dx-tab-panel>
+  </div>
+</dx-popup>
+
+<dx-popup
+  width="30%"
+  height="auto"
+  [showTitle]="true"
+  [(title)]="popupTitleProjectUser"
+  [dragEnabled]="true"
+  [closeOnOutsideClick]="true"
+  [showCloseButton]="false"
+  [(visible)]="popupVisibleProjectUser"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="before"
+    [visible]="projectUserFormModel.state === 0"
+    [options]="editButtonProjectUserOptions"
+  >
+  </dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="before"
+    [visible]="projectUserFormModel.state === 1"
+    [options]="editButtonOnDetailProjectUserOptions"
+  >
+  </dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="before"
+    [visible]="projectUserFormModel.state === 1"
+    [options]="deleteButtonOnDetailProjectUserOptions"
+  >
+  </dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="closeButtonProjectUserOption"
+  >
+  </dxi-toolbar-item>
+
+  <div *dxTemplate="let data of 'content'">
+    <dx-form
+      id="form"
+      [formData]="projectUserFormModel.data"
+      [colCount]="1"
+      [readOnly]="projectUserFormModel.state === 1"
+    >
+      <dxi-item dataField="email" [readOnly]="true"> </dxi-item>
+
+      <dxi-item
+        dataField="projectRoleId"
+        editorType="dxSelectBox"
+        [editorOptions]="{
+          items: listProjectUserRole,
+          displayExpr: 'status',
+          valueExpr: 'id'
+        }"
+      >
+      <dxi-item dataField="projectName" [readOnly]="true"> </dxi-item>
+
+      </dxi-item>
+    </dx-form>
   </div>
 </dx-popup>

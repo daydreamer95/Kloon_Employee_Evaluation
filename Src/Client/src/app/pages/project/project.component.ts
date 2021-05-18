@@ -2,8 +2,9 @@ import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxPopupModule, DxLoadPanelModule } from 'devextreme-angular';
 import { ProjectFormComponent, ProjectFormModel, ProjectFormModule, ProjectFormState } from '../../shared/components/project-form/project-form.component';
-import { ProjectModel, ProjectService } from '../../shared/services/project.service';
+import { ProjectService } from '../../shared/services/project.service';
 import notify from 'devextreme/ui/notify';
+import { ProjectModel } from 'src/app/shared/models/project.model';
 
 
 @Component({
@@ -36,21 +37,17 @@ export class ProjectComponent implements OnInit {
   }
 
   getProjects() {
-    this.projectService.getProjects().toPromise().then(
+    this.projectService.getProjects().subscribe(
       ((responeseData: ProjectModel[]) => {
-        setTimeout(() => {
-          if (responeseData.length > 0) {
-            this.dataSource = responeseData;
-          }
-          this.loading = false;
-        }, 1000);
+        if (responeseData.length > 0) {
+          this.dataSource = responeseData;
+        }
+        this.loading = false;
       }),
       (
         error => {
-          setTimeout(() => {
-            this.loading = false;
-            notify(error.message, 'error', 5000);
-          }, 1000);
+          this.loading = false;
+          notify(error.message, 'error', 5000);
         }
       )
     )
@@ -75,13 +72,14 @@ export class ProjectComponent implements OnInit {
     this.currentProject.state = ProjectFormState.CREATE;
     this.currentProject.data = new ProjectModel();
     this.currentProject.data.id = 0;
+    this.selectedIndex = 0;
 
     this.projectFormComponent.open();
 
   }
 
   onOpenDetailButton(e, data): void {
-    this.projectService.getProjectById(data.data.id).toPromise().then(
+    this.projectService.getProjectById(data.data.id).subscribe(
       ((responeseData: ProjectModel) => {
         this.currentProject.state = ProjectFormState.DETAIL;
         this.currentProject.data = new ProjectModel(responeseData);
@@ -90,10 +88,8 @@ export class ProjectComponent implements OnInit {
       }),
       (
         error => {
-          setTimeout(() => {
-            this.loading = false;
-            notify(error.message, 'error', 5000);
-          }, 1000);
+          this.loading = false;
+          notify(error.message, 'error', 5000);
         }
       )
     )
@@ -103,49 +99,41 @@ export class ProjectComponent implements OnInit {
 
   saveProjectForm(data: ProjectModel) {
     if (data.id === 0) {
-      this.projectService.add(data).toPromise().then(
+      this.projectService.add(data).subscribe(
         ((responeseData: ProjectModel) => {
-          setTimeout(() => {
-            notify("Add Project Success", "success", 5000);
+          notify("Add Project Success", "success", 5000);
 
-            this.currentProject.state = ProjectFormState.DETAIL;
-            this.currentProject.data = responeseData;
-            this.selectedIndex = 1;
-            this.getProjects();
-            this.projectFormComponent.open();
-          }, 1000)
+          this.currentProject.state = ProjectFormState.DETAIL;
+          this.currentProject.data = responeseData;
+          this.selectedIndex = 1;
+          this.getProjects();
+          this.projectFormComponent.open();
 
         }),
         (
           error => {
-            setTimeout(() => {
-              this.loading = false;
-              notify(error.error, 'error', 5000);
-            }, 1000);
+            this.loading = false;
+            notify(error.error, 'error', 5000);
           }
         )
       )
     }
     else {
-      this.projectService.edit(data).toPromise().then(
+      this.projectService.edit(data).subscribe(
         ((responeseData: ProjectModel) => {
-          setTimeout(() => {
-            notify("Update Project Success", "success", 5000);
+          notify("Update Project Success", "success", 5000);
 
-            this.currentProject.state = ProjectFormState.DETAIL;
-            this.currentProject.data = responeseData;
-            this.selectedIndex = 1;
-            this.getProjects();
-            this.projectFormComponent.open();
-          }, 1000)
+          this.currentProject.state = ProjectFormState.DETAIL;
+          this.currentProject.data = responeseData;
+          this.selectedIndex = 1;
+          this.getProjects();
+          this.projectFormComponent.open();
 
         }),
         (
           error => {
-            setTimeout(() => {
-              this.loading = false;
-              notify(error.error, 'error', 5000);
-            }, 1000);
+            this.loading = false;
+            notify(error.error, 'error', 5000);
           }
         )
       )
@@ -154,21 +142,17 @@ export class ProjectComponent implements OnInit {
 
   deleteProject(data: boolean) {
     if (data) {
-      this.projectService.delete(this.currentProject.data.id).toPromise().then(
+      this.projectService.delete(this.currentProject.data.id).subscribe(
         (() => {
-          setTimeout(() => {
-            notify("Delete Project Success", "success", 5000);
-            this.projectFormComponent.close();
-            this.getProjects();
-          }, 1000)
+          notify("Delete Project Success", "success", 5000);
+          this.projectFormComponent.close();
+          this.getProjects();
 
         }),
         (
           error => {
-            setTimeout(() => {
-              this.loading = false;
-              notify(error.error, 'error', 5000);
-            }, 1000);
+            this.loading = false;
+            notify(error.error, 'error', 5000);
           }
         )
       )

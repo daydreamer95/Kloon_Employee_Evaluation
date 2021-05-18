@@ -131,7 +131,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                         ProjectRoleId = t.ProjectRoleId
                     });
 
-                var result = dbContext.GetRepository<Project>()
+                var result = data.Count == 0 ? new List<ProjectMD>() : dbContext.GetRepository<Project>()
                     .Query(x => data.ContainsKey(x.Id))
                     .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
                     .Select(t => new ProjectMD()
@@ -181,31 +181,48 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                 var data = dbContext.GetRepository<ProjectUser>()
                     .Query(x => x.ProjectId == projectId)
                     .Where(x => x.DeletedBy == null && x.DeletedDate == null)
-                    .ToDictionary(t => t.UserId, t => new
+                    .Select(t => new
                     {
                         ProjectUserId = t.Id,
                         UserId = t.UserId,
                         ProjectRoleId = t.ProjectRoleId
-                    });
+                    })
+                    .ToList();
+
+                List<int> userIds = new List<int>();
+
+                if (data.Count == 0)
+                {
+                    return new List<UserMD>();
+                }
+                userIds = data.Select(x => x.UserId).ToList();
+
 
                 var result = dbContext.GetRepository<User>()
-                    .Query(x => data.ContainsKey(x.Id))
+                    .Query(x => userIds.Contains(x.Id))
                     .Where(x => x.DeletedBy == null && x.DeletedDate == null)
-                    .Select(t => new UserMD()
+                    .AsEnumerable()
+                    .Select(t =>
                     {
-                        Id = t.Id,
-                        FirstName = t.FirstName,
-                        LastName = t.LastName,
-                        Email = t.Email,
-                        DoB = (DateTime)t.DoB,
-                        PhoneNo = t.PhoneNo,
-                        PositionId = t.PositionId,
-                        RoleId = t.RoleId,
-                        Sex = t.Sex.Value,
-                        DeletedBy = t.DeletedBy,
-                        DeletedDate = t.DeletedDate,
-                        ProjectRoleId = data.Where(x => x.Key == t.Id).First().Value.ProjectRoleId,
-                        ProjectUserId = data.Where(x => x.Key == t.Id).First().Value.ProjectUserId
+                        var item = data.Where(x => x.UserId == t.Id).FirstOrDefault();
+                        if (item == null)
+                        {
+                            return new UserMD();
+                        }
+                        return new UserMD()
+                        {
+                            Id = t.Id,
+                            FirstName = t.FirstName,
+                            LastName = t.LastName,
+                            Email = t.Email,
+                            DoB = (DateTime)t.DoB,
+                            PhoneNo = t.PhoneNo,
+                            PositionId = t.PositionId,
+                            RoleId = t.RoleId,
+                            Sex = t.Sex.Value,
+                            ProjectRoleId = item.ProjectRoleId,
+                            ProjectUserId = item.ProjectUserId
+                        };
                     }).ToList();
 
                 return result;
@@ -353,14 +370,14 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             public override bool Remove(int userId)
             {
                 base.Remove(userId);
-                _provider._userProjects.Remove(userId);
+                _provider._projectUser.Remove(userId);
                 return true;
             }
             public override void Clear()
             {
                 base.Clear();
 
-                _provider._userProjects.Clear();
+                _provider._projectUser.Clear();
             }
         }
         public class PositionAllCache : DataAllCache<int, PositionMD>
@@ -404,3 +421,4 @@ namespace Kloon.EmployeePerformance.Logic.Caches
         #endregion
     }
 }
+

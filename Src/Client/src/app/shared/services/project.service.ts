@@ -1,15 +1,14 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { environment } from "../../../environments/environment";
-import { ApiResponse } from "../models/api-response.model";
+import { ProjectModel } from "../models/project.model";
 
 const apiUrl = {
-  urlProjectCreate: `/Projects`,
-  urlProjectEdit: '/Projects',
-  urlProjectDelete: '/Projects',
-  urlProjectGetAll: '/Projects',
-  urlProjectGetById: '/Projects'
+  urlProjectCreate: `/Project`,
+  urlProjectEdit: '/Project',
+  urlProjectDelete: '/Project',
+  urlProjectGetAll: '/Project',
+  urlProjectGetById: '/Project'
 }
 
 @Injectable({
@@ -26,7 +25,7 @@ export class ProjectService {
     return this.httpClient.get<ProjectModel[]>(apiUrl.urlProjectGetAll);
   }
 
-  public getProjectById(id: number){
+  public getProjectById(id: number) {
     return this.httpClient.get<ProjectModel>(apiUrl.urlProjectGetById + "/" + id);
   }
 
@@ -48,7 +47,7 @@ export class ProjectService {
 
   //#endregion
 
-  //#region PUT
+  //#region DELETE
 
   public delete(id: number) {
     return this.httpClient.delete<boolean>(apiUrl.urlProjectDelete + `/${id}`);
@@ -57,14 +56,3 @@ export class ProjectService {
   //#endregion
 }
 
-export class ProjectModel {
-  id: number;
-  name: string;
-  description: string;
-  status: number;
-  statusText: string;
-
-  constructor(init?: Partial<ProjectModel>) {
-    Object.assign(this, init);
-  }
-}

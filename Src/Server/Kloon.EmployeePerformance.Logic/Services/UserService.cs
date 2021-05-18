@@ -250,7 +250,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
             #region UserModel
             if (userModel == null)
             {
-                error.Add("INVALID_MODEL");
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL");
             }
             #endregion

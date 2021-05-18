@@ -44,11 +44,26 @@ namespace Kloon.EmployeePerformance.Logic.Services
         {
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
-                .ThenValidate(current => null)
-                .ThenImplement(current =>
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenValidate(currentUser => null)
+                .ThenImplement(currentUser =>
                 {
-                    var query = _logicService.Cache.Projects.GetValues();
+                    IEnumerable<ProjectMD> query = null;
+                    if (currentUser.Role == Roles.USER)
+                    {
+                        query = _logicService.Cache.Users.GetProjects(currentUser.Id);
+                    }
+                    else
+                    {
+                        query = _logicService.Cache.Projects.GetValues();
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(searchText))
+                    {
+                        searchText = searchText.Trim();
+                        query = query.Where(x => x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+                    }
+
                     var record = query
                         .OrderBy(x => x.Name)
                         .Where(x => x.DeletedBy == null && x.DeletedDate == null)
@@ -67,21 +82,16 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
         public ResultModel<ProjectModel> GetById(int projectId)
         {
-            ProjectMD projectMD = null;
+            Project project = null;
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
                 .ThenValidate(current =>
                 {
-                    projectMD = _logicService.Cache.Projects.Get(projectId);
-                    if (projectMD == null)
+                    project = _projects.Query(x => x.Id == projectId && x.DeletedBy == null && x.DeletedDate == null).FirstOrDefault();
+                    if (project == null)
                     {
-                        return new ErrorModel(ErrorType.NOT_EXIST, "Project with Id = " + projectId + " not found");
-                    }
-
-                    if (projectMD.DeletedBy != null && projectMD.DeletedDate != null)
-                    {
-                        return new ErrorModel(ErrorType.NOT_EXIST, "Project with Id = " + projectId + " not found");
+                        return new ErrorModel(ErrorType.NOT_EXIST, "Project not found");
                     }
 
                     return null;
@@ -90,10 +100,10 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 {
                     var projectVM = new ProjectModel()
                     {
-                        Id = projectMD.Id,
-                        Description = projectMD.Description,
-                        Name = projectMD.Name,
-                        Status = projectMD.Status
+                        Id = project.Id,
+                        Description = project.Description,
+                        Name = project.Name,
+                        Status = project.Status
                     };
                     return projectVM;
                 });

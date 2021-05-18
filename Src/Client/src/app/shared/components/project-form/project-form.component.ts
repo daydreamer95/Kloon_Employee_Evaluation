@@ -2,10 +2,16 @@ import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } f
 import { BrowserModule } from '@angular/platform-browser';
 
 import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule, DxSelectBoxModule, DxTabPanelModule } from 'devextreme-angular';
-import { ProjectModel, ProjectService } from '../../services/project.service';
+import CustomStore from 'devextreme/data/custom_store';
+import DataSource from 'devextreme/data/data_source';
 
 
 import { confirm } from "devextreme/ui/dialog";
+import notify from 'devextreme/ui/notify';
+import { ProjectUserModel } from '../../models/project-user.model';
+import { ProjectModel } from '../../models/project.model';
+import { UserModel } from '../../models/user.model';
+import { ProjectUserService } from '../../services/project-user.service';
 
 @Component({
     selector: 'app-project-form',
@@ -15,18 +21,32 @@ import { confirm } from "devextreme/ui/dialog";
 export class ProjectFormComponent implements OnInit {
 
     @Input() model: ProjectFormModel;
+    projectUserFormModel: ProjectUserFormModel = new ProjectUserFormModel();
     @Input() selectedIndex: number = 0;
     @Output() onSubmitForm: EventEmitter<ProjectModel> = new EventEmitter<ProjectModel>();
     @Output() onConfirmDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
     @ViewChild(DxFormComponent, { static: false }) myForm: DxFormComponent;
+
+    selectBoxListUsers: any = {};
+    dataSource: ProjectUserModel[];
+    gridColumns = ['email', 'firstName', 'lastName', 'projectRole'];
+    loading = false;
+    listUserNotInProject: UserModel[];
+    userSelect: UserModel;
+    userSelectId: number = 0;
 
     formState = ProjectFormState;
     popupVisible = false;
     popupTitle = '';
     currentProject: ProjectModel;
 
-    constructor() {
+    popupVisibleProjectUser = false;
+    popupTitleProjectUser = '';
 
+    constructor(private projectMemberService: ProjectUserService) {
+
+    }
+    ngOnInit() {
     }
 
     listStatus: ProjectStatus[] = [
@@ -44,6 +64,21 @@ export class ProjectFormComponent implements OnInit {
         }
     ];
 
+    listProjectUserRole: ProjectRoleStatus[] = [
+        {
+            id: 1,
+            status: "Member"
+        },
+        {
+            id: 2,
+            status: "QA"
+        },
+        {
+            id: 3,
+            status: "Project Manager"
+        }
+    ]
+
     open() {
         switch (this.model.state) {
             case ProjectFormState.CREATE:
@@ -59,9 +94,12 @@ export class ProjectFormComponent implements OnInit {
         }
         this.popupVisible = true;
         this.currentProject = this.model.data;
-        this.myForm.instance._refresh();
         this.selectedIndex = 0;
+        this.getProjectMember();
 
+        this.OnInitDataUser();
+        this.selectBoxListUsers.load();
+        this.userSelectId = 0;
     }
 
     close() {
@@ -112,17 +150,208 @@ export class ProjectFormComponent implements OnInit {
         text: 'Delete',
         onClick: (e) => {
             var result = confirm("Are you want to delete this record?", "Delete");
-            var app = this;
-            result.then(function (dialogResult) {
-                app.onConfirmDelete.emit(dialogResult);
+            result.then((dialogResult: boolean) => {
+                this.onConfirmDelete.emit(dialogResult);
             });
         }
     }
 
     // #endregion
 
-    ngOnInit(): void {
+    //#region tab 2
+
+    OnInitDataUser() {
+        this.selectBoxListUsers = new DataSource({
+            store: new CustomStore({
+                key: "ID",
+                loadMode: "raw",
+                load: async () => {
+                    const data = await this.projectMemberService.GetTopFiveUserNotInProject(this.currentProject.id, "").toPromise();
+                    return data;
+                }
+            })
+        });
     }
+
+    getProjectMember() {
+        this.projectMemberService.GetProjectMember(this.currentProject.id).subscribe(
+            ((responeseData: ProjectUserModel[]) => {
+                this.dataSource = [];
+                if (responeseData.length > 0) {
+                    this.dataSource = responeseData;
+                }
+                this.loading = false;
+            }),
+            (
+                error => {
+                    this.loading = false;
+                    notify(error.message, 'error', 5000);
+                }
+            )
+        )
+    }
+
+
+    onToolbarPreparing(e) {
+        e.toolbarOptions.items.unshift(
+            {
+                location: 'before',
+                widget: 'dxButton',
+                options: {
+                    icon: 'add',
+                    width: 'auto',
+                    text: 'Add',
+                    onClick: this.onAddProjectMember.bind(this)
+                }
+            },
+            {
+                location: 'before',
+                widget: 'dxSelectBox',
+                options: {
+                    width: '150%',
+                    dataSource: this.selectBoxListUsers,
+                    valueExpr: (t: UserModel) => {
+                        if (t == null) {
+                            return 0;
+                        }
+                        return t.id;
+                    },
+                    displayExpr: (t: UserModel) => {
+                        if (t == null) {
+                            return "";
+                        }
+                        return `${t.firstName} ${t.lastName}(${t.email})`
+                    },
+                    value: "id",
+                    searchEnabled: true,
+                    placeholder: "Search User",
+                    onValueChanged: (e) => {
+                        this.userSelectId = e.value;
+                    },
+                    onInitialized: (e) => {
+                    }
+                }
+            }
+        );
+    }
+
+
+
+    onAddProjectMember(e): void {
+        var projectId = this.currentProject.id;
+        var userId = this.userSelectId;
+        this.projectMemberService.add(projectId, userId).subscribe(
+            ((responeseData: ProjectUserModel) => {
+                notify("Add member to project Success", "success", 5000);
+                this.getProjectMember();
+                this.OnInitDataUser();
+            }),
+            (
+                error => {
+                    this.loading = false;
+                    notify(error.error, 'error', 5000);
+                }
+            )
+        )
+
+    }
+
+    onOpenDetailProjectUserButton(e, data): void {
+        this.projectMemberService.GetProjectMemberById(this.currentProject.id, data.data.id).subscribe(
+            ((responeseData: ProjectUserModel) => {
+                this.projectUserFormModel.state = ProjectUserState.DETAIL;
+                this.projectUserFormModel.data = new ProjectUserModel(responeseData);
+                this.openPopupUserModel();
+
+            }),
+            (
+                error => {
+                    this.loading = false;
+                    notify(error.message, 'error', 5000);
+                }
+            )
+        )
+    }
+
+    openPopupUserModel() {
+        switch (this.projectUserFormModel.state) {
+
+            case ProjectUserState.EDIT:
+                this.popupTitleProjectUser = 'Update Project Member';
+                break;
+            case ProjectUserState.DETAIL:
+                this.popupTitleProjectUser = 'Detail Project Member';
+                break;
+        }
+        this.popupVisibleProjectUser = true;
+    }
+
+    editButtonProjectUserOptions = {
+        icon: 'save',
+        text: 'Submit',
+        onClick: (e) => {
+            this.projectMemberService.edit(this.projectUserFormModel.data.projectId, this.projectUserFormModel.data.id, this.projectUserFormModel.data.projectRoleId).subscribe(
+                ((responeseData: ProjectUserModel) => {             
+                    this.popupVisibleProjectUser = false;
+                    this.getProjectMember();
+
+                    this.OnInitDataUser();
+                }),
+                (
+                  error => {
+                    this.loading = false;
+                    notify(error.error, 'error', 5000);
+                  }
+                )
+              )
+        }
+    }
+
+    editButtonOnDetailProjectUserOptions = {
+        icon: 'save',
+        text: 'Edit',
+        onClick: (e) => {
+            this.popupTitleProjectUser = 'Update Project Member';
+            this.projectUserFormModel.state = ProjectUserState.EDIT;
+        },
+    }
+
+    deleteButtonOnDetailProjectUserOptions = {
+        icon: 'remove',
+        text: 'Delete',
+        onClick: (e) => {
+            var result = confirm("Are you want to delete this record?", "Delete");
+            result.then((dialogResult: boolean) => {
+                if (dialogResult) {
+                    this.projectMemberService.delete(this.projectUserFormModel.data.projectId, this.projectUserFormModel.data.id).subscribe(
+                        (() => {
+                            notify("Delete Project Member Success", "success", 5000);
+                            this.popupVisibleProjectUser = false;
+                            this.getProjectMember();
+
+                            this.OnInitDataUser();
+
+                        }),
+                        (
+                            error => {
+                                this.loading = false;
+                                notify(error.error, 'error', 5000);
+                            }
+                        )
+                    )
+                }
+                //this.projectUserS
+            });
+        }
+    }
+
+    closeButtonProjectUserOption = {
+        text: 'Close',
+        onClick: (e) => {
+            this.popupVisibleProjectUser = false;
+        }
+    }
+    //#endregion
 
 }
 
@@ -161,6 +390,25 @@ export enum ProjectFormState {
 }
 
 export class ProjectStatus {
+    id: number;
+    status: string;
+}
+
+
+export class ProjectUserFormModel {
+    state: ProjectUserState;
+    data: ProjectUserModel;
+
+    constructor(init?: Partial<ProjectUserFormModel>) {
+        Object.assign(this, init);
+    }
+}
+
+export enum ProjectUserState {
+    EDIT,
+    DETAIL
+}
+export class ProjectRoleStatus {
     id: number;
     status: string;
 }

@@ -11,10 +11,10 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectsController : ControllerBase
+    public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
-        public ProjectsController(IProjectService projectService)
+        public ProjectController(IProjectService projectService)
         {
             _projectService = projectService;
         }
