@@ -1,4 +1,5 @@
 ﻿using Kloon.EmployeePerformance.Models.Authentication;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -32,16 +33,28 @@ namespace Kloon.EmployeePerformance.Test
         private static string _userToken;
         private static string _adminToken;
         private static string _token;
-        public static TestSetting TestSettings { get; set; }
+        public static TestSettings TestSettings { get; set; }
         //IServiceCollection services = new ServiceCollection();
 
-        protected TestSetting _config
+        //public IConfiguration InitConfiguration()
+        //{
+        //    var config = new ConfigurationBuilder()
+        //        .AddJsonFile("testsettings.json")
+        //        .Build();
+        //    return config;
+        //}               
+
+        protected TestSettings _config
         {
             get; set;
         }
         public Helper()
         {
-            _config = new TestSetting { ApiUrl = "http://localhost:31102/" };
+            //IConfiguration configuration = InitConfiguration();
+            //TestSettings = new TestSettings();
+            //configuration.GetSection(nameof(TestSettings)).Bind(TestSettings);
+            //_config = new TestSettings();
+            _config = new TestSettings { ApiUrl = "http://localhost:31102/" };
             _client = new HttpClient();
             _headerparam = new HeaderParam();
             InitToken();
@@ -160,7 +173,7 @@ namespace Kloon.EmployeePerformance.Test
     }
     public static class HttpExtension
     {
-        public static ResultModel<T> Get<T>(TestSetting config, HeaderParam headerParam, HttpClient client, string url)
+        public static ResultModel<T> Get<T>(TestSettings config, HeaderParam headerParam, HttpClient client, string url)
         {
             SetupClient(client, headerParam, config);
             url = "api" + url;
@@ -169,7 +182,7 @@ namespace Kloon.EmployeePerformance.Test
             return ReadStringAsObject<T>(responseMessage);
         }
 
-        public static ResultModel<T> Post<T>(TestSetting config, HeaderParam headerParam, HttpClient client, string url, object model)
+        public static ResultModel<T> Post<T>(TestSettings config, HeaderParam headerParam, HttpClient client, string url, object model)
         {
             SetupClient(client, headerParam, config);
             url = "api" + url;
@@ -178,7 +191,7 @@ namespace Kloon.EmployeePerformance.Test
             return ReadStringAsObject<T>(responseMessage);
         }
 
-        public static ResultModel<T> Put<T>(TestSetting config, HeaderParam headerParam, HttpClient client, string url, object model)
+        public static ResultModel<T> Put<T>(TestSettings config, HeaderParam headerParam, HttpClient client, string url, object model)
         {
             SetupClient(client, headerParam, config);
             url = "api" + url;
@@ -187,7 +200,7 @@ namespace Kloon.EmployeePerformance.Test
             return ReadStringAsObject<T>(responseMessage);
         }
 
-        public static ResultModel<T> Delete<T>(TestSetting config, HeaderParam headerParam, HttpClient client, string url)
+        public static ResultModel<T> Delete<T>(TestSettings config, HeaderParam headerParam, HttpClient client, string url)
         {
             SetupClient(client, headerParam, config);
             url = "api" + url;
@@ -196,7 +209,7 @@ namespace Kloon.EmployeePerformance.Test
             return ReadStringAsObject<T>(responseMessage);
         }
 
-        private static void SetupClient(HttpClient client, HeaderParam headerParam, TestSetting config)
+        private static void SetupClient(HttpClient client, HeaderParam headerParam, TestSettings config)
         {
             if (client.BaseAddress == null)
             {

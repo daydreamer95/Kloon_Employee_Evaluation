@@ -80,7 +80,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 {
                     if (id == Guid.Empty)
                     {
-                        return new ErrorModel(ErrorType.BAD_REQUEST, "Invalid_Id");
+                        return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_ID");
                     }
                     return null;
                 })
@@ -124,14 +124,14 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenValidate(current =>
                 {
                     if (string.IsNullOrEmpty(model.Name))
-                        return new ErrorModel(ErrorType.NOT_EXIST, "Invalid_Model");
+                        return new ErrorModel(ErrorType.NOT_EXIST, "INVALID_MODEL");
 
                     if (model.TypeId == null)
                     {
                         var isExis = _criteriaTypeRepository.Query().Any(x => x.Name.Equals(model.Name) && !x.DeletedDate.HasValue);
                         if (isExis)
                         {
-                            return new ErrorModel(ErrorType.DUPLICATED, "Criteria Type Duplicate");
+                            return new ErrorModel(ErrorType.DUPLICATED, "CRITERIA_TYPE_DUPLICATE");
                         }
                     }
                     else
@@ -139,7 +139,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         var isExis = _criteriaRepository.Query().Any(x => x.CriteriaTypeId == model.TypeId && x.Name.Equals(model.Name) && !x.DeletedDate.HasValue);
                         if (isExis)
                         {
-                            return new ErrorModel(ErrorType.DUPLICATED, "Criteria Duplicate");
+                            return new ErrorModel(ErrorType.DUPLICATED, "CRITERIA_DUPLICATE");
                         }
                     }
                     return null;
@@ -192,14 +192,14 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(x => {
                     if (Id == Guid.Empty)
-                        return new ErrorModel(ErrorType.BAD_REQUEST, "Invalid_Id");
+                        return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_ID");
 
                     var isType = _criteriaTypeRepository.Query().Any(x => x.Id == Id && !x.DeletedDate.HasValue);
                     if (!isType)
                     {
                         var isCriteria = _criteriaRepository.Query().Any(x => x.Id == Id && !x.DeletedDate.HasValue);
                         if (!isCriteria)
-                            return new ErrorModel(ErrorType.BAD_REQUEST, "NotFound");
+                            return new ErrorModel(ErrorType.BAD_REQUEST, "NOTFOUND");
                     }
                     return null;
                 })
@@ -239,14 +239,14 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenValidate(x =>
                 {
                     if (string.IsNullOrEmpty(model.Name))
-                        return new ErrorModel(ErrorType.NOT_EXIST, "Invalid_Model");
+                        return new ErrorModel(ErrorType.NOT_EXIST, "INVALID_MODEL");
 
                     if (model.TypeId == null)
                     {
                         var isExis = _criteriaTypeRepository.Query().Any(x => x.Id == model.Id && !x.DeletedDate.HasValue);
                         if (!isExis)
                         {
-                            return new ErrorModel(ErrorType.NOT_EXIST, "NotFound_CriteriaType");
+                            return new ErrorModel(ErrorType.NOT_EXIST, "NOTFOUND_CRITERIATYPE");
                         }
                     }
                     else
@@ -254,7 +254,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         var isExis = _criteriaRepository.Query().Any(x => x.CriteriaTypeId == model.TypeId && x.Id == model.Id && !x.DeletedDate.HasValue);
                         if (!isExis)
                         {
-                            return new ErrorModel(ErrorType.NOT_EXIST, "NotFound_Criteria");
+                            return new ErrorModel(ErrorType.NOT_EXIST, "NOTFOUND_CRITERIA");
                         }
                     }
                     return null;

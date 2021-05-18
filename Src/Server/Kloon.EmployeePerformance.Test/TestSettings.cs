@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kloon.EmployeePerformance.Test
 {
-    public class TestSetting
+    public class TestSettings
     {
         public string ApiUrl { get; set; }
         public string ClientName { get; set; }

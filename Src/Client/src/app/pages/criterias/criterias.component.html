@@ -1,5 +1,5 @@
 <h2 style="margin: 15px;">Criteria Manage</h2>
-<div>
+<!-- <div>
   <div style="position: relative; top:50px; left: 20px;"><dx-check-box (onValueChanged)="onCheckBoxDragChange($event)" [value]="isEnableDrag"text=" Re-arrange (Drag & Drop)"></dx-check-box></div>
   <div class="input-group rowForm">
   <div style="margin-right: 10px;">
@@ -10,18 +10,12 @@
       (onClick)="onClickAddType($event)">
     </dx-button>
   </div>
-  <div>
-    <dx-text-box placeholder="Search..."
-    (onEnterKey)="onSearch($event)"
-    width="auto"></dx-text-box>
   </div>
-
-  </div>
-</div>
+</div> -->
 <div>
   <dx-tree-list
         id="employees"
-        [dataSource]="employees"
+        [(dataSource)]="employees"
         rootValue="-1"
         keyExpr="id"
         [showRowLines]="true"
@@ -30,6 +24,8 @@
         [autoExpandAll]="false"
         [columnAutoWidth]="true"
         (onInitialized)="onInitTreeList($event)"
+        (onToolbarPreparing)="onToolbarPreparing($event)"
+        (onCellDblClick)="oncellDblClick($event)"
         (onRowPrepared)="onRowPrepared($event)">
         <dxo-row-dragging
             [onDragChange]="onDragChange"
@@ -38,6 +34,7 @@
             [(allowReordering)]="isEnableDrag"
             [showDragIcons]="false"
         ></dxo-row-dragging>
+        <dxo-search-panel [visible]="true" [highlightSearchText] = "true"></dxo-search-panel>
         <dxi-column dataField="name"></dxi-column>
         <dxi-column dataField="description"></dxi-column>
         <dxi-column style="float: right;" cellTemplate="cellTemplate"></dxi-column>
@@ -47,12 +44,14 @@
           text="Add"
           icon="plus"
           type="success"
+          [(disabled)]="isEnableDrag"
           (onClick)="onClickAdd($event, cell.data)">
         </dx-button>
           <dx-button style="margin-left: 10px;" stylingMode="contained"
           text="Edit"
           icon="edit"
           type="default"
+          [(disabled)]="isEnableDrag"
           (onClick)="onClickEdit($event, cell.data)">
         </dx-button>
         </div>
@@ -90,6 +89,7 @@
             Criteria Type:
               <dx-select-box
                 [dataSource] = "lookupData"
+                [readOnly] = "isViewDetail"
                 displayExpr="name"
                 valueExpr="id"
                 [(value)] = "criteriaModel.typeId"
@@ -107,8 +107,7 @@
             </div>
             <dx-text-box
               [(value)] = "criteriaModel.name"
-              (onValueChanged)="onChangeSelect($event)"
-              >
+              [readOnly] = "isViewDetail">
               <dx-validator>
                 <dxi-validation-rule type="required" message="Name is required"></dxi-validation-rule>
                 <dxi-validation-rule type="stringLength" [max]="255" message="Name length must be less than 255 characters"></dxi-validation-rule>
@@ -118,6 +117,7 @@
               Description:
               <dx-text-area
               [(value)] = "criteriaModel.description"
+              [readOnly] = "isViewDetail"
               ></dx-text-area>
           </p>
       </div>
@@ -147,5 +147,10 @@
     top: 0px;
     transform: translate(-1px, -35px);
     transition: all 0s ease 0s;
+}
+.dx-button-mode-text.dx-button-success {
+    background-color: #8bc34a !important;
+    color: #fff !important;
+    box-shadow: none;
 }
 </style>

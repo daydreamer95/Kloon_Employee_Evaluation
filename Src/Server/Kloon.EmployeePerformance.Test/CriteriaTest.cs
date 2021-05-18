@@ -96,7 +96,7 @@ namespace Kloon.EmployeePerformance.Test
             Assert.IsNotNull(result.Error);
             Assert.IsFalse(result.IsSuccess);
             var errorMess = JsonConvert.DeserializeObject<string>(result.Error.Message);
-            Assert.AreEqual<string>("Invalid_Id", errorMess);
+            Assert.AreEqual<string>("INVALID_ID", errorMess);
         }
 
         [TestMethod]
@@ -158,7 +158,7 @@ namespace Kloon.EmployeePerformance.Test
 
             var createResult = Helper.AdminPost<CriteriaModel>(_url, criteriaModel);
             var errMess = JsonConvert.DeserializeObject<string>(createResult.Error.Message);
-            Assert.AreEqual("Invalid_Model", errMess);
+            Assert.AreEqual("INVALID_MODEL", errMess);
             Assert.IsFalse(createResult.IsSuccess);
             Assert.IsNotNull(createResult.Error);
         }
@@ -178,7 +178,7 @@ namespace Kloon.EmployeePerformance.Test
             var createTypeDuplicateResult = Helper.AdminPost<CriteriaModel>(_url, typeDuplicate);
             var errMess = JsonConvert.DeserializeObject<string>(createTypeDuplicateResult.Error.Message);
 
-            Assert.AreEqual("Criteria Type Duplicate", errMess);
+            Assert.AreEqual("CRITERIA_TYPE_DUPLICATE", errMess);
             Assert.IsFalse(createTypeDuplicateResult.IsSuccess);
             Assert.IsNotNull(createTypeDuplicateResult.Error);
         }
@@ -204,7 +204,7 @@ namespace Kloon.EmployeePerformance.Test
             var createDuplicateResult = Helper.AdminPost<CriteriaModel>(_url, duplicateCriteria);
             var errMess = JsonConvert.DeserializeObject<string>(createDuplicateResult.Error.Message);
 
-            Assert.AreEqual("Criteria Duplicate", errMess);
+            Assert.AreEqual("CRITERIA_DUPLICATE", errMess);
             Assert.IsFalse(createDuplicateResult.IsSuccess);
             Assert.IsNotNull(createDuplicateResult.Error);
         }
@@ -241,7 +241,7 @@ namespace Kloon.EmployeePerformance.Test
 
             Assert.IsFalse(editResult.IsSuccess);
             var errorMes = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
-            Assert.AreEqual("Invalid_Model", errorMes);
+            Assert.AreEqual("INVALID_MODEL", errorMes);
         }
 
         [TestMethod]
@@ -259,7 +259,7 @@ namespace Kloon.EmployeePerformance.Test
 
             Assert.IsFalse(editResult.IsSuccess);
             var errorMes = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
-            Assert.AreEqual("NotFound_CriteriaType", errorMes);
+            Assert.AreEqual("NOTFOUND_CRITERIATYPE", errorMes);
         }
 
         [TestMethod]
@@ -277,7 +277,7 @@ namespace Kloon.EmployeePerformance.Test
 
             Assert.IsFalse(editResult.IsSuccess);
             var errorMes = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
-            Assert.AreEqual("NotFound_Criteria", errorMes);
+            Assert.AreEqual("NOTFOUND_CRITERIA", errorMes);
         }
         #endregion
 
@@ -314,7 +314,7 @@ namespace Kloon.EmployeePerformance.Test
             var deleteResult = Helper.AdminDelete<bool>($"{_url}/{item.Id}");
             var errorMess = JsonConvert.DeserializeObject<string>(deleteResult.Error.Message);
             Assert.IsFalse(deleteResult.IsSuccess);
-            Assert.AreEqual("Invalid_Id", errorMess);
+            Assert.AreEqual("INVALID_ID", errorMess);
         }
 
         [TestMethod]
@@ -331,7 +331,7 @@ namespace Kloon.EmployeePerformance.Test
             var deleteResult = Helper.AdminDelete<bool>($"{_url}/{item.Id}");
             var errorMess = JsonConvert.DeserializeObject<string>(deleteResult.Error.Message);
             Assert.IsFalse(deleteResult.IsSuccess);
-            Assert.AreEqual("NotFound", errorMess);
+            Assert.AreEqual("NOTFOUND", errorMess);
         }
         #endregion
 

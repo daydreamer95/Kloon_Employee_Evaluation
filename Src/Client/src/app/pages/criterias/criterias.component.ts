@@ -31,8 +31,9 @@ export class CriteriasComponent implements OnInit {
   validationGR: any;
   isEnableDrag = false;
   isAddOrEditType = false;
+  isViewDetail = false;
   popupVisible = false;
-  searchValue: any;
+  searchValue = '';
   treeListComp: any;
   popupComp: any;
   closeButtonOptions = {
@@ -52,21 +53,12 @@ export class CriteriasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const params = new HttpParams();
-    this.service.getCriterias(params)
-      .subscribe((result: any) => {
-        this.employees = result;
-        this.lookupData = result.filter(x => x.typeId === null);
-      },
-        (err: any) => {
-          this.common.UI.toastMessage('Load data fail!!!', 'error', 2000);
-        }
-      );
+    this.init();
   }
 
   init(): any {
-    const params = new HttpParams();
-    params.set('key', this.searchValue);
+    const params: HttpParams = new HttpParams()
+      .set('key', this.searchValue);
     this.service.getCriterias(params)
       .subscribe((result: any) => {
         this.employees = result;
@@ -133,11 +125,11 @@ export class CriteriasComponent implements OnInit {
     this.popupComp = e.component;
   }
   onHidingPopup = (e: any) => {
-    this.criteriaModel = new Criteria();
-    if (this.validationGR != null) { this.validationGR.reset(); }
-  }
-  onChangeSelect = (e: any) => {
-    const a = 1;
+    if (this.validationGR != null) {
+      this.criteriaModel = new Criteria();
+      this.validationGR.reset();
+    }
+    this.isViewDetail = false;
   }
   onClickAdd = (e: any, data: any) => {
     this.isAddOrEditType = false;
@@ -162,8 +154,21 @@ export class CriteriasComponent implements OnInit {
     this.criteriaModel.orderNo = data.orderNo;
   }
   onShowPopup = (mode: any, isType: boolean) => {
+    let titleMode = '';
+    switch (mode) {
+      case 'add':
+        titleMode = 'Add';
+        break;
+      case 'edit':
+        titleMode = 'Edit';
+        break;
+      case 'detail':
+        titleMode = 'Detail';
+        break;
+      default:
+      // code block
+    }
     let strTitle = 'Criteria';
-    const titleMode = mode === 'add' ? 'Add' : 'Edit';
     const strType = !isType ? '' : 'Type';
     strTitle = titleMode + ' ' + strTitle + ' ' + strType;
     this.popupComp.option('title', strTitle);
@@ -181,14 +186,45 @@ export class CriteriasComponent implements OnInit {
         },
           (err: any) => { }
         );
-      return;
     }
+    return;
   }
   onRowPrepared = (e: any) => {
     if (e.rowType === 'data' && e.data.typeId === null) {
       e.rowElement.style.backgroundColor = '#d1bdbd';
       e.rowElement.style.fontWeight = 'bold';
     }
+  }
+  onToolbarPreparing = (e: any) => {
+    e.toolbarOptions.items.unshift({
+      location: 'before',
+      widget: 'dxCheckBox',
+      options: {
+        width: 200,
+        text: ' Re-arrange (Drag & Drop)',
+        value: this.isEnableDrag,
+        onValueChanged: this.onCheckBoxDragChange.bind(this)
+      }
+    }, {
+      location: 'after',
+      widget: 'dxButton',
+      options: {
+        text: 'Add',
+        bindingOption: {
+          disabled: 'this.isEnableDrag',
+        },
+        icon: 'plus',
+        type: 'success',
+        onClick: () => { this.onClickAddType(e); }
+      }
+    });
+  }
+  oncellDblClick = (e: any) => {
+    const isType = e.data.typeId === null;
+    this.isViewDetail = true;
+    this.onBindingModel(e.data);
+    this.isAddOrEditType = isType;
+    this.onShowPopup('detail', isType);
   }
   onSearch = (e: any) => {
     this.searchValue = e.component.option('value');
