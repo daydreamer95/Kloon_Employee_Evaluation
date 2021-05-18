@@ -30,7 +30,7 @@ namespace Kloon.EmployeePerformance.Test.Api
             ClearAdminData();
         }
         [TestMethod]
-        public void Admin_Add_User_When_Valid_Data_Then_Success()
+        public void ADMIN_ADD_USER_WHEN_VALID_DATA_THEN_SUCCESS()
         {
             var model = InitUserModel();
             var result = Helper.UserPost<UserModel>(_url, dataInit);
@@ -45,38 +45,204 @@ namespace Kloon.EmployeePerformance.Test.Api
         }
 
         [TestMethod]
-        public void Admin_Add_User_When_Invalid_Data_Then_Error()
+        public void ADMIN_ADD_USER_WHEN_INVALID_MODEL_THEN_ERROR()
         {
             var expectedModel = InitUserModel();
+            expectedModel = null;
             var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-
             Assert.AreEqual("INVALID_MODEL", errorMess);
-            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_NULL", errorMess);
-            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MIN_LENGTH", errorMess);
-            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MAX_LENGTH", errorMess);
-            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_CHARACTERS", errorMess);
-            Assert.AreEqual("INVALID_MODEL_LAST_NAME_NULL", errorMess);
-            Assert.AreEqual("INVALID_MODEL_LAST_NAME_MIN_LENGTH", errorMess);
-            Assert.AreEqual("INVALID_MODEL_LAST_NAME_MAX_LENGTH", errorMess);
-            Assert.AreEqual("INVALID_MODEL_LAST_NAME_CHARACTERS", errorMess);
-            Assert.AreEqual("INVALID_MODEL_EMAIL_NULL", errorMess);
-            Assert.AreEqual("INVALID_MODEL_EMAIL_MAX_LENGTH", errorMess);
-            Assert.AreEqual("INVALID_MODEL_EMAIL_FORMAT_WRONG", errorMess);
-            Assert.AreEqual("INVALID_MODEL_PHONE_NULL", errorMess);
-            Assert.AreEqual("INVALID_MODEL_PHONE_MAX_LENGTH", errorMess);
-            Assert.AreEqual("INVALID_MODEL_PHONE_FORMAT_WRONG", errorMess);
-            Assert.AreEqual("INVALID_MODEL_POSITION_NULL", errorMess);
-            Assert.AreEqual("INVALID_MODEL_SEX_NULL", errorMess);
-            Assert.AreEqual("INVALID_MODEL_DOB_NULL", errorMess);
-            Assert.AreEqual("INVALID_MODEL_ROLE_NULL", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
 
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_EMAIL_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.Email = null;
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_NULL", errorMess);
             Assert.IsFalse(actualModel.IsSuccess);
             Assert.IsNotNull(actualModel.Error);
         }
         [TestMethod]
-        public void User_Add_User_Have_No_Permission_Then_Error() { }
+        public void ADMIN_ADD_USER_WHEN_INVALID_EMAIL_LENGTH_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.Email = "asdfghjklqwertyuiopasdfghjklzxcvbnmlsdje3@gmail.com";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_MAX_LENGTH", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_EMAIL_WRONG_FORMAT_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.Email = "xcvbnmlsdje3@gmaildASfcoASfm";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_FORMAT_WRONG", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_FIRST_NAME_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.FirstName = null;
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_NULL", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_FIRST_NAME_MIN_LENGTH_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.FirstName = "a";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MIN_LENGTH", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_FIRST_NAME_MAX_LENGTH_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.FirstName = "asdfghjklpoiuytrewqasf";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MAX_LENGTH", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_FIRST_NAME_CHARACTER_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.FirstName = "28Shd&*(^";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_CHARACTERS", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_LAST_NAME_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.LastName = null;
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_NULL", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_LAST_NAME_MIN_LENGTH_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.LastName = "a";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_MIN_LENGTH", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_LAST_NAME_MAX_LENGTH_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.LastName = "asdfghjklpoiuytrewqasf";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_MAX_LENGTH", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_LAST_NAME_CHARACTER_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.LastName = "28Shd&*(^";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_CHARACTERS", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_PHONE_LENGTH_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.LastName = "098765432123645";
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_PHONE_MAX_LENGTH", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_POSITION_NULL_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.PositionId = 0;
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_POSITION_NULL", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_SEX_NULL_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.Sex = 0;
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_SEX_NULL", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void ADMIN_ADD_USER_WHEN_INVALID_ROLE_NULL_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            expectedModel.RoleId = 0;
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_ROLE_NULL", errorMess);
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+
+        [TestMethod]
+        public void USER_ADD_USER_HAVE_NO_PERMISSION_THEN_ERROR()
+        {
+        }
+
         #region Init User
         private void InitUserData()
         {
@@ -102,7 +268,7 @@ namespace Kloon.EmployeePerformance.Test.Api
                 Email = "Email: " + rand(),
                 FirstName = "Username: " + rand(),
                 LastName = "Lastname: " + rand(),
-                PositionId = rand(),
+                PositionId = (int)ProjectRoles.MEMBER,
                 Sex = SexEnum.FEMALE,
                 DoB = DateTime.Today.AddDays(-new Random().Next(20 * 635)),
                 PhoneNo = "Phone: " + rand(),
@@ -137,7 +303,7 @@ namespace Kloon.EmployeePerformance.Test.Api
                 Email = "Email: " + rand(),
                 FirstName = "Username: " + rand(),
                 LastName = "Lastname: " + rand(),
-                PositionId = rand(),
+                PositionId = (int)ProjectRoles.MEMBER,
                 Sex = SexEnum.FEMALE,
                 DoB = DateTime.Today.AddDays(-new Random().Next(20 * 635)),
                 PhoneNo = "Phone: " + rand(),
