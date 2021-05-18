@@ -97,7 +97,8 @@ namespace Kloon.EmployeePerformance.WebAPI
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = Configuration["JwtIssuer"],
                     ValidAudience = Configuration["JwtAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSecurityKey"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSecurityKey"])),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
             #endregion Authentication

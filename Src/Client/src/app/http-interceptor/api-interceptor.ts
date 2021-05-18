@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 import { environment } from '../../environments/environment';
 import { AuthService } from '../shared/services';
 
@@ -16,7 +18,15 @@ export class ApiInterceptor implements HttpInterceptor {
     const apiReq = req.clone({
       url: `${rootApi}${req.url}`
     });
-    return next.handle(apiReq);
+    return next.handle(apiReq).pipe(catchError(err => {
+      debugger;
+      if (err.status === 401) {
+        this.authService.logOut();
+      }
+
+      const error = err.error.message || err.statusText;
+      return throwError(error);
+    }))
   }
 }
 

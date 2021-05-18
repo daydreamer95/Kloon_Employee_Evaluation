@@ -32,7 +32,6 @@
     public enum ErrorType
     {
         NOT_AUTHORIZED,
-        NOT_AUTHENTICATED,
         NO_ROLE,
         NO_DATA_ROLE,
         BAD_REQUEST,

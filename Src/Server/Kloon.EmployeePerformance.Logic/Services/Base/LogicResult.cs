@@ -43,7 +43,7 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
             {
                 if (CurrentUser == null)
                 {
-                    Error = new ErrorModel(ErrorType.NOT_AUTHENTICATED, "Not Authorized");
+                    Error = new ErrorModel(ErrorType.NOT_AUTHORIZED, "Not Authorized");
                 }
                 else
                 {
