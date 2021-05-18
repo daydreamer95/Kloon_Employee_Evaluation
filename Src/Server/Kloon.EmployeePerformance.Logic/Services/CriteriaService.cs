@@ -123,7 +123,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(current =>
                 {
-                    if (string.IsNullOrEmpty(model.Name))
+                    if (string.IsNullOrEmpty(model.Name) || model.Name.Length > 50 || model.Description.Length > 500)
                         return new ErrorModel(ErrorType.NOT_EXIST, "INVALID_MODEL");
 
                     if (model.TypeId == null)
@@ -238,7 +238,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(x =>
                 {
-                    if (string.IsNullOrEmpty(model.Name))
+                    if (string.IsNullOrEmpty(model.Name) || model.Name.Length > 50 || model.Description.Length > 500)
                         return new ErrorModel(ErrorType.NOT_EXIST, "INVALID_MODEL");
 
                     if (model.TypeId == null)

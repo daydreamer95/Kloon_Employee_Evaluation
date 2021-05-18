@@ -15,7 +15,6 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
     public class CriteriaController : ControllerBase
     {
         private readonly ICriteriaService _criteriaService;
-        private readonly Guid _UserId;
         public CriteriaController(ICriteriaService criteriaService, IHttpContextAccessor httpContextAccessor)
         {
             _criteriaService = criteriaService;

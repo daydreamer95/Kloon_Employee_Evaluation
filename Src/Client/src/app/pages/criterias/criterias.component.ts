@@ -14,8 +14,6 @@ import {
   DxValidatorModule,
   DxValidationSummaryModule
 } from 'devextreme-angular';
-import DataSource from 'devextreme/data/data_source';
-import { O_NONBLOCK } from 'constants';
 
 @Component({
   selector: 'app-criterias',
