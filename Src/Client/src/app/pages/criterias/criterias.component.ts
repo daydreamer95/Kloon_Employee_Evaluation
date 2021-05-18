@@ -64,7 +64,7 @@ export class CriteriasComponent implements OnInit {
         this.lookupData = result.filter(x => x.typeId === null);
       },
         (err: any) => {
-          this.common.UI.toastMessage('Load data fail!!!', 'error', 2000);
+          this.common.UI.multipleNotify('Load data fail!!!', 'error', 2000);
         }
       );
   }
@@ -98,7 +98,7 @@ export class CriteriasComponent implements OnInit {
           },
             (err: any) => {
               this.popupComp.hide();
-              this.common.UI.toastMessage('Add Error', 'error', 2000);
+              this.common.UI.multipleNotify('Add Error', 'error', 2000);
             }
           );
       }
@@ -110,7 +110,7 @@ export class CriteriasComponent implements OnInit {
           },
             (err: any) => {
               this.popupComp.hide();
-              this.common.UI.toastMessage('Edit Error!', 'error', 2000);
+              this.common.UI.multipleNotify('Edit Error!', 'error', 2000);
             }
           );
       }
@@ -175,7 +175,7 @@ export class CriteriasComponent implements OnInit {
     this.mode = mode === 'add' ? 'Add' : 'Edit';
   }
   onCheckBoxDragChange = (e: any) => {
-    this.isEnableDrag = e.value || false;
+    this.isEnableDrag = e.value;
     this.btnAddTypeComp.option('disabled', this.isEnableDrag);
     if (!e.value && e.previousValue) {
       // save change
