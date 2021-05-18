@@ -97,6 +97,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             {
                 var result = dbContext.GetRepository<User>()
                     .Query()
+                    .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
                     .ToDictionary(t => t.Id, t => new UserMD
                     {
                         Id = t.Id,
@@ -123,6 +124,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
                 var data = dbContext.GetRepository<ProjectUser>()
                     .Query(x => x.UserId == userId)
+                    .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
                     .ToDictionary(t => t.ProjectId, t => new
                     {
                         ProjectId = t.ProjectId,
@@ -131,6 +133,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
                 var result = dbContext.GetRepository<Project>()
                     .Query(x => data.ContainsKey(x.Id))
+                    .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
                     .Select(t => new ProjectMD()
                     {
                         Id = t.Id,
@@ -155,6 +158,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             {
                 var result = dbContext.GetRepository<Project>()
                     .Query()
+                    .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
                     .ToDictionary(t => t.Id, t => new ProjectMD
                     {
                         Id = t.Id,
@@ -186,6 +190,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
                 var result = dbContext.GetRepository<User>()
                     .Query(x => data.ContainsKey(x.Id))
+                    .Where(x => x.DeletedBy == null && x.DeletedDate == null)
                     .Select(t => new UserMD()
                     {
                         Id = t.Id,

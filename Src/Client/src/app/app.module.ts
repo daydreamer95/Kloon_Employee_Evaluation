@@ -1,3 +1,6 @@
+import { ProjectService } from './shared/services/project.service';
+import { PositionService } from './shared/services/position.service';
+import { UserService } from './shared/services/user.service';
 import { HttpClient, HttpClientModule, HttpHandler, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -50,7 +53,7 @@ import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
     })
   ],
   providers: [
-    AuthService, ScreenService, AppInfoService, JwtHelperService,
+    AuthService, ScreenService, AppInfoService, JwtHelperService, PositionService,
     { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

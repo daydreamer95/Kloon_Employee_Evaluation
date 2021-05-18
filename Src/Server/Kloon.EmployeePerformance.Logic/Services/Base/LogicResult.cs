@@ -43,15 +43,15 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
             {
                 if (CurrentUser == null)
                 {
-                    Error = new ErrorModel(ErrorType.NOT_AUTHENTICATED, "Not Authorized");
+                    Error = new ErrorModel(ErrorType.NOT_AUTHORIZED, "Not Authorized");
                 }
                 else
                 {
                     var user = Services.Cache.Users.Get(CurrentUser.Id);
-                    if (user.DeletedBy != null && user.DeletedDate != null)
-                    {
-                        Error = new ErrorModel(ErrorType.NOT_EXIST, "Role not found");
-                    }
+                    //if (user.DeletedBy != null && user.DeletedDate != null)
+                    //{
+                    //    Error = new ErrorModel(ErrorType.NOT_EXIST, "Role not found");
+                    //}
                     if (!roles.Contains(CurrentUser.Role))
                     {
                         Error = new ErrorModel(ErrorType.NO_ROLE, "No Role");

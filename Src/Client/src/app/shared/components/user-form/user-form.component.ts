@@ -1,7 +1,11 @@
-import { UserModel } from './../../services/user.service';
+import { PositionModel } from './../../models/position.model';
+import { PositionService } from './../../services/position.service';
+import { AppRolesEnum } from './../../models/user-app.model';
+import { EnumUserSex } from './../../models/user.model';
 import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule } from 'devextreme-angular';
+import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -11,21 +15,38 @@ import { UserService } from '../../services/user.service';
 })
 export class UserFormComponent implements OnInit {
   @Input() model: UserFormModel;
-  @Output() onSubmitForm = new EventEmitter();
+  @Output() onRefreshGrid = new EventEmitter<void>();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
-  
+
   formState = FormState;
   popupVisible = false;
+  popupConfirmDeleteVisible = false;
   popupTitle = '';
-  currUser:UserModel;
+  currUser: UserModel;
+  sexDataSource = [
+    { caption: 'Male', value: EnumUserSex.MALE },
+    { caption: 'Female', value: EnumUserSex.FEMALE }
+  ]
 
-  constructor(userService: UserService) { 
-    
+  roleDataSource = [
+    { caption: 'ADMINISTRATOR', value: AppRolesEnum.ADMINISTRATOR },
+    { caption: 'USER', value: AppRolesEnum.USER }
+  ]
+
+  positionDataSource: PositionModel[];
+
+  constructor(private userService: UserService, private positionService: PositionService) {
+    this.positionService.getPositions().subscribe(
+      next => {
+        this.positionDataSource = next;
+      },
+      error => { }
+    );
   }
 
-  open(){
-    switch(this.model.state){
-      case FormState.CREATE: 
+  open() {
+    switch (this.model.state) {
+      case FormState.CREATE:
         this.popupTitle = 'CREATE USER';
         break;
       case FormState.DETAIL:
@@ -37,14 +58,15 @@ export class UserFormComponent implements OnInit {
     }
     this.popupVisible = true;
     this.currUser = this.model.data;
-    this.myform.instance._refresh();
+    // this.myform.instance._refresh();
   }
 
   //#region Options
   closeButtonOptions = {
     text: "Close",
+    icon: 'close',
     onClick: (e) => {
-        this.popupVisible = false;
+      this.popupVisible = false;
     }
   };
 
@@ -52,18 +74,80 @@ export class UserFormComponent implements OnInit {
     icon: 'save',
     text: 'Submit',
     onClick: (e) => {
-      this.myform.instance.validate();
-      // this.popupVisible = false;
+      var instance = this.myform.instance.validate();
+      if (!instance.isValid) {
+        return;
+      }
+
+      this.userService.add(this.currUser).subscribe(
+        next => {
+          //TODO: Call refresh grid
+          this.popupVisible = false;
+          this.onRefreshGrid.emit();
+        },
+        error => { }
+      )
     }
   };
+
+  deleteButtonOptions = {
+    icon: 'trash',
+    text: 'Delete',
+    onClick: (e) => {
+      this.popupConfirmDeleteVisible = true;
+    }
+  };
+
+  enterEditFormButtonOptions = {
+    icon: 'edit',
+    text: 'Edit',
+    onClick: (e) => {
+      this.model.state = FormState.EDIT;
+      this.myform.instance._refresh();
+      this.myform.instance.repaint();
+    }
+  }
 
   editButtonOptions = {
     icon: 'save',
     text: 'Edit',
     onClick: (e) => {
-      this.popupVisible = false;
+      this.userService.edit(this.currUser).subscribe(
+        next => {
+          debugger;
+          //TODO: Call refresh grid
+          this.popupVisible = false;
+          this.onRefreshGrid.emit();
+        },
+        error => {
+
+        }
+      )
     }
   }
+
+  closeDeletePopupButtonOptions = {
+    text: "Close",
+    icon: 'close',
+    onClick: (e) => {
+      this.popupConfirmDeleteVisible = false;
+    }
+  };
+
+  confirmDeleteButtonOptions = {
+    icon: 'save',
+    text: 'Submit',
+    onClick: (e) => {
+      this.userService.delete(this.currUser.id).subscribe(
+        next => {
+          this.popupConfirmDeleteVisible = false;
+          this.popupVisible = false;
+          this.onRefreshGrid.emit();
+        },
+        error => {}
+      )
+    }
+  };
   ////#endregion
 
   ngOnInit(): void {
@@ -73,7 +157,7 @@ export class UserFormComponent implements OnInit {
 
 
 @NgModule({
-  imports:[
+  imports: [
     BrowserModule,
     DxDataGridModule,
     DxButtonModule,
@@ -83,17 +167,17 @@ export class UserFormComponent implements OnInit {
   declarations: [UserFormComponent],
   exports: [UserFormComponent]
 })
-export class UserFormModule{
+export class UserFormModule {
 
 }
 
-export class UserFormModel{
+export class UserFormModel {
   state: FormState;
   data: UserModel
 
-  constructor(init?:Partial<UserFormModel>) {
+  constructor(init?: Partial<UserFormModel>) {
     Object.assign(this, init);
-}
+  }
 }
 
 export enum FormState {

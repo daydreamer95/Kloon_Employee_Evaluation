@@ -24,6 +24,20 @@
         <dxi-toolbar-item
             widget="dxButton"
             toolbar="bottom"
+            location="before"
+            [visible]="model.state === formState.DETAIL"
+            [options]="enterEditFormButtonOptions">
+        </dxi-toolbar-item>
+        <dxi-toolbar-item
+            widget="dxButton"
+            toolbar="bottom"
+            location="before"
+            [visible]="model.state === formState.DETAIL"
+            [options]="deleteButtonOptions">
+        </dxi-toolbar-item>
+        <dxi-toolbar-item
+            widget="dxButton"
+            toolbar="bottom"
             location="after"
             [options]="closeButtonOptions">
         </dxi-toolbar-item>
@@ -35,19 +49,84 @@
                     <dxi-item dataField="email">
                         <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
                     </dxi-item>
+                    
+                    <dxi-item
+                        dataField="sex"
+                        editorType="dxSelectBox"
+                        [editorOptions]="{ 
+                            dataSource: sexDataSource,
+                            displayExpr: 'caption',
+                            valueExpr: 'value'}">
+                            <dxi-validation-rule 
+                                type="required"
+                                message="Sex is required">
+                            </dxi-validation-rule>
+                    </dxi-item>
+
                     <dxi-item dataField="firstName">
                         <dxi-validation-rule type="required" message="First name is required"></dxi-validation-rule>
                     </dxi-item>
+
                     <dxi-item dataField="lastName">
                         <dxi-validation-rule type="required" message="Last name is required"></dxi-validation-rule>
                     </dxi-item>
-                    <dxi-item dataField="sex">
+
+                    <dxi-item 
+                        dataField="roleId"
+                        [label]="{text: 'Role'}"
+                        editorType="dxSelectBox"
+                        [editorOptions]="{ 
+                        dataSource: roleDataSource,
+                        displayExpr: 'caption',
+                        valueExpr: 'value'}">
+                            <dxi-validation-rule type="required" message="Sex is required"></dxi-validation-rule>
                     </dxi-item>
+                    <dxi-item 
+                    dataField="positionId"
+                    [label]="{text: 'Position'}"
+                    editorType="dxSelectBox"
+                    [editorOptions]="{ 
+                        dataSource: positionDataSource,
+                        displayExpr: 'name',
+                        valueExpr: 'id'}">
+                        <dxi-validation-rule type="required" message="Position is required"></dxi-validation-rule>
+                     </dxi-item>
                     <dxi-item dataField="phoneNo">
                     </dxi-item>
-                    <dxi-item dataField="doB" editorType="dxDateBox" [editorOptions]="{ width: '100%', type: 'datetime' }">
-                        <dxi-validation-rule type="required" message="Hire date is required"></dxi-validation-rule>
+
+                    <dxi-item dataField="doB" [label]="{text: 'Date of birth'}" editorType="dxDateBox" [editorOptions]="{ width: '100%', type: 'datetime', displayFormat: 'dd/MM/yyyy' }">
+                        <dxi-validation-rule type="required" message="Date of birth is required"></dxi-validation-rule>
                     </dxi-item>
+
+                   
                 </dx-form>
+
+               
         </div>
+</dx-popup>
+
+<dx-popup
+width="auto"
+height="auto"
+[showTitle]="true"
+title="DELETE CONFIRM"
+[dragEnabled]="true"
+[closeOnOutsideClick]="true"
+[showCloseButton]="true"
+[(visible)]="popupConfirmDeleteVisible">>
+    <dxi-toolbar-item
+        widget="dxButton"
+        toolbar="bottom"
+        location="before"
+        [options]="confirmDeleteButtonOptions">
+    </dxi-toolbar-item>
+    <dxi-toolbar-item
+            widget="dxButton"
+            toolbar="bottom"
+            location="after"
+            [options]="closeDeletePopupButtonOptions">
+    </dxi-toolbar-item>
+    <div *dxTemplate="let data of 'content'">
+        Are you sure you want to delete this record?
+    </div>
 </dx-popup>

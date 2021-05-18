@@ -1,9 +1,11 @@
 import { UserFormComponent, UserFormModule, UserFormModel, FormState } from './../../shared/components/user-form/user-form.component';
-import { element } from 'protractor';
-import { UserModel, UserService } from './../../shared/services/user.service';
+import { UserService } from './../../shared/services/user.service';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxPopupModule } from 'devextreme-angular';
+import { UserModel } from 'src/app/shared/models/user.model';
+import { PositionModel } from 'src/app/shared/models/position.model';
+import { PositionService } from 'src/app/shared/services/position.service';
 
 @Component({
   selector: 'app-user',
@@ -13,28 +15,47 @@ import { DxButtonModule, DxDataGridModule, DxPopupModule } from 'devextreme-angu
 export class UserComponent implements OnInit {
   //#region Init variable
   dataSource: UserModel[]
+  positionDataSource: PositionModel[];
+
+  
   gridColumns: ['email', 'firstName', 'lastName', 'position', 'phoneNo'];
 
-  @ViewChild(UserFormComponent) userFormComponent:UserFormComponent;
+  @ViewChild(UserFormComponent) userFormComponent: UserFormComponent;
   currUser: UserFormModel = new UserFormModel();
   //#endregion
 
-  constructor(userService: UserService) { 
-    this.dataSource = userService.getUsers();
+  constructor(private userService: UserService,private positionService: PositionService) {
+    userService.getUsers("").subscribe(
+      next => {
+        this.dataSource = next;
+        debugger;
+      },
+      error => {
 
+      }
+    );
+
+    this.positionService.getPositions().subscribe(
+      next => {
+        this.positionDataSource = next;
+      },
+      error => { }
+    );
   }
 
+  
+   
   onToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
-            location: 'after',
-            widget: 'dxButton',
-            options: {
-                icon: 'add',
-                width: 'auto',
-                text: 'Add',
-                onClick: this.onOpenAddUserPopup.bind(this)
-            }
-        });
+      location: 'after',
+      widget: 'dxButton',
+      options: {
+        icon: 'add',
+        width: 'auto',
+        text: 'Add',
+        onClick: this.onOpenAddUserPopup.bind(this)
+      }
+    });
   }
 
   //#region POPUP
@@ -42,18 +63,28 @@ export class UserComponent implements OnInit {
   onOpenAddUserPopup(): void {
     this.currUser.state = FormState.CREATE;
     this.currUser.data = new UserModel();
-    
+
     this.userFormComponent.open();
   }
 
-  onOpenDetailButton(e, data): void{
+  onOpenDetailButton(e, data): void {
     this.currUser.state = FormState.DETAIL;
     this.currUser.data = new UserModel(data.data);
 
     this.userFormComponent.open();
   }
 
-  
+  onRefreshGrid() {
+    console.log('haha');
+    this.userService.getUsers("").subscribe(
+      next => {
+        this.dataSource = next;
+      },
+      error => {
+
+      }
+    );
+  }
   //#endregion
 
   ngOnInit(): void {
@@ -62,7 +93,7 @@ export class UserComponent implements OnInit {
 }
 
 @NgModule({
-  imports:[
+  imports: [
     BrowserModule,
     DxDataGridModule,
     DxButtonModule,
@@ -72,6 +103,6 @@ export class UserComponent implements OnInit {
   declarations: [UserComponent],
   bootstrap: [UserComponent]
 })
-export class UserModule{
+export class UserModule {
 
 }

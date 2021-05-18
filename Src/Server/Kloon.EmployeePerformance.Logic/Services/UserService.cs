@@ -1,6 +1,7 @@
 ﻿using Kloon.EmployeePerformance.DataAccess;
 using Kloon.EmployeePerformance.DataAccess.Domain;
 using Kloon.EmployeePerformance.Logic.Caches.Data;
+using Kloon.EmployeePerformance.Logic.Common;
 using Kloon.EmployeePerformance.Logic.Services.Base;
 using Kloon.EmployeePerformance.Models.Common;
 using Kloon.EmployeePerformance.Models.User;
@@ -23,7 +24,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
     {
         private readonly IAuthenLogicService<UserService> _logicService;
         private readonly IUnitOfWork<EmployeePerformanceContext> _dbContext;
-
         private readonly IEntityRepository<User> _users;
         public UserService(IAuthenLogicService<UserService> logicService)
         {
@@ -35,6 +35,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
         public ResultModel<UserModel> Create(UserModel userModel)
         {
+            var now = DateTime.UtcNow;
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR)
@@ -50,6 +51,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 })
                .ThenImplement(current =>
                {
+                   var salt = Guid.NewGuid().ToString();
+
                    var user = new User()
                    {
                        Email = userModel.Email,
@@ -61,12 +64,19 @@ namespace Kloon.EmployeePerformance.Logic.Services
                        PhoneNo = userModel.PhoneNo,
                        RoleId = userModel.RoleId,
                        CreatedBy = current.Id,
+                       CreatedDate = now,
+                       PasswordHash = Utils.EncryptedPassword("123456",salt),
+                       PasswordSalt = salt
                    };
                    _users.Add(user);
                    int result = _dbContext.Save();
-                   return result;
+
+                   userModel.Id = user.Id;
+                   _logicService.Cache.Users.Clear();
+
+                   return userModel;
                });
-            return null;
+            return result;
         }
 
         public ResultModel<bool> Delete(int userId)
@@ -78,8 +88,12 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(currentUser =>
                 {
+                    if (currentUser.Id == userId)
+                    {
+                        return new ErrorModel(ErrorType.CONFLICTED, "Cannot delete yourself");
+                    }
                     user = _users
-                        .Query(x => x.Id == userId && x.DeletedBy != null && x.DeletedDate != null)
+                        .Query(x => x.Id == userId && x.DeletedBy == null && x.DeletedDate == null)
                         .FirstOrDefault();
                     if (user == null)
                     {
@@ -218,6 +232,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     user.ModifiedBy = current.Id;
                     user.ModifiedDate = now;
                     int result = _dbContext.Save();
+                    _logicService.Cache.Users.Clear();
                     return userModel;
                 });
             return result;
@@ -278,12 +293,12 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "Max length of email is 40");
             }
-            if (Regex.IsMatch(userModel.Email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"))
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Email must have a correct format");
-            }
+            //if (Regex.IsMatch(userModel.Email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"))
+            //{
+            //    return new ErrorModel(ErrorType.BAD_REQUEST, "Email must have a correct format");
+            //}
 
-            var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Email.Equals(userModel.Email));
+            var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Id != x.Id && x.Email.Equals(userModel.Email));
             if (registedEmail)
             {
                 return new ErrorModel(ErrorType.DUPLICATED, "Email has been taken!");
@@ -304,11 +319,11 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.DUPLICATED, "Phone must follow Vietnam format!");
             }
-            var takenPhone = _logicService.Cache.Users.GetValues().Any(x => x.PhoneNo.Equals(userModel.PhoneNo));
-            if (takenPhone)
-            {
-                return new ErrorModel(ErrorType.DUPLICATED, "Phone has been taken!");
-            }
+            //var takenPhone = _logicService.Cache.Users.GetValues().Any(x => x.PhoneNo.Equals(userModel.PhoneNo));
+            //if (takenPhone)
+            //{
+            //    return new ErrorModel(ErrorType.DUPLICATED, "Phone has been taken!");
+            //}
             #endregion
 
             #region Selectable Attribute
