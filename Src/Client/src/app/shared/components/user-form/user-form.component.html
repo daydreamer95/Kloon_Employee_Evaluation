@@ -62,15 +62,12 @@
                                 message="Sex is required">
                             </dxi-validation-rule>
                     </dxi-item>
-
                     <dxi-item dataField="firstName">
                         <dxi-validation-rule type="required" message="First name is required"></dxi-validation-rule>
                     </dxi-item>
-
                     <dxi-item dataField="lastName">
                         <dxi-validation-rule type="required" message="Last name is required"></dxi-validation-rule>
                     </dxi-item>
-
                     <dxi-item 
                         dataField="roleId"
                         [label]="{text: 'Role'}"
@@ -79,29 +76,29 @@
                         dataSource: roleDataSource,
                         displayExpr: 'caption',
                         valueExpr: 'value'}">
-                            <dxi-validation-rule type="required" message="Sex is required"></dxi-validation-rule>
+                        <dxi-validation-rule type="required" message="Sex is required"></dxi-validation-rule>
                     </dxi-item>
                     <dxi-item 
                     dataField="positionId"
                     [label]="{text: 'Position'}"
                     editorType="dxSelectBox"
                     [editorOptions]="{ 
-                        dataSource: positionDataSource,
+                        dataSource: position,
                         displayExpr: 'name',
                         valueExpr: 'id'}">
-                        <dxi-validation-rule type="required" message="Position is required"></dxi-validation-rule>
-                     </dxi-item>
-                    <dxi-item dataField="phoneNo">
+                    <dxi-validation-rule type="required" message="Position is required"></dxi-validation-rule>
                     </dxi-item>
-
-                    <dxi-item dataField="doB" [label]="{text: 'Date of birth'}" editorType="dxDateBox" [editorOptions]="{ width: '100%', type: 'datetime', displayFormat: 'dd/MM/yyyy' }">
-                        <dxi-validation-rule type="required" message="Date of birth is required"></dxi-validation-rule>
+                    <dxi-item  
+                    dataField="phoneNo"  
+                    editorType="dxTextBox"  
+                    [editorOptions]="{  
+                        mask: '0000-0000-00'}">  
+                 
+                    </dxi-item> 
+                    <dxi-item dataField="doB" [label]="{text: 'Date of birth'}" editorType="dxDateBox" [editorOptions]="{ width: '100%', type: 'date', displayFormat: 'dd/MM/yyyy'}" >
+                 
                     </dxi-item>
-
-                   
-                </dx-form>
-
-               
+                </dx-form>  
         </div>
 </dx-popup>
 

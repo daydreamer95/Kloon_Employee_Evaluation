@@ -18,6 +18,7 @@ import { ApiInterceptor } from './http-interceptor/api-interceptor';
 import { UserFormModule } from './shared/components/user-form/user-form.component';
 import { CriteriasModule } from './pages/criterias/criterias.component';
 import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
+import { DxValidatorModule } from 'devextreme-angular';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
     AppRoutingModule,
     UserModule,
     ProjectModule,
+    DxValidatorModule,
     HttpClientModule,
     UserFormModule,
     CriteriasModule,

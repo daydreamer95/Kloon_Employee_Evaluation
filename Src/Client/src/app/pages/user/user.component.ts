@@ -2,7 +2,7 @@ import { UserFormComponent, UserFormModule, UserFormModel, FormState } from './.
 import { UserService } from './../../shared/services/user.service';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { DxButtonModule, DxDataGridModule, DxPopupModule } from 'devextreme-angular';
+import { DxButtonModule, DxDataGridModule, DxPopupModule} from 'devextreme-angular';
 import { UserModel } from 'src/app/shared/models/user.model';
 import { PositionModel } from 'src/app/shared/models/position.model';
 import { PositionService } from 'src/app/shared/services/position.service';
@@ -16,7 +16,7 @@ export class UserComponent implements OnInit {
   //#region Init variable
   dataSource: UserModel[]
   positionDataSource: PositionModel[];
-
+  title='lONG DEP TRAI';
   
   gridColumns: ['email', 'firstName', 'lastName', 'position', 'phoneNo'];
 
@@ -28,7 +28,7 @@ export class UserComponent implements OnInit {
     userService.getUsers("").subscribe(
       next => {
         this.dataSource = next;
-        debugger;
+        console.log(this.positionDataSource)  
       },
       error => {
 
@@ -38,6 +38,7 @@ export class UserComponent implements OnInit {
     this.positionService.getPositions().subscribe(
       next => {
         this.positionDataSource = next;
+        console.log(this.positionDataSource)
       },
       error => { }
     );
@@ -86,8 +87,9 @@ export class UserComponent implements OnInit {
     );
   }
   //#endregion
-
+ 
   ngOnInit(): void {
+    
   }
 
 }
@@ -98,11 +100,12 @@ export class UserComponent implements OnInit {
     DxDataGridModule,
     DxButtonModule,
     DxPopupModule,
+  
     UserFormModule
   ],
   declarations: [UserComponent],
   bootstrap: [UserComponent]
 })
 export class UserModule {
-
+ 
 }

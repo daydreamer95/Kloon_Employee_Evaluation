@@ -4,7 +4,7 @@ import { AppRolesEnum } from './../../models/user-app.model';
 import { EnumUserSex } from './../../models/user.model';
 import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule } from 'devextreme-angular';
+import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule,DxValidatorModule,DxTextBoxModule } from 'devextreme-angular';
 import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
@@ -15,9 +15,12 @@ import { UserService } from '../../services/user.service';
 })
 export class UserFormComponent implements OnInit {
   @Input() model: UserFormModel;
+  @Input() text:string;
+  @Input() position:PositionModel[];
   @Output() onRefreshGrid = new EventEmitter<void>();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
 
+  
   formState = FormState;
   popupVisible = false;
   popupConfirmDeleteVisible = false;
@@ -33,15 +36,10 @@ export class UserFormComponent implements OnInit {
     { caption: 'USER', value: AppRolesEnum.USER }
   ]
 
-  positionDataSource: PositionModel[];
 
-  constructor(private userService: UserService, private positionService: PositionService) {
-    this.positionService.getPositions().subscribe(
-      next => {
-        this.positionDataSource = next;
-      },
-      error => { }
-    );
+  constructor(private userService: UserService,private positionService:PositionService) {
+    
+ 
   }
 
   open() {
@@ -162,19 +160,21 @@ export class UserFormComponent implements OnInit {
     DxDataGridModule,
     DxButtonModule,
     DxPopupModule,
-    DxFormModule
+    DxFormModule,
+    DxTextBoxModule,
+    DxValidatorModule
   ],
   declarations: [UserFormComponent],
   exports: [UserFormComponent]
 })
 export class UserFormModule {
-
+ 
 }
 
 export class UserFormModel {
   state: FormState;
   data: UserModel
-
+ 
   constructor(init?: Partial<UserFormModel>) {
     Object.assign(this, init);
   }
