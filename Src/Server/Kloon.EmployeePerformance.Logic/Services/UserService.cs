@@ -250,6 +250,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             #region UserModel
             if (userModel == null)
             {
+                error.Add("INVALID_MODEL");
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL");
             }
             #endregion
@@ -311,7 +312,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             #endregion
 
             #region Phone
-            if (userModel.PhoneNo.Length > 10)
+            if (userModel.PhoneNo != null && userModel.PhoneNo.Length > 10)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_PHONE_MAX_LENGTH");
             }

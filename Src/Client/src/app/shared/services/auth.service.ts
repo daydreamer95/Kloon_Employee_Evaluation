@@ -1,4 +1,4 @@
-import { UserApp } from './../models/user-app.model';
+import { AppRolesEnum, UserApp } from './../models/user-app.model';
 import { UserService } from './user.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -86,6 +86,10 @@ export class AuthService {
 
   get getUser(){
     return this.userSubject.value;
+  }
+
+  get isRoleAdministrator(){
+    return this.userSubject.value.appRole == AppRolesEnum.ADMINISTRATOR? true: false;
   }
 
   async createAccount(email, password) {

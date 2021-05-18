@@ -88,6 +88,8 @@
                         valueExpr: 'id'}">
                     <dxi-validation-rule type="required" message="Position is required"></dxi-validation-rule>
                     </dxi-item>
+
+
                     <dxi-item  
                     dataField="phoneNo"  
                     editorType="dxTextBox"  
@@ -95,9 +97,13 @@
                         mask: '0000-0000-00'}">  
                  
                     </dxi-item> 
+
+
                     <dxi-item dataField="doB" [label]="{text: 'Date of birth'}" editorType="dxDateBox" [editorOptions]="{ width: '100%', type: 'date', displayFormat: 'dd/MM/yyyy'}" >
                  
                     </dxi-item>
+
+                    
                 </dx-form>  
         </div>
 </dx-popup>
