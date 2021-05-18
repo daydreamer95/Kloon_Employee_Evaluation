@@ -33,6 +33,7 @@ export class CriteriasComponent implements OnInit {
   popupVisible = false;
   searchValue = '';
   treeListComp: any;
+  btnAddTypeComp: any;
   popupComp: any;
   closeButtonOptions = {
     text: 'Close', icon: 'remove',
@@ -174,7 +175,8 @@ export class CriteriasComponent implements OnInit {
     this.mode = mode === 'add' ? 'Add' : 'Edit';
   }
   onCheckBoxDragChange = (e: any) => {
-    this.isEnableDrag = e.value;
+    this.isEnableDrag = e.value || false;
+    this.btnAddTypeComp.option('disabled', this.isEnableDrag);
     if (!e.value && e.previousValue) {
       // save change
       const data = this.treeListComp !== null ? this.treeListComp.getDataSource()._store._array : [];
@@ -208,14 +210,15 @@ export class CriteriasComponent implements OnInit {
       widget: 'dxButton',
       options: {
         text: 'Add',
-        bindingOption: {
-          disabled: 'this.isEnableDrag',
-        },
         icon: 'plus',
         type: 'success',
+        onInitialized: this.onInitBtnAddType.bind(this),
         onClick: () => { this.onClickAddType(e); }
       }
     });
+  }
+  onInitBtnAddType = (e: any) => {
+    this.btnAddTypeComp = e.component;
   }
   oncellDblClick = (e: any) => {
     const isType = e.data.typeId === null;

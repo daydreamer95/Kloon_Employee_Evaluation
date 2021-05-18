@@ -117,8 +117,11 @@
               Description:
               <dx-text-area
               [(value)] = "criteriaModel.description"
-              [readOnly] = "isViewDetail"
-              ></dx-text-area>
+              [readOnly] = "isViewDetail">
+              <dx-validator>
+                <dxi-validation-rule type="stringLength" [max]="500" message="Name length must be less than 500 characters"></dxi-validation-rule>
+            </dx-validator>
+            </dx-text-area>
           </p>
       </div>
     </dx-popup>
