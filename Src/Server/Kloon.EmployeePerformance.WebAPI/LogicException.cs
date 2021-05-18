@@ -36,8 +36,6 @@ namespace Kloon.EmployeePerformance.WebAPI
 
                 case ErrorType.NO_ROLE:
                 case ErrorType.NO_DATA_ROLE:
-                case ErrorType.NOT_AUTHENTICATED:
-                    return HttpStatusCode.Forbidden;
 
                 case ErrorType.INTERNAL_ERROR:
                 default:

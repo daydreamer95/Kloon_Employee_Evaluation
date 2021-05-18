@@ -1,7 +1,7 @@
-﻿using Kloon.EmployeePerformance.Logic.Services;
-using Kloon.EmployeePerformance.Models.Common;
+﻿using Kloon.EmployeePerformance.Models.Common;
 using Kloon.EmployeePerformance.Models.User;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -11,10 +11,25 @@ namespace Kloon.EmployeePerformance.Test.Api
     public class UserService_Test : TestBase
     {
         private readonly Random _rand = new Random();
-        private IUserService _userService;
         const string _url = "/User";
         public List<UserModel> dataInit = new List<UserModel>();
 
+        [TestInitialize]
+        public void InitData()
+        {
+            InitUserData();
+
+            InitAdminData();
+        }
+
+        [TestCleanup]
+        public void CleanData()
+        {
+            ClearUserData();
+
+            ClearAdminData();
+        }
+        [TestMethod]
         public void Admin_Add_User_When_Valid_Data_Then_Success()
         {
             var model = InitUserModel();
@@ -29,7 +44,39 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.AreEqual(model.RoleId, result.Data.RoleId);
         }
 
+        [TestMethod]
+        public void Admin_Add_User_When_Invalid_Data_Then_Error()
+        {
+            var expectedModel = InitUserModel();
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
 
+            Assert.AreEqual("INVALID_MODEL", errorMess);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_NULL", errorMess);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MIN_LENGTH", errorMess);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MAX_LENGTH", errorMess);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_CHARACTERS", errorMess);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_NULL", errorMess);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_MIN_LENGTH", errorMess);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_MAX_LENGTH", errorMess);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_CHARACTERS", errorMess);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_NULL", errorMess);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_MAX_LENGTH", errorMess);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_FORMAT_WRONG", errorMess);
+            Assert.AreEqual("INVALID_MODEL_PHONE_NULL", errorMess);
+            Assert.AreEqual("INVALID_MODEL_PHONE_MAX_LENGTH", errorMess);
+            Assert.AreEqual("INVALID_MODEL_PHONE_FORMAT_WRONG", errorMess);
+            Assert.AreEqual("INVALID_MODEL_POSITION_NULL", errorMess);
+            Assert.AreEqual("INVALID_MODEL_SEX_NULL", errorMess);
+            Assert.AreEqual("INVALID_MODEL_DOB_NULL", errorMess);
+            Assert.AreEqual("INVALID_MODEL_ROLE_NULL", errorMess);
+
+            Assert.IsFalse(actualModel.IsSuccess);
+            Assert.IsNotNull(actualModel.Error);
+        }
+        [TestMethod]
+        public void User_Add_User_Have_No_Permission_Then_Error() { }
         #region Init User
         private void InitUserData()
         {
@@ -56,7 +103,7 @@ namespace Kloon.EmployeePerformance.Test.Api
                 FirstName = "Username: " + rand(),
                 LastName = "Lastname: " + rand(),
                 PositionId = rand(),
-                Sex = rand(),
+                Sex = SexEnum.FEMALE,
                 DoB = DateTime.Today.AddDays(-new Random().Next(20 * 635)),
                 PhoneNo = "Phone: " + rand(),
                 RoleId = (int)Roles.USER,
@@ -91,7 +138,7 @@ namespace Kloon.EmployeePerformance.Test.Api
                 FirstName = "Username: " + rand(),
                 LastName = "Lastname: " + rand(),
                 PositionId = rand(),
-                Sex = rand(),
+                Sex = SexEnum.FEMALE,
                 DoB = DateTime.Today.AddDays(-new Random().Next(20 * 635)),
                 PhoneNo = "Phone: " + rand(),
                 RoleId = (int)Roles.ADMINISTRATOR,

@@ -46,7 +46,11 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     {
                         return error;
                     };
-
+                    var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Email.Equals(userModel.Email));
+                    if (registedEmail)
+                    {
+                        return new ErrorModel(ErrorType.DUPLICATED, "Email has been taken!");
+                    }
                     return null;
                 })
                .ThenImplement(current =>
@@ -65,7 +69,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                        RoleId = userModel.RoleId,
                        CreatedBy = current.Id,
                        CreatedDate = now,
-                       PasswordHash = Utils.EncryptedPassword("123456",salt),
+                       PasswordHash = Utils.EncryptedPassword("123456", salt),
                        PasswordSalt = salt
                    };
                    _users.Add(user);
@@ -207,7 +211,11 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     {
                         return error;
                     }
-
+                    var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Id != userModel.Id && x.Email.Equals(userModel.Email));
+                    if (registedEmail)
+                    {
+                        return new ErrorModel(ErrorType.DUPLICATED, "Email has been taken!");
+                    }
                     user = _users.Query(x => x.Id == userModel.Id).FirstOrDefault();
                     if (user == null)
                     {
@@ -242,106 +250,85 @@ namespace Kloon.EmployeePerformance.Logic.Services
             #region UserModel
             if (userModel == null)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Please fill in the required fields");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL");
             }
             #endregion
 
             #region FirstName
             if (string.IsNullOrEmpty(userModel.FirstName))
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "First name is required");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_NULL");
             }
             if (userModel.FirstName.Length < 1)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Min length of first name is 2");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_MIN_LENGTH");
             }
             if (userModel.FirstName.Length > 20)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Max length of first name is 20");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_MAX_LENGTH");
             }
-            if (Regex.IsMatch(userModel.FirstName, @"^\W$"))
+            if (Regex.IsMatch(userModel.FirstName, @"^[a-zA-Z]*$") == false)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "First name cannot contain digits or special characters");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_CHARACTERS");
             }
             #endregion 
 
             #region LastName
             if (string.IsNullOrEmpty(userModel.LastName))
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Last name is required");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_NULL");
             }
             if (userModel.LastName.Length < 1)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Min length of Last name is 2");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_MIN_LENGTH");
             }
             if (userModel.LastName.Length > 20)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Max length of Last name is 20");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_MAX_LENGTH");
             }
-            if (Regex.IsMatch(userModel.LastName, @"^\W$"))
+            if (Regex.IsMatch(userModel.LastName, @"^[a-zA-Z]*$") == false)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Last name cannot contain digits or special characters");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_CHARACTERS");
             }
             #endregion
 
             #region Email
             if (string.IsNullOrEmpty(userModel.Email))
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Email is required");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_NULL");
             }
-            if (userModel.Email.Length > 20)
+            if (userModel.Email.Length > 40)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Max length of email is 40");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_MAX_LENGTH");
             }
-            //if (Regex.IsMatch(userModel.Email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"))
-            //{
-            //    return new ErrorModel(ErrorType.BAD_REQUEST, "Email must have a correct format");
-            //}
 
-            var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Id != x.Id && x.Email.Equals(userModel.Email));
-            if (registedEmail)
+            string validEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+            if (Regex.IsMatch(userModel.Email, validEmail, RegexOptions.IgnoreCase) == false)
             {
-                return new ErrorModel(ErrorType.DUPLICATED, "Email has been taken!");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_FORMAT_WRONG");
             }
 
             #endregion
 
             #region Phone
-            if (string.IsNullOrEmpty(userModel.PhoneNo))
+            if (userModel.PhoneNo.Length > 10)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Phone number is required");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_PHONE_MAX_LENGTH");
             }
-            if (userModel.PhoneNo.Length > 11)
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Max length of phone number is 10");
-            }
-            if (Regex.IsMatch(userModel.PhoneNo, @"^(84|0[3|5|7|8|9])+([0-9]{8})\b$"))
-            {
-                return new ErrorModel(ErrorType.DUPLICATED, "Phone must follow Vietnam format!");
-            }
-            //var takenPhone = _logicService.Cache.Users.GetValues().Any(x => x.PhoneNo.Equals(userModel.PhoneNo));
-            //if (takenPhone)
-            //{
-            //    return new ErrorModel(ErrorType.DUPLICATED, "Phone has been taken!");
-            //}
             #endregion
 
             #region Selectable Attribute
             if (string.IsNullOrEmpty(userModel.PositionId.ToString()))
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Position is required");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_POSITION_NULL");
             }
             if (string.IsNullOrEmpty(userModel.Sex.ToString()))
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Gender is required");
-            }
-            if (string.IsNullOrEmpty(userModel.DoB.ToString()))
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Date of  birth is required");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_SEX_NULL");
             }
             if (string.IsNullOrEmpty(userModel.RoleId.ToString()))
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Role is required");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_ROLE_NULL");
             }
             #endregion
 

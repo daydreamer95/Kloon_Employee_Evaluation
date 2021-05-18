@@ -55,7 +55,7 @@ import { DxValidatorModule } from 'devextreme-angular';
     })
   ],
   providers: [
-    AuthService, ScreenService, AppInfoService, JwtHelperService, UserService, PositionService, ProjectService,
+    AuthService, ScreenService, AppInfoService, JwtHelperService, PositionService,
     { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

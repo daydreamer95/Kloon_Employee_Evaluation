@@ -15,6 +15,7 @@ import {
   DxValidationSummaryModule
 } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
+import { O_NONBLOCK } from 'constants';
 
 @Component({
   selector: 'app-criterias',
@@ -30,8 +31,9 @@ export class CriteriasComponent implements OnInit {
   validationGR: any;
   isEnableDrag = false;
   isAddOrEditType = false;
+  isViewDetail = false;
   popupVisible = false;
-  searchValue: any;
+  searchValue = '';
   treeListComp: any;
   popupComp: any;
   closeButtonOptions = {
@@ -51,17 +53,22 @@ export class CriteriasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const params = new HttpParams();
+    this.init();
+  }
+
+  init(): any {
+    const params: HttpParams = new HttpParams()
+      .set('key', this.searchValue);
     this.service.getCriterias(params)
       .subscribe((result: any) => {
         this.employees = result;
+        this.lookupData = result.filter(x => x.typeId === null);
       },
         (err: any) => {
           this.common.UI.toastMessage('Load data fail!!!', 'error', 2000);
         }
       );
   }
-
   onDragChange(e: any): any {
     const visibleRows = e.component.getVisibleRows();
     const sourceNode = e.component.getNodeByKey(e.itemData.id);
@@ -87,7 +94,7 @@ export class CriteriasComponent implements OnInit {
       if (this.mode === 'Add') {
         this.service.addCriteria(data)
           .subscribe((result: any) => {
-            this.treeListComp.refresh();
+            this.init();
             this.popupComp.hide();
           },
             (err: any) => {
@@ -99,7 +106,7 @@ export class CriteriasComponent implements OnInit {
       else {
         this.service.editCriteria(data)
           .subscribe((result: any) => {
-            this.treeListComp.refresh();
+            this.init();
             this.popupComp.hide();
           },
             (err: any) => {
@@ -118,11 +125,11 @@ export class CriteriasComponent implements OnInit {
     this.popupComp = e.component;
   }
   onHidingPopup = (e: any) => {
-    this.criteriaModel = new Criteria();
-    this.validationGR.reset();
-  }
-  onChangeSelect = (e: any) => {
-    const a = 1;
+    if (this.validationGR != null) {
+      this.criteriaModel = new Criteria();
+      this.validationGR.reset();
+    }
+    this.isViewDetail = false;
   }
   onClickAdd = (e: any, data: any) => {
     this.isAddOrEditType = false;
@@ -147,8 +154,21 @@ export class CriteriasComponent implements OnInit {
     this.criteriaModel.orderNo = data.orderNo;
   }
   onShowPopup = (mode: any, isType: boolean) => {
+    let titleMode = '';
+    switch (mode) {
+      case 'add':
+        titleMode = 'Add';
+        break;
+      case 'edit':
+        titleMode = 'Edit';
+        break;
+      case 'detail':
+        titleMode = 'Detail';
+        break;
+      default:
+      // code block
+    }
     let strTitle = 'Criteria';
-    const titleMode = mode === 'add' ? 'Add' : 'Edit';
     const strType = !isType ? '' : 'Type';
     strTitle = titleMode + ' ' + strTitle + ' ' + strType;
     this.popupComp.option('title', strTitle);
@@ -162,12 +182,12 @@ export class CriteriasComponent implements OnInit {
       const data = this.treeListComp !== null ? this.treeListComp.getDataSource()._store._array : [];
       this.service.orderCriteria(data)
         .subscribe((result: any) => {
-          this.treeListComp.refresh();
+          this.init();
         },
           (err: any) => { }
         );
-      return;
     }
+    return;
   }
   onRowPrepared = (e: any) => {
     if (e.rowType === 'data' && e.data.typeId === null) {
@@ -175,9 +195,40 @@ export class CriteriasComponent implements OnInit {
       e.rowElement.style.fontWeight = 'bold';
     }
   }
+  onToolbarPreparing = (e: any) => {
+    e.toolbarOptions.items.unshift({
+      location: 'before',
+      widget: 'dxCheckBox',
+      options: {
+        width: 200,
+        text: ' Re-arrange (Drag & Drop)',
+        value: this.isEnableDrag,
+        onValueChanged: this.onCheckBoxDragChange.bind(this)
+      }
+    }, {
+      location: 'after',
+      widget: 'dxButton',
+      options: {
+        text: 'Add',
+        bindingOption: {
+          disabled: 'this.isEnableDrag',
+        },
+        icon: 'plus',
+        type: 'success',
+        onClick: () => { this.onClickAddType(e); }
+      }
+    });
+  }
+  oncellDblClick = (e: any) => {
+    const isType = e.data.typeId === null;
+    this.isViewDetail = true;
+    this.onBindingModel(e.data);
+    this.isAddOrEditType = isType;
+    this.onShowPopup('detail', isType);
+  }
   onSearch = (e: any) => {
     this.searchValue = e.component.option('value');
-    // reload dataSource
+    this.init();
   }
   onReorder = (e: any) => {
     const visibleRows = e.component.getVisibleRows();
