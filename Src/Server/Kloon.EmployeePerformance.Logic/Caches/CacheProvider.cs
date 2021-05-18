@@ -104,7 +104,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                         FirstName = t.FirstName,
                         LastName = t.LastName,
                         Email = t.Email,
-                        DoB = t.DoB,
+                        DoB = (DateTime)t.DoB,
                         PhoneNo = t.PhoneNo,
                         PositionId = t.PositionId,
                         RoleId = t.RoleId,
@@ -180,7 +180,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
                 var data = dbContext.GetRepository<ProjectUser>()
                     .Query(x => x.ProjectId == projectId)
-                    .Where( x => x.DeletedBy ==  null && x.DeletedDate == null)
+                    .Where(x => x.DeletedBy == null && x.DeletedDate == null)
                     .ToDictionary(t => t.UserId, t => new
                     {
                         ProjectUserId = t.Id,
@@ -197,7 +197,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                         FirstName = t.FirstName,
                         LastName = t.LastName,
                         Email = t.Email,
-                        DoB = t.DoB,
+                        DoB = (DateTime)t.DoB,
                         PhoneNo = t.PhoneNo,
                         PositionId = t.PositionId,
                         RoleId = t.RoleId,
@@ -301,7 +301,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
 
         #region Cache Extension
 
-        public class UserAllCache : DataAllCache<int, UserMD> 
+        public class UserAllCache : DataAllCache<int, UserMD>
         {
             private readonly CacheProvider _provider;
             public UserAllCache(CacheProvider provider)
