@@ -6,6 +6,7 @@ import { DxButtonModule, DxDataGridModule, DxPopupModule} from 'devextreme-angul
 import { UserModel } from 'src/app/shared/models/user.model';
 import { PositionModel } from 'src/app/shared/models/position.model';
 import { PositionService } from 'src/app/shared/services/position.service';
+import { AuthService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-user',
@@ -16,7 +17,7 @@ export class UserComponent implements OnInit {
   //#region Init variable
   dataSource: UserModel[]
   positionDataSource: PositionModel[];
- 
+  isAdminRole = false;
   
   gridColumns: ['email', 'firstName', 'lastName', 'position', 'phoneNo'];
 
@@ -24,28 +25,24 @@ export class UserComponent implements OnInit {
   currUser: UserFormModel = new UserFormModel();
   //#endregion
 
-  constructor(private userService: UserService,private positionService: PositionService) {
+  constructor(private userService: UserService,private positionService: PositionService, private authService:AuthService) {
     userService.getUsers("").subscribe(
       next => {
-        this.dataSource = next;
-        console.log(this.positionDataSource)  
+        this.dataSource = next; 
       },
       error => {
-
       }
     );
 
     this.positionService.getPositions().subscribe(
       next => {
         this.positionDataSource = next;
-        console.log(this.positionDataSource)
       },
       error => { }
     );
+    this.isAdminRole = this.authService.isRoleAdministrator;
   }
 
-  
-   
   onToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
       location: 'after',
@@ -54,6 +51,7 @@ export class UserComponent implements OnInit {
         icon: 'add',
         width: 'auto',
         text: 'Add',
+        visible: this.isAdminRole,
         onClick: this.onOpenAddUserPopup.bind(this)
       }
     });
