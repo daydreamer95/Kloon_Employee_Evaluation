@@ -1,5 +1,5 @@
 <dx-popup width="auto" height="auto" [showTitle]="true" [(title)]="popupTitle" [dragEnabled]="true"
-    [closeOnOutsideClick]="true" [showCloseButton]="true" [(visible)]="popupVisible">
+    [closeOnOutsideClick]="true" [showCloseButton]="true" [(visible)]="popupVisible" (onInitialized)= "onContentReady($event)">
     <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="before" [visible]="model.state === formState.CREATE"
         [options]="createButtonOptions">
     </dxi-toolbar-item>
