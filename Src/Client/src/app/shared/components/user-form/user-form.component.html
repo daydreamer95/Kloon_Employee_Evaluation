@@ -18,7 +18,6 @@
             widget="dxButton"
             toolbar="bottom"
             location="before"
-            [visible]="true"
             [visible]="model.state === formState.EDIT && isAdminRole == true"
             [options]="editButtonOptions">
         </dxi-toolbar-item>
@@ -48,12 +47,16 @@
                     [colCount]="2"
                     [disabled]="model.state === formState.DETAIL">
 
-
+                    <dxi-item dataField="firstName">
+                        <dxi-validation-rule type="required" message="First name is required"></dxi-validation-rule>
+                    </dxi-item>
+                    <dxi-item dataField="lastName">
+                        <dxi-validation-rule type="required" message="Last name is required"></dxi-validation-rule>
+                    </dxi-item>
                     <dxi-item dataField="email">
                        
                         <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
                     </dxi-item>
-                    
                     <dxi-item
                         dataField="sex"
                         editorType="dxSelectBox"
@@ -66,12 +69,7 @@
                                 message="Sex is required">
                             </dxi-validation-rule>
                     </dxi-item>
-                    <dxi-item dataField="firstName">
-                        <dxi-validation-rule type="required" message="First name is required"></dxi-validation-rule>
-                    </dxi-item>
-                    <dxi-item dataField="lastName">
-                        <dxi-validation-rule type="required" message="Last name is required"></dxi-validation-rule>
-                    </dxi-item>
+
                     <dxi-item 
                         dataField="roleId"
                         [label]="{text: 'Role'}"
@@ -92,8 +90,6 @@
                         valueExpr: 'id'}">
                     <dxi-validation-rule type="required" message="Position is required"></dxi-validation-rule>
                     </dxi-item>
-
-
                     <dxi-item  
                     dataField="phoneNo"  
                     editorType="dxTextBox"  

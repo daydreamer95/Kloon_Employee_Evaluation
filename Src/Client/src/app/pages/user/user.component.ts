@@ -28,28 +28,21 @@ export class UserComponent implements OnInit {
   constructor(private userService: UserService,private positionService: PositionService, private authService:AuthService) {
     userService.getUsers("").subscribe(
       next => {
-        this.dataSource = next;
-        console.log(this.positionDataSource)  
+        this.dataSource = next; 
       },
       error => {
-
       }
     );
 
     this.positionService.getPositions().subscribe(
       next => {
         this.positionDataSource = next;
-        console.log(this.positionDataSource)
       },
       error => { }
     );
-
     this.isAdminRole = this.authService.isRoleAdministrator;
-
   }
 
-  
-   
   onToolbarPreparing(e) {
     e.toolbarOptions.items.unshift({
       location: 'after',
