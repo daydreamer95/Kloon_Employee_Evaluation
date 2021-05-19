@@ -313,7 +313,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_MAX_LENGTH");
             }
 
-            string validEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+            string validEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@kloon.vn$";
             if (Regex.IsMatch(userModel.Email, validEmail, RegexOptions.IgnoreCase) == false)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_FORMAT_WRONG");
