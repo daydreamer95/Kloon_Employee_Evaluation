@@ -2,44 +2,63 @@ import { PositionModel } from './../../models/position.model';
 import { PositionService } from './../../services/position.service';
 import { AppRolesEnum } from './../../models/user-app.model';
 import { EnumUserSex } from './../../models/user.model';
-import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgModule,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule,DxValidatorModule,DxTextBoxModule } from 'devextreme-angular';
+import {
+  DxButtonModule,
+  DxDataGridModule,
+  DxFormComponent,
+  DxFormModule,
+  DxPopupModule,
+  DxValidatorModule,
+  DxTextBoxModule,
+} from 'devextreme-angular';
 import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services';
 
 @Component({
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
-  styleUrls: ['./user-form.component.scss']
+  styleUrls: ['./user-form.component.scss'],
 })
 export class UserFormComponent implements OnInit {
   @Input() model: UserFormModel;
-
-  @Input() position:PositionModel[];
+  @Input() position: PositionModel[];
   @Output() onRefreshGrid = new EventEmitter<void>();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
 
-  
+  emailPattern: any = /^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@kloon.vn$/;
+  isAdminRole = false;
   formState = FormState;
   popupVisible = false;
   popupConfirmDeleteVisible = false;
   popupTitle = '';
+
   currUser: UserModel;
   sexDataSource = [
     { caption: 'Male', value: EnumUserSex.MALE },
-    { caption: 'Female', value: EnumUserSex.FEMALE }
-  ]
+    { caption: 'Female', value: EnumUserSex.FEMALE },
+  ];
 
   roleDataSource = [
     { caption: 'ADMINISTRATOR', value: AppRolesEnum.ADMINISTRATOR },
-    { caption: 'USER', value: AppRolesEnum.USER }
-  ]
+    { caption: 'USER', value: AppRolesEnum.USER },
+  ];
 
-
-  constructor(private userService: UserService,private positionService:PositionService) {
-    
- 
+  constructor(
+    private userService: UserService,
+    private authService: AuthService
+  ) {
+    this.isAdminRole = this.authService.isRoleAdministrator;
   }
 
   open() {
@@ -61,11 +80,11 @@ export class UserFormComponent implements OnInit {
 
   //#region Options
   closeButtonOptions = {
-    text: "Cancel",
+    text: 'Cancel',
     icon: 'close',
     onClick: (e) => {
       this.popupVisible = false;
-    }
+    },
   };
 
   createButtonOptions = {
@@ -76,61 +95,69 @@ export class UserFormComponent implements OnInit {
       if (!instance.isValid) {
         return;
       }
-
+      this.authService.isRoleAdministrator;
       this.userService.add(this.currUser).subscribe(
-        next => {
+        (next) => {
           //TODO: Call refresh grid
           this.popupVisible = false;
           this.onRefreshGrid.emit();
-          console.log(next)
         },
-        error => { alert(error)}
-      )
-    }
+        (error) => {
+          alert(error);
+        }
+      );
+    },
   };
 
   deleteButtonOptions = {
     icon: 'trash',
     text: 'Delete',
+
     onClick: (e) => {
       this.popupConfirmDeleteVisible = true;
-    }
+    },
   };
 
   enterEditFormButtonOptions = {
     icon: 'edit',
     text: 'Edit',
+
     onClick: (e) => {
       this.model.state = FormState.EDIT;
       this.myform.instance._refresh();
       this.myform.instance.repaint();
-    }
-  }
+    },
+  };
 
   editButtonOptions = {
     icon: 'save',
     text: 'Save',
+
     onClick: (e) => {
+      var instance = this.myform.instance.validate();
+      if (!instance.isValid) {
+        return;
+      }
+
       this.userService.edit(this.currUser).subscribe(
-        next => {
+        (next) => {
           debugger;
           //TODO: Call refresh grid
           this.popupVisible = false;
           this.onRefreshGrid.emit();
         },
-        error => {
-
-        }
-      )
-    }
-  }
+        (error) => {}
+      );
+    },
+  };
 
   closeDeletePopupButtonOptions = {
-    text: "Cancel",
+    text: 'Cancel',
     icon: 'close',
+
     onClick: (e) => {
       this.popupConfirmDeleteVisible = false;
-    }
+    },
   };
 
   confirmDeleteButtonOptions = {
@@ -138,22 +165,21 @@ export class UserFormComponent implements OnInit {
     text: 'Submit',
     onClick: (e) => {
       this.userService.delete(this.currUser.id).subscribe(
-        next => {
+        (next) => {
           this.popupConfirmDeleteVisible = false;
           this.popupVisible = false;
           this.onRefreshGrid.emit();
         },
-        error => {}
-      )
-    }
+        (error) => {}
+      );
+    },
   };
   ////#endregion
 
   ngOnInit(): void {
+    console.log(this.isAdminRole);
   }
-
 }
-
 
 @NgModule({
   imports: [
@@ -163,19 +189,17 @@ export class UserFormComponent implements OnInit {
     DxPopupModule,
     DxFormModule,
     DxTextBoxModule,
-    DxValidatorModule
+    DxValidatorModule,
   ],
   declarations: [UserFormComponent],
-  exports: [UserFormComponent]
+  exports: [UserFormComponent],
 })
-export class UserFormModule {
- 
-}
+export class UserFormModule {}
 
 export class UserFormModel {
   state: FormState;
-  data: UserModel
- 
+  data: UserModel;
+
   constructor(init?: Partial<UserFormModel>) {
     Object.assign(this, init);
   }
@@ -184,5 +208,5 @@ export class UserFormModel {
 export enum FormState {
   DETAIL,
   CREATE,
-  EDIT
+  EDIT,
 }

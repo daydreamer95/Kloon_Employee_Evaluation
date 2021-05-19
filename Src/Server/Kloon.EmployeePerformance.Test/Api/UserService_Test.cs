@@ -50,7 +50,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel = null;
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL", errorMess);
@@ -63,7 +63,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.Email = null;
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_EMAIL_NULL", errorMess);
@@ -75,7 +75,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.Email = "asdfghjklqwertyuiopasdfghjklzxcvbnmlsdje3@gmail.com";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_EMAIL_MAX_LENGTH", errorMess);
@@ -87,7 +87,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.Email = "xcvbnmlsdje3@gmaildASfcoASfm";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_EMAIL_FORMAT_WRONG", errorMess);
@@ -99,7 +99,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.FirstName = null;
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_FIRST_NAME_NULL", errorMess);
@@ -111,7 +111,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.FirstName = "a";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MIN_LENGTH", errorMess);
@@ -123,7 +123,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.FirstName = "asdfghjklpoiuytrewqasf";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MAX_LENGTH", errorMess);
@@ -135,7 +135,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.FirstName = "28Shd&*(^";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_FIRST_NAME_CHARACTERS", errorMess);
@@ -147,7 +147,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.LastName = null;
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_LAST_NAME_NULL", errorMess);
@@ -159,7 +159,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.LastName = "a";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_LAST_NAME_MIN_LENGTH", errorMess);
@@ -171,7 +171,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.LastName = "asdfghjklpoiuytrewqasf";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_LAST_NAME_MAX_LENGTH", errorMess);
@@ -183,7 +183,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.LastName = "28Shd&*(^";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_LAST_NAME_CHARACTERS", errorMess);
@@ -195,7 +195,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.LastName = "098765432123645";
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_PHONE_MAX_LENGTH", errorMess);
@@ -207,7 +207,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.PositionId = 0;
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_POSITION_NULL", errorMess);
@@ -219,7 +219,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.Sex = 0;
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_SEX_NULL", errorMess);
@@ -231,7 +231,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             var expectedModel = InitUserModel();
             expectedModel.RoleId = 0;
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_ROLE_NULL", errorMess);
@@ -248,7 +248,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         private void InitUserData()
         {
             var userModel = InitUserModel();
-            var createResult = Helper.UserPost<UserModel>(_url, userModel);
+            var createResult = Helper.AdminPost<UserModel>(_url, userModel);
             if (createResult.Error == null)
             {
                 dataInit.Add(createResult.Data);
