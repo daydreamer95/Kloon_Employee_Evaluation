@@ -38,7 +38,7 @@ export class CriteriasComponent implements OnInit {
   btnAddTypeComp: any;
   popupComp: any;
   closeButtonOptions = {
-    text: 'Close', icon: 'remove', type: 'normal',
+    text: 'Close', icon: 'back', type: 'normal',
     onClick: (e: any) => {
       this.popupComp.hide();
       e.validationGroup.reset();
@@ -49,7 +49,7 @@ export class CriteriasComponent implements OnInit {
     onClick: (e: any) => { this.onSave(e); }
   };
   deleteButtonOptions = {
-    text: 'Remove', hint: 'Remove', type: 'danger', icon: 'remove',
+    text: 'Delete', hint: 'Remove', type: 'danger', icon: 'remove',
     onClick: (e: any) => { this.onClickRemove(e, this.criteriaModel, this.treeListComp); }
   };
 
