@@ -81,35 +81,15 @@ export class UserFormComponent implements OnInit {
     }
     this.popupVisible = true;
     this.currUser = this.model.data;
-    // this.myform.instance._refresh();
-    this.onTitleButtonChange();
-    this.titleChange._options._optionManager._options.toolbarItems[4].options.text =
-      this.buttonCloseTitle;
   }
 
   onContentReady(e) {
     this.titleChange = e.component;
   }
 
-  onTitleButtonChange() {
-    if (this.model == null) return this.buttonCloseTitle;
-    switch (this.model.state) {
-      case FormState.CREATE:
-        this.buttonCloseTitle = 'Cancel';
-        break;
-      case FormState.DETAIL:
-        this.buttonCloseTitle = 'Exit';
-        break;
-      case FormState.EDIT:
-        this.buttonCloseTitle = 'Cancel';
-        break;
-    }
-    return this.buttonCloseTitle;
-  }
-
   //#region Options
   closeButtonOptions = {
-    text: this.buttonCloseTitle,
+    text: () => {return this.buttonCloseTitle},
     icon: 'close',
     onClick: (e) => {
       this.popupVisible = false;
@@ -143,7 +123,6 @@ export class UserFormComponent implements OnInit {
   deleteButtonOptions = {
     icon: 'trash',
     text: 'Delete',
-
     onClick: (e) => {
       this.popupConfirmDeleteVisible = true;
     },
@@ -152,7 +131,6 @@ export class UserFormComponent implements OnInit {
   enterEditFormButtonOptions = {
     icon: 'edit',
     text: 'Edit',
-
     onClick: (e) => {
       this.model.state = FormState.EDIT;
       this.titleChange._options._optionManager._options.toolbarItems.filter(
@@ -166,7 +144,6 @@ export class UserFormComponent implements OnInit {
   editButtonOptions = {
     icon: 'save',
     text: 'Save',
-
     onClick: (e) => {
       var instance = this.myform.instance.validate();
       if (!instance.isValid) {
@@ -191,7 +168,6 @@ export class UserFormComponent implements OnInit {
   closeDeletePopupButtonOptions = {
     text: 'Cancel',
     icon: 'close',
-
     onClick: (e) => {
       this.popupConfirmDeleteVisible = false;
     },

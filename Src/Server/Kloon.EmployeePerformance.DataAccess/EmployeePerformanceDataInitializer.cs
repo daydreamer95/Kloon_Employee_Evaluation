@@ -76,7 +76,7 @@ namespace Kloon.EmployeePerformance.DataAccess
                 {
                     new User
                     {
-                        Email = "admin@kloon.com",
+                        Email = "admin@kloon.vn",
                         FirstName ="Admin",
                         LastName = "Admin",
                         DoB = new DateTime(1980,1,1),
@@ -91,7 +91,7 @@ namespace Kloon.EmployeePerformance.DataAccess
                     },
                     new User
                     {
-                        Email = "user@kloon.com",
+                        Email = "user@kloon.vn",
                         FirstName ="Admin",
                         LastName = "Admin",
                         DoB = new DateTime(1980,1,1),
