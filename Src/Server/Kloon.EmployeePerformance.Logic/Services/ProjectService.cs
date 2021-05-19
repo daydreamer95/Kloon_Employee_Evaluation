@@ -150,6 +150,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
                    int result = _dbContext.Save();
                    _logicService.Cache.Projects.Clear();
+
+                   projectModel.Id = project.Id;
                    return projectModel;
                });
             return result;

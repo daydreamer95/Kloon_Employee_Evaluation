@@ -103,7 +103,6 @@ export class ProjectComponent implements OnInit {
       this.projectService.add(data).subscribe(
         ((responeseData: ProjectModel) => {
           notify("Add Project Success", "success", 5000);
-
           this.currentProject.state = ProjectFormState.DETAIL;
           this.currentProject.data = responeseData;
           this.selectedIndex = 1;

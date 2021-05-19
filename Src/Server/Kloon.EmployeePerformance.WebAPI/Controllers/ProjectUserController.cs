@@ -43,7 +43,7 @@ namespace Kloon.EmployeePerformance.WebAPI.Controllers
 
         #region POST
 
-        [HttpPost("{userId}")]
+        [HttpPost("{userId:int}")]
         public ActionResult<ProjectUserModel> Create(int projectId, int userId)
         {
             var result = _projectUserService.Create(projectId, userId);
