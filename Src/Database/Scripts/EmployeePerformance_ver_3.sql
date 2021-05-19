@@ -107,7 +107,7 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Crite
 BEGIN
 	CREATE TABLE [dbo].[CriteriaType](
 		[Id] [uniqueidentifier] NOT NULL,
-		[Name] [nvarchar](50) NOT NULL,
+		[Name] [nvarchar](255) NOT NULL,
         [Description] [nvarchar] (500) NULL,
         [OrderNo] [int] NOT NULL,
         [Rowversion] [timestamp] NOT NULL,
@@ -130,7 +130,7 @@ BEGIN
 	CREATE TABLE [dbo].[Criteria](
 		[Id] [uniqueidentifier] NOT NULL,
         [CriteriaTypeId] [uniqueidentifier] NOT NULL,
-		[Name] [nvarchar](50) NOT NULL,
+		[Name] [nvarchar](255) NOT NULL,
         [Description] [nvarchar] (500) NULL,
         [OrderNo] [int] NOT NULL,
         [Rowversion] [timestamp] NOT NULL,
