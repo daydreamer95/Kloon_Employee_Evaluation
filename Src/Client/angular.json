@@ -50,7 +50,8 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/web.config"
             ],
             "styles": [
               "node_modules/devextreme/dist/css/dx.common.css",
