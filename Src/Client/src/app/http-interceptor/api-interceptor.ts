@@ -24,8 +24,8 @@ export class ApiInterceptor implements HttpInterceptor {
         this.authService.logOut();
       }
 
-      const error = err.error.message || err.statusText;
-      return throwError(error);
+      // const error = err.error.message || err.statusText;
+      return throwError(err);
     }))
   }
 }
