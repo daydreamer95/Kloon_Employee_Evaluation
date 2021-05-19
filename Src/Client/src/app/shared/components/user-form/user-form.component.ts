@@ -133,11 +133,7 @@ export class UserFormComponent implements OnInit {
         },
         (err) => {
           if (err.error === 'INVALID_MODEL_DUPLICATED_EMAIL') {
-            this.common.UI.multipleNotify(
-              'Email is existed !',
-              'error',
-              2000
-            );
+            this.common.UI.multipleNotify('Email is existed !', 'error', 2000);
           }
         }
       );
@@ -184,12 +180,8 @@ export class UserFormComponent implements OnInit {
           this.onRefreshGrid.emit();
         },
         (e: any) => {
-          if (e.error) {
-            this.common.UI.multipleNotify(
-              'Email is existed !',
-              'error',
-              2000
-            );
+          if (e.error === 'INVALID_MODEL_DUPLICATED_EMAIL') {
+            this.common.UI.multipleNotify('Email is existed !', 'error', 2000);
           }
         }
       );
