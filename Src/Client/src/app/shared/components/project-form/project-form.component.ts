@@ -171,6 +171,7 @@ export class ProjectFormComponent implements OnInit {
                 load: async () => {
                     const data = await this.projectMemberService.GetTopFiveUserNotInProject(this.currentProject.id, "").toPromise();
                     this.selectBoxUserComp.option('items', data);
+                    this.selectBoxUserComp.option('value', null);
                     return data;
                 }
             })
@@ -214,6 +215,7 @@ export class ProjectFormComponent implements OnInit {
                 options: {
                     width: '150%',
                     dataSource: this.selectBoxListUsers,
+                    showClearButton: true,
                     valueExpr: (t: UserModel) => {
                         if (t == null) {
                             return 0;
@@ -231,7 +233,6 @@ export class ProjectFormComponent implements OnInit {
                     placeholder: "Search User",
                     onValueChanged: (e) => {
                         this.userSelectId = e.value;
-
                     },
                     onInitialized: this.onInitSelectBoxUser.bind(this),
                 }
@@ -251,11 +252,14 @@ export class ProjectFormComponent implements OnInit {
             ((responeseData: ProjectUserModel) => {
                 notify("Add member to project Success", "success", 5000);
                 this.getProjectMember();
+                this.selectBoxUserComp.option('value', null);
                 this.OnInitDataUser();
+                this.selectBoxListUsers.load();               
             }),
             (
                 error => {
                     this.loading = false;
+                    console.log(error);
                     notify(error.error, 'error', 5000);
                 }
             )
@@ -301,8 +305,6 @@ export class ProjectFormComponent implements OnInit {
                 ((responeseData: ProjectUserModel) => {
                     this.popupVisibleProjectUser = false;
                     this.getProjectMember();
-
-                    this.OnInitDataUser();
                 }),
                 (
                     error => {

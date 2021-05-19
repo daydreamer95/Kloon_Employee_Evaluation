@@ -15,7 +15,7 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [ AuthGuardService ],
+    canActivate: [AuthGuardService],
     data: {
       allowedRoles: [AppRoutingRole.ADMINISTRATOR, AppRoutingRole.USER]
     }
@@ -23,7 +23,7 @@ const routes: Routes = [
   {
     path: 'criteria',
     component: CriteriasComponent,
-    canActivate: [ AuthGuardService ],
+    canActivate: [AuthGuardService],
     data: {
       allowedRoles: [AppRoutingRole.ADMINISTRATOR]
     }
@@ -31,7 +31,7 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [ AuthGuardService ],
+    canActivate: [AuthGuardService],
     data: {
       allowedRoles: [AppRoutingRole.ADMINISTRATOR, AppRoutingRole.USER]
     }
@@ -39,27 +39,27 @@ const routes: Routes = [
   {
     path: 'login-form',
     component: LoginFormComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [AuthGuardService]
   },
   {
     path: 'reset-password',
     component: ResetPasswordFormComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [AuthGuardService]
   },
   {
     path: 'create-account',
     component: CreateAccountFormComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [AuthGuardService]
   },
   {
     path: 'change-password/:recoveryCode',
     component: ChangePasswordFormComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [AuthGuardService]
   },
   {
     path: 'user',
     component: UserComponent,
-    canActivate: [ AuthGuardService ],
+    canActivate: [AuthGuardService],
     data: {
       allowedRoles: [AppRoutingRole.ADMINISTRATOR, AppRoutingRole.USER]
     }
@@ -67,15 +67,15 @@ const routes: Routes = [
   {
     path: 'project',
     component: ProjectComponent,
-    canActivate: [ AuthGuardService ],
+    canActivate: [AuthGuardService],
     data: {
-      allowedRoles: [AppRoutingRole.ADMINISTRATOR]
+      allowedRoles: [AppRoutingRole.ADMINISTRATOR, AppRoutingRole.USER]
     }
   },
   {
     path: 'error',
     component: ErrorComponent,
-    canActivate: [ AuthGuardService ]
+    canActivate: [AuthGuardService]
   },
   {
     path: '**',

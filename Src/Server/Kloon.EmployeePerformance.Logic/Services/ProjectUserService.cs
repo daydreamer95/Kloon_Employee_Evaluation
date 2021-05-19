@@ -138,37 +138,30 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 })
                 .ThenImplement(currentUser =>
                 {
-                    var projects = _logicService.Cache.Projects.GetUsers(projectId).AsEnumerable();
+                    var projects = _logicService.Cache.Projects.GetUsers(projectId).OrderBy(x => x.Id);
 
                     var users = _logicService.Cache.Users.GetValues().AsEnumerable();
 
-                    var query = from a in projects
-                                join b in users 
-                                on a.Id equals b.Id
-                                select new
-                                {
-                                    a = a,
-                                    b = b
-                                };
-
-                    if (!string.IsNullOrWhiteSpace(searchText))
+                    List<ProjectUserModel> projectUserModels = new List<ProjectUserModel>();
+                    foreach (var item in projects)
                     {
-                        query = query.Where(t => t.b.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-                                                || t.b.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-                                                || t.b.Email.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-                    }
-                    var record = query.OrderBy(x => x.b.FirstName)
-                        .Select(t => new ProjectUserModel
+                        var user = _logicService.Cache.Users.Get(item.Id);
+                        if (user != null)
                         {
-                            Id = t.a.ProjectUserId == null ? Guid.Empty : t.a.ProjectUserId.Value,
-                            Email = t.b.Email,
-                            FirstName = t.b.FirstName,
-                            LastName = t.b.LastName,
-                            ProjectId = projectId,
-                            ProjectRoleId = t.a.ProjectRoleId == null ? 0 : (ProjectRoles)t.a.ProjectRoleId.Value,
-                            UserId = t.b.Id
-                        }).ToList();
-                    return record;
+                            ProjectUserModel projectUserModel = new ProjectUserModel()
+                            {
+                                Id = item.ProjectUserId.Value,
+                                Email = user.Email,
+                                FirstName = user.FirstName,
+                                LastName = user.LastName,
+                                ProjectId = projectId,
+                                ProjectRoleId = (ProjectRoles)item.ProjectRoleId,
+                                UserId = user.Id
+                            };
+                            projectUserModels.Add(projectUserModel);
+                        }
+                    }
+                    return projectUserModels;
 
                 });
             return result;
