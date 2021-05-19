@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kloon.EmployeePerformance.Models.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Kloon.EmployeePerformance.Models.Project
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Status { get; set; }
+        public ProjectStatusEnum Status { get; set; }
         //public int? DeletedBy { get; set; }
         //public DateTime? DeletedDate { get; set; }
 
@@ -19,11 +20,11 @@ namespace Kloon.EmployeePerformance.Models.Project
         {
             get
             {
-                if (Status == 1)
+                if (Status == ProjectStatusEnum.OPEN)
                     return "Open";
-                else if (Status == 2)
+                else if (Status == ProjectStatusEnum.PENDING)
                     return "Pending";
-                else if (Status == 3)
+                else if (Status == ProjectStatusEnum.CLOSED)
                     return "Closed";
                 return "";
             }

@@ -74,7 +74,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                             Id = t.Id,
                             Name = t.Name,
                             Description = t.Description,
-                            Status = t.Status
+                            Status = (ProjectStatusEnum)t.Status
                         })
                         .ToList();
                     return record;
@@ -105,7 +105,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         Id = project.Id,
                         Description = project.Description,
                         Name = project.Name,
-                        Status = project.Status
+                        Status = (ProjectStatusEnum)project.Status
                     };
                     return projectVM;
                 });
@@ -141,7 +141,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                    var project = new Project()
                    {
                        Name = projectModel.Name.Trim(),
-                       Status = projectModel.Status,
+                       Status = (int)projectModel.Status,
                        Description = projectModel.Description,
                        CreatedBy = current.Id,
                        CreatedDate = now
@@ -169,7 +169,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         .FirstOrDefault();
                     if (project == null)
                     {
-                        return new ErrorModel(ErrorType.NOT_EXIST, "Project with Id = " + id + " not found");
+                        return new ErrorModel(ErrorType.NOT_EXIST, "Project not found");
                     }
                     return null;
                 })
@@ -224,19 +224,19 @@ namespace Kloon.EmployeePerformance.Logic.Services
                    project = _projects.Query(x => x.Id == projectModel.Id).FirstOrDefault();
                    if (project == null)
                    {
-                       return new ErrorModel(ErrorType.NOT_EXIST, "Project with Id = " + projectModel.Id + " not found");
+                       return new ErrorModel(ErrorType.NOT_EXIST, "Project not found");
                    }
 
                    if (project.DeletedBy != null && project.DeletedDate != null)
                    {
-                       return new ErrorModel(ErrorType.NOT_EXIST, "Project with Id = " + projectModel.Id + " not found");
+                       return new ErrorModel(ErrorType.NOT_EXIST, "Project not found");
                    }
                    return null;
                })
                .ThenImplement(current =>
                {
                    project.Name = projectModel.Name.Trim();
-                   project.Status = projectModel.Status;
+                   project.Status = (int)projectModel.Status;
                    project.Description = projectModel.Description;
                    project.ModifiedBy = current.Id;
                    project.ModifiedDate = now;
@@ -252,7 +252,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
         {
             if (projectModel == null)
             {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Please fill in the required files");
+                return new ErrorModel(ErrorType.BAD_REQUEST, "Please fill in the required fields");
             }
             if (string.IsNullOrEmpty(projectModel.Name))
             {
@@ -267,10 +267,10 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 return new ErrorModel(ErrorType.BAD_REQUEST, "Max length of Description is 500");
             }
 
-            if (projectModel.Status <= 0 || projectModel.Status >= 4)
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "Status must be selected");
-            }
+            //if (projectModel.Status <= 0 || projectModel.Status >= 4)
+            //{
+            //    return new ErrorModel(ErrorType.BAD_REQUEST, "Status must be selected");
+            //}
 
             return null;
         }
