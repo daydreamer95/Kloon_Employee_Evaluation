@@ -30,15 +30,15 @@ export class CommonService {
       notify({
         message,
         contentTemplate: (element: any) => {
-          this.dialogControl.currentNotifyHeight += element.lastChild.offsetHeight + 32;
+          this.dialogControl.currentNotifyHeight += element.lastChild.offsetHeight + 55;
           this.dialogControl.notifiyManager.push({
             counter,
-            height: element.lastChild.offsetHeight + 32
+            height: element.lastChild.offsetHeight + 55
           });
         },
         type,
         show: {
-          from: { opacity: 0.2, top: 100 },
+          from: { opacity: 0.5, top: 100 },
           to: { opacity: 1, top: 10 },
           type: 'slideIn',
         },
@@ -52,9 +52,10 @@ export class CommonService {
           my: 'top right',
           at: 'top right',
           of: window,
-          offset: '0 +' + this.dialogControl.currentNotifyHeight
+          offset: '5 +' + this.dialogControl.currentNotifyHeight
         },
         maxWidth: '400px',
+        minHeight: '70px',
         onHidden: (e) => {
           const thisNotifyHeight = this.dialogControl.notifiyManager[this.dialogControl.notifiyManager.length - 1].height;
           this.dialogControl.notifiyManager.pop();
