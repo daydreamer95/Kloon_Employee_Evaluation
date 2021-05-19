@@ -78,6 +78,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
                     int result = _dbContext.Save();
                     _logicService.Cache.Projects.Clear();
+                    _logicService.Cache.Users.Clear();
                     return new ProjectUserModel()
                     {
                         Id = projectMenber.Id,
@@ -115,6 +116,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     int result = _dbContext.Save();
 
                     _logicService.Cache.Projects.Clear();
+                    _logicService.Cache.Users.Clear();
                     return true;
                 });
             return result;
@@ -136,24 +138,35 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 })
                 .ThenImplement(currentUser =>
                 {
-                    var query = _logicService.Cache.Projects.GetUsers(projectId).AsEnumerable();
+                    var projects = _logicService.Cache.Projects.GetUsers(projectId).AsEnumerable();
+
+                    var users = _logicService.Cache.Users.GetValues().AsEnumerable();
+
+                    var query = from a in projects
+                                join b in users 
+                                on a.Id equals b.Id
+                                select new
+                                {
+                                    a = a,
+                                    b = b
+                                };
 
                     if (!string.IsNullOrWhiteSpace(searchText))
                     {
-                        query = query.Where(t => t.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-                                                || t.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
-                                                || t.Email.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+                        query = query.Where(t => t.b.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                                                || t.b.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                                                || t.b.Email.Contains(searchText, StringComparison.OrdinalIgnoreCase));
                     }
-                    var record = query == null ? new List<ProjectUserModel>() : query.OrderBy(x => x.FirstName)
+                    var record = query.OrderBy(x => x.b.FirstName)
                         .Select(t => new ProjectUserModel
                         {
-                            Id = t.ProjectUserId == null ? Guid.Empty : t.ProjectUserId.Value,
-                            Email = t.Email,
-                            FirstName = t.FirstName,
-                            LastName = t.LastName,
+                            Id = t.a.ProjectUserId == null ? Guid.Empty : t.a.ProjectUserId.Value,
+                            Email = t.b.Email,
+                            FirstName = t.b.FirstName,
+                            LastName = t.b.LastName,
                             ProjectId = projectId,
-                            ProjectRoleId = t.ProjectRoleId == null ? 0 : (ProjectRoles)t.ProjectRoleId.Value,
-                            UserId = t.Id
+                            ProjectRoleId = t.a.ProjectRoleId == null ? 0 : (ProjectRoles)t.a.ProjectRoleId.Value,
+                            UserId = t.b.Id
                         }).ToList();
                     return record;
 
@@ -200,7 +213,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         ProjectRoleId = (ProjectRoles)projectUser.ProjectRoleId,
                         Email = user.Email,
                         ProjectName = project.Name
-                        //Email = projectUser.Em
                     };
                 });
             return result;
@@ -283,6 +295,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     int result = _dbContext.Save();
 
                     _logicService.Cache.Projects.Clear();
+                    _logicService.Cache.Users.Clear();
                     return new ProjectUserModel()
                     {
                         Id = projectUser.Id,
