@@ -32,16 +32,17 @@ namespace Kloon.EmployeePerformance.Test.Api
         [TestMethod]
         public void ADMIN_ADD_USER_WHEN_VALID_DATA_THEN_SUCCESS()
         {
-            var model = InitUserModel();
-            var result = Helper.UserPost<UserModel>(_url, dataInit);
-            Assert.AreEqual(model.Email, result.Data.Email);
-            Assert.AreEqual(model.FirstName, result.Data.FirstName);
-            Assert.AreEqual(model.LastName, result.Data.LastName);
-            Assert.AreEqual(model.PositionId, result.Data.PositionId);
-            Assert.AreEqual(model.Sex, result.Data.Sex);
-            Assert.AreEqual(model.DoB, result.Data.DoB);
-            Assert.AreEqual(model.PhoneNo, result.Data.PhoneNo);
-            Assert.AreEqual(model.RoleId, result.Data.RoleId);
+            var expectedModel = InitUserModel();
+            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            dataInit.Add(actualModel.Data);
+            Assert.AreEqual(expectedModel.Email, actualModel.Data.Email);
+            Assert.AreEqual(expectedModel.FirstName, actualModel.Data.FirstName);
+            Assert.AreEqual(expectedModel.LastName, actualModel.Data.LastName);
+            Assert.AreEqual(expectedModel.PositionId, actualModel.Data.PositionId);
+            Assert.AreEqual(expectedModel.Sex, actualModel.Data.Sex);
+            Assert.AreEqual(expectedModel.DoB, actualModel.Data.DoB);
+            Assert.AreEqual(expectedModel.PhoneNo, actualModel.Data.PhoneNo);
+            Assert.AreEqual(expectedModel.RoleId, actualModel.Data.RoleId);
         }
 
         [TestMethod]
@@ -238,10 +239,10 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.IsNotNull(actualModel.Error);
         }
 
-        [TestMethod]
-        public void USER_ADD_USER_HAVE_NO_PERMISSION_THEN_ERROR()
-        {
-        }
+        //[TestMethod]
+        //public void USER_ADD_USER_HAVE_NO_PERMISSION_THEN_ERROR()
+        //{
+        //}
 
         #region Init User
         private void InitUserData()

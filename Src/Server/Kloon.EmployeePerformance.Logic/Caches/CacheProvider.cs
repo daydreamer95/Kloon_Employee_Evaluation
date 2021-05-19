@@ -104,7 +104,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                         FirstName = t.FirstName,
                         LastName = t.LastName,
                         Email = t.Email,
-                        DoB = (DateTime)t.DoB,
+                        DoB = t.DoB,
                         PhoneNo = t.PhoneNo,
                         PositionId = t.PositionId,
                         RoleId = t.RoleId,
