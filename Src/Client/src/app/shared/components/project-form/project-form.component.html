@@ -8,6 +8,13 @@
   [showCloseButton]="false"
   [(visible)]="popupVisible"
 >
+  <dxo-paging [pageSize]="10"></dxo-paging>
+  <dxo-pager
+    [showPageSizeSelector]="true"
+    [allowedPageSizes]="[5, 10, 20]"
+    [showInfo]="true"
+  >
+  </dxo-pager>
   <dxi-toolbar-item
     widget="dxButton"
     toolbar="bottom"
@@ -73,7 +80,7 @@
             <dxi-item
               dataField="description"
               editorType="dxTextArea"
-              [editorOptions]="{ height: 90, maxLength: 500 }"
+              [editorOptions]="{ height: 200, maxLength: 500 }"
             >
             </dxi-item>
             <dxi-item
@@ -217,8 +224,7 @@
           valueExpr: 'id'
         }"
       >
-      <dxi-item dataField="projectName" [readOnly]="true"> </dxi-item>
-
+        <dxi-item dataField="projectName" [readOnly]="true"> </dxi-item>
       </dxi-item>
     </dx-form>
   </div>
