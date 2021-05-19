@@ -125,27 +125,44 @@ namespace Kloon.EmployeePerformance.Logic.Caches
                 var data = dbContext.GetRepository<ProjectUser>()
                     .Query(x => x.UserId == userId)
                     .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
-                    .ToDictionary(t => t.ProjectId, t => new
+                    .Select( t => new
                     {
                         ProjectId = t.ProjectId,
                         ProjectRoleId = t.ProjectRoleId
-                    });
+                    })
+                    .ToList();
+
+                List<int> productIds = new List<int>();
+
+                if (data.Count == 0)
+                {
+                    return new List<ProjectMD>();
+                }
+                productIds = data.Select(x => x.ProjectId).ToList();
 
                 var result = data.Count == 0 ? new List<ProjectMD>() : dbContext.GetRepository<Project>()
-                    .Query(x => data.ContainsKey(x.Id))
+                    .Query(x => productIds.Contains(x.Id))
                     .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
-                    .Select(t => new ProjectMD()
-                    {
-                        Id = t.Id,
-                        Name = t.Name,
-                        Description = t.Description,
-                        Status = t.Status,
-                        ProjectRoleId = data.Where(x => x.Key == t.Id).First().Value.ProjectRoleId,
-                        DeletedBy = t.DeletedBy,
-                        DeletedDate = t.DeletedDate
-                    }).ToList();
+                    .AsEnumerable()
+                    .Select(t => {
+                        var item = data.Where(x => x.ProjectId == t.Id).FirstOrDefault();
+                        if (item == null)
+                        {
+                            return new ProjectMD();
+                        }
+                        return  new ProjectMD()
+                        {
+                            Id = t.Id,
+                            Name = t.Name,
+                            Description = t.Description,
+                            Status = t.Status,
+                            ProjectRoleId = item.ProjectRoleId,
+                            DeletedBy = t.DeletedBy,
+                            DeletedDate = t.DeletedDate
+                        };
+                    });
 
-                return result;
+                return result.ToList();
             });
         }
 

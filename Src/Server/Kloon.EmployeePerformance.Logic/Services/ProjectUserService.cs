@@ -114,7 +114,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
                     int result = _dbContext.Save();
 
-                    _logicService.Cache.Projects.Remove(projectId);
+                    _logicService.Cache.Projects.Clear();
                     return true;
                 });
             return result;
