@@ -122,45 +122,15 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             {
                 var userId = (int)paramArrs.First();
 
-                var data = dbContext.GetRepository<ProjectUser>()
+                var result = dbContext.GetRepository<ProjectUser>()
                     .Query(x => x.UserId == userId)
                     .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
-                    .Select( t => new
+                    .Select(t => new ProjectMD
                     {
-                        ProjectId = t.ProjectId,
+                        Id = t.ProjectId,
                         ProjectRoleId = t.ProjectRoleId
                     })
                     .ToList();
-
-                List<int> productIds = new List<int>();
-
-                if (data.Count == 0)
-                {
-                    return new List<ProjectMD>();
-                }
-                productIds = data.Select(x => x.ProjectId).ToList();
-
-                var result = data.Count == 0 ? new List<ProjectMD>() : dbContext.GetRepository<Project>()
-                    .Query(x => productIds.Contains(x.Id))
-                    .Where(t => !t.DeletedBy.HasValue && !t.DeletedDate.HasValue)
-                    .AsEnumerable()
-                    .Select(t => {
-                        var item = data.Where(x => x.ProjectId == t.Id).FirstOrDefault();
-                        if (item == null)
-                        {
-                            return new ProjectMD();
-                        }
-                        return  new ProjectMD()
-                        {
-                            Id = t.Id,
-                            Name = t.Name,
-                            Description = t.Description,
-                            Status = t.Status,
-                            ProjectRoleId = item.ProjectRoleId,
-                            DeletedBy = t.DeletedBy,
-                            DeletedDate = t.DeletedDate
-                        };
-                    });
 
                 return result.ToList();
             });
@@ -195,52 +165,16 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             {
                 var projectId = (int)paramArrs.First();
 
-                var data = dbContext.GetRepository<ProjectUser>()
+                var result = dbContext.GetRepository<ProjectUser>()
                     .Query(x => x.ProjectId == projectId)
                     .Where(x => x.DeletedBy == null && x.DeletedDate == null)
-                    .Select(t => new
+                    .Select(t => new UserMD
                     {
                         ProjectUserId = t.Id,
-                        UserId = t.UserId,
+                        Id = t.UserId,
                         ProjectRoleId = t.ProjectRoleId
                     })
                     .ToList();
-
-                List<int> userIds = new List<int>();
-
-                if (data.Count == 0)
-                {
-                    return new List<UserMD>();
-                }
-                userIds = data.Select(x => x.UserId).ToList();
-
-
-                var result = dbContext.GetRepository<User>()
-                    .Query(x => userIds.Contains(x.Id))
-                    .Where(x => x.DeletedBy == null && x.DeletedDate == null)
-                    .AsEnumerable()
-                    .Select(t =>
-                    {
-                        var item = data.Where(x => x.UserId == t.Id).FirstOrDefault();
-                        if (item == null)
-                        {
-                            return new UserMD();
-                        }
-                        return new UserMD()
-                        {
-                            Id = t.Id,
-                            FirstName = t.FirstName,
-                            LastName = t.LastName,
-                            Email = t.Email,
-                            DoB = (DateTime)t.DoB,
-                            PhoneNo = t.PhoneNo,
-                            PositionId = t.PositionId,
-                            RoleId = t.RoleId,
-                            Sex = t.Sex.Value,
-                            ProjectRoleId = item.ProjectRoleId,
-                            ProjectUserId = item.ProjectUserId
-                        };
-                    }).ToList();
 
                 return result;
             });

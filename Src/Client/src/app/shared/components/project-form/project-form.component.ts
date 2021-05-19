@@ -43,6 +43,8 @@ export class ProjectFormComponent implements OnInit {
     popupVisibleProjectUser = false;
     popupTitleProjectUser = '';
 
+    selectBoxUserComp: any;
+
     constructor(private projectMemberService: ProjectUserService) {
 
     }
@@ -98,6 +100,7 @@ export class ProjectFormComponent implements OnInit {
         this.getProjectMember();
 
         this.OnInitDataUser();
+
         this.selectBoxListUsers.load();
         this.userSelectId = 0;
     }
@@ -167,6 +170,7 @@ export class ProjectFormComponent implements OnInit {
                 loadMode: "raw",
                 load: async () => {
                     const data = await this.projectMemberService.GetTopFiveUserNotInProject(this.currentProject.id, "").toPromise();
+                    this.selectBoxUserComp.option('items', data);
                     return data;
                 }
             })
@@ -227,14 +231,17 @@ export class ProjectFormComponent implements OnInit {
                     placeholder: "Search User",
                     onValueChanged: (e) => {
                         this.userSelectId = e.value;
+
                     },
-                    onInitialized: (e) => {
-                    }
+                    onInitialized: this.onInitSelectBoxUser.bind(this),
                 }
             }
         );
     }
 
+    onInitSelectBoxUser(e) {
+        this.selectBoxUserComp = e.component;
+    }
 
 
     onAddProjectMember(e): void {
@@ -291,19 +298,19 @@ export class ProjectFormComponent implements OnInit {
         text: 'Submit',
         onClick: (e) => {
             this.projectMemberService.edit(this.projectUserFormModel.data.projectId, this.projectUserFormModel.data.id, this.projectUserFormModel.data.projectRoleId).subscribe(
-                ((responeseData: ProjectUserModel) => {             
+                ((responeseData: ProjectUserModel) => {
                     this.popupVisibleProjectUser = false;
                     this.getProjectMember();
 
                     this.OnInitDataUser();
                 }),
                 (
-                  error => {
-                    this.loading = false;
-                    notify(error.error, 'error', 5000);
-                  }
+                    error => {
+                        this.loading = false;
+                        notify(error.error, 'error', 5000);
+                    }
                 )
-              )
+            )
         }
     }
 
@@ -330,6 +337,8 @@ export class ProjectFormComponent implements OnInit {
                             this.getProjectMember();
 
                             this.OnInitDataUser();
+
+                            this.selectBoxListUsers.load();
 
                         }),
                         (
