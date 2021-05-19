@@ -18,21 +18,22 @@
             widget="dxButton"
             toolbar="bottom"
             location="before"
-            [visible]="model.state === formState.EDIT"
+            [visible]="true"
+            [visible]="model.state === formState.EDIT && isAdminRole == true"
             [options]="editButtonOptions">
         </dxi-toolbar-item>
         <dxi-toolbar-item
             widget="dxButton"
             toolbar="bottom"
             location="before"
-            [visible]="model.state === formState.DETAIL"
+            [visible]="model.state === formState.DETAIL && isAdminRole == true"
             [options]="enterEditFormButtonOptions">
         </dxi-toolbar-item>
         <dxi-toolbar-item
             widget="dxButton"
             toolbar="bottom"
             location="before"
-            [visible]="model.state === formState.DETAIL"
+            [visible]="model.state === formState.DETAIL && isAdminRole == true"
             [options]="deleteButtonOptions">
         </dxi-toolbar-item>
         <dxi-toolbar-item
@@ -46,7 +47,10 @@
                     [formData]="currUser"
                     [colCount]="2"
                     [disabled]="model.state === formState.DETAIL">
+
+
                     <dxi-item dataField="email">
+                       
                         <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
                     </dxi-item>
                     

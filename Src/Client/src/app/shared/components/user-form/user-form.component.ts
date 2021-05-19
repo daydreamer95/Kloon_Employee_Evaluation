@@ -7,6 +7,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule,DxValidatorModule,DxTextBoxModule } from 'devextreme-angular';
 import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services';
 
 @Component({
   selector: 'app-user-form',
@@ -20,11 +21,12 @@ export class UserFormComponent implements OnInit {
   @Output() onRefreshGrid = new EventEmitter<void>();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
 
-  
+  isAdminRole = false;
   formState = FormState;
   popupVisible = false;
   popupConfirmDeleteVisible = false;
   popupTitle = '';
+
   currUser: UserModel;
   sexDataSource = [
     { caption: 'Male', value: EnumUserSex.MALE },
@@ -37,9 +39,9 @@ export class UserFormComponent implements OnInit {
   ]
 
 
-  constructor(private userService: UserService,private positionService:PositionService) {
-    
- 
+  constructor(private userService: UserService,private authService :AuthService) {
+    this.isAdminRole = this.authService.isRoleAdministrator;
+  
   }
 
   open() {
@@ -76,13 +78,12 @@ export class UserFormComponent implements OnInit {
       if (!instance.isValid) {
         return;
       }
-
+      this.authService.isRoleAdministrator
       this.userService.add(this.currUser).subscribe(
         next => {
           //TODO: Call refresh grid
           this.popupVisible = false;
           this.onRefreshGrid.emit();
-          console.log(next)
         },
         error => { alert(error)}
       )
@@ -92,14 +93,18 @@ export class UserFormComponent implements OnInit {
   deleteButtonOptions = {
     icon: 'trash',
     text: 'Delete',
+   
+    
     onClick: (e) => {
       this.popupConfirmDeleteVisible = true;
+      
     }
   };
 
   enterEditFormButtonOptions = {
     icon: 'edit',
     text: 'Edit',
+
     onClick: (e) => {
       this.model.state = FormState.EDIT;
       this.myform.instance._refresh();
@@ -110,6 +115,7 @@ export class UserFormComponent implements OnInit {
   editButtonOptions = {
     icon: 'save',
     text: 'Save',
+
     onClick: (e) => {
       this.userService.edit(this.currUser).subscribe(
         next => {
@@ -128,6 +134,7 @@ export class UserFormComponent implements OnInit {
   closeDeletePopupButtonOptions = {
     text: "Cancel",
     icon: 'close',
+    
     onClick: (e) => {
       this.popupConfirmDeleteVisible = false;
     }
@@ -150,6 +157,7 @@ export class UserFormComponent implements OnInit {
   ////#endregion
 
   ngOnInit(): void {
+    console.log(this.isAdminRole);
   }
 
 }
