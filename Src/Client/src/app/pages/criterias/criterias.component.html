@@ -21,7 +21,7 @@
         [showRowLines]="true"
         [showBorders]="true"
         parentIdExpr="typeId"
-        [autoExpandAll]="false"
+        [(autoExpandAll)]="expanded"
         [columnAutoWidth]="true"
         (onInitialized)="onInitTreeList($event)"
         (onToolbarPreparing)="onToolbarPreparing($event)"
@@ -72,6 +72,7 @@
             widget="dxButton"
             toolbar="bottom"
             location="after"
+            [visible]="!isViewDetail"
             [options]="saveButtonOptions">
         </dxi-toolbar-item>
         <dxi-toolbar-item

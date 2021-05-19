@@ -26,6 +26,7 @@ export class CriteriasComponent implements OnInit {
   criteriaModel = new Criteria();
   lookupData: any;
   mode: any;
+  expanded = true;
   validationGR: any;
   isEnableDrag = false;
   isAddOrEditType = false;
@@ -125,7 +126,7 @@ export class CriteriasComponent implements OnInit {
   }
   onHidingPopup = (e: any) => {
     if (this.validationGR != null) {
-      this.criteriaModel = new Criteria();
+      // this.criteriaModel = new Criteria();
       this.validationGR.reset();
     }
     this.isViewDetail = false;
@@ -205,7 +206,16 @@ export class CriteriasComponent implements OnInit {
         value: this.isEnableDrag,
         onValueChanged: this.onCheckBoxDragChange.bind(this)
       }
-    }, {
+    },
+      {
+        location: 'after',
+        widget: 'dxButton',
+        options: {
+          width: 136,
+          text: 'Collapse All',
+          onClick: this.collapseAllClick.bind(this)
+        }
+      }, {
       location: 'after',
       widget: 'dxButton',
       options: {
@@ -219,6 +229,21 @@ export class CriteriasComponent implements OnInit {
   }
   onInitBtnAddType = (e: any) => {
     this.btnAddTypeComp = e.component;
+  }
+  collapseAllClick = (e: any) => {
+    this.expanded = !this.expanded;
+    e.component.option({
+      text: this.expanded ? 'Collapse All' : 'Expand All'
+    });
+    if (this.expanded) {
+      this.treeListComp.option('expandedRowKeys', []);
+    } else {
+      const expanItem = [];
+      for (let i = 0; i < this.lookupData.length; i++) {
+        expanItem.push(i);
+      }
+      this.treeListComp.option('expandedRowKeys', expanItem);
+    }
   }
   oncellDblClick = (e: any) => {
     const isType = e.data.typeId === null;
