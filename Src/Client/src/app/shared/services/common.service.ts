@@ -6,13 +6,7 @@ import notify from 'devextreme/ui/notify';
 })
 export class CommonService {
   dialogControl = {
-    alert: null,
-    confirmRemove: null,
-    confirmRemoveFB: null,
-    confirmWarning: null,
-    confirmInfo: null,
     notifiyManager: [],
-    showLoadding: null,
     currentNotifyHeight: 0,
   };
   UI = {
