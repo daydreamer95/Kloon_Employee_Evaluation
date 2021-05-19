@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { CommonService } from './../../shared/services/common.service';
 import { Component, OnInit, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -37,7 +38,7 @@ export class CriteriasComponent implements OnInit {
   btnAddTypeComp: any;
   popupComp: any;
   closeButtonOptions = {
-    text: 'Close', icon: 'remove',
+    text: 'Close', icon: 'back', type: 'normal',
     onClick: (e: any) => {
       this.popupComp.hide();
       e.validationGroup.reset();
@@ -46,6 +47,10 @@ export class CriteriasComponent implements OnInit {
   saveButtonOptions = {
     text: 'Save', type: 'success', icon: 'save',
     onClick: (e: any) => { this.onSave(e); }
+  };
+  deleteButtonOptions = {
+    text: 'Delete', hint: 'Remove', type: 'danger', icon: 'remove',
+    onClick: (e: any) => { this.onClickRemove(e, this.criteriaModel, this.treeListComp); }
   };
 
   expandedRowKeys: Array<number> = [1, 2];
@@ -146,7 +151,26 @@ export class CriteriasComponent implements OnInit {
     this.onBindingModel(data);
     this.onShowPopup('edit', isType);
   }
+  onClickRemove = (e: any, data: any, treeComp: any) => {
+    const item = this.treeListComp.getDataSource().items().filter(x => x.key === data.id);
+    if (item.length > 0 && item[0].children.length > 0) {
+      this.common.UI.multipleNotify('Criteria Type Has Children, can not delete', 'error', 2000);
+      return;
+    }
+    this.service.deleteCriteria(data.id)
+      .subscribe((result: any) => {
+        this.popupComp.hide();
+        this.init();
+      },
+        (err: any) => {
+          this.common.UI.multipleNotify('Delete Error', 'error', 2000);
+          this.popupComp.hide();
+        }
+      );
+    const a = 1;
+  }
   onBindingModel = (data: Criteria) => {
+    this.criteriaModel = new Criteria();
     this.criteriaModel.id = data.id;
     this.criteriaModel.typeId = data.typeId;
     this.criteriaModel.name = data.name;
@@ -192,49 +216,51 @@ export class CriteriasComponent implements OnInit {
   }
   onRowPrepared = (e: any) => {
     if (e.rowType === 'data' && e.data.typeId === null) {
-      e.rowElement.style.backgroundColor = '#d1bdbd';
+      e.rowElement.style.backgroundColor = '#ecffd9';
       e.rowElement.style.fontWeight = 'bold';
     }
   }
   onToolbarPreparing = (e: any) => {
     e.toolbarOptions.items.unshift({
       location: 'before',
+      locateInMenu: 'auto',
       widget: 'dxCheckBox',
       options: {
         width: 200,
-        text: ' Re-arrange (Drag & Drop)',
+        text: ' Re-arrange',
         value: this.isEnableDrag,
         onValueChanged: this.onCheckBoxDragChange.bind(this)
       }
     },
       {
         location: 'after',
+        locateInMenu: 'auto',
         widget: 'dxButton',
         options: {
           width: 136,
-          text: 'Collapse All',
+          icon: 'alignjustify',
+          hint: 'Collapse-Expand',
+          text: 'View',
           onClick: this.collapseAllClick.bind(this)
         }
       }, {
       location: 'after',
       widget: 'dxButton',
-      options: {
-        text: 'Add',
-        icon: 'plus',
-        type: 'success',
-        onInitialized: this.onInitBtnAddType.bind(this),
-        onClick: () => { this.onClickAddType(e); }
-      }
+      template: 'myToolbarTemplate',
+      // options: {
+      //   text: 'Add',
+      //   icon: 'plus',
+      //   type: 'success',
+      //   onInitialized: this.onInitBtnAddType.bind(this),
+      //   onClick: () => { this.onClickAddType(e); }
+      // }
     });
   }
   onInitBtnAddType = (e: any) => {
     this.btnAddTypeComp = e.component;
   }
-  collapseAllClick = (e: any) => {
+  collapseAllClick = (e: any): void => {
     this.expanded = !this.expanded;
-    e.component.option({
-      text: this.expanded ? 'Collapse All' : 'Expand All'
-    });
     if (this.expanded) {
       this.treeListComp.option('expandedRowKeys', []);
     } else {

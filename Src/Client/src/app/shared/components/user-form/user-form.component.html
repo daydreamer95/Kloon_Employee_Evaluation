@@ -1,5 +1,6 @@
 <dx-popup width="auto" height="auto" [showTitle]="true" [(title)]="popupTitle" [dragEnabled]="true"
-    [closeOnOutsideClick]="true" [showCloseButton]="true" [(visible)]="popupVisible">
+    [closeOnOutsideClick]="true" [showCloseButton]="true" [(visible)]="popupVisible"
+    (onInitialized)="onContentReady($event)">
     <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="before" [visible]="model.state === formState.CREATE"
         [options]="createButtonOptions">
     </dxi-toolbar-item>
@@ -26,7 +27,6 @@
                 <dxi-validation-rule type="email" message="Email is wrong format"></dxi-validation-rule>
                 <dxi-validation-rule type="pattern" [pattern]="emailPattern" message="Email MUST have domain @kloon.vn">
                 </dxi-validation-rule>
-                <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
                 <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
             </dxi-item>
             <dxi-item dataField="sex" editorType="dxSelectBox" [editorOptions]="{

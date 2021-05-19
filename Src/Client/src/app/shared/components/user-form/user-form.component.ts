@@ -24,6 +24,7 @@ import {
 import { UserModel } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-user-form',
@@ -42,8 +43,9 @@ export class UserFormComponent implements OnInit {
   popupVisible = false;
   popupConfirmDeleteVisible = false;
   popupTitle = '';
-
+  buttonCloseTitle = 'Close';
   currUser: UserModel;
+  titleChange: any;
   sexDataSource = [
     { caption: 'Male', value: EnumUserSex.MALE },
     { caption: 'Female', value: EnumUserSex.FEMALE },
@@ -56,7 +58,8 @@ export class UserFormComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private common: CommonService
   ) {
     this.isAdminRole = this.authService.isRoleAdministrator;
   }
@@ -65,22 +68,48 @@ export class UserFormComponent implements OnInit {
     switch (this.model.state) {
       case FormState.CREATE:
         this.popupTitle = 'CREATE USER';
+        this.buttonCloseTitle = 'Cancel';
         break;
       case FormState.DETAIL:
         this.popupTitle = 'DETAIL';
+        this.buttonCloseTitle = 'Exit';
         break;
       case FormState.EDIT:
         this.popupTitle = 'EDIT USER';
+        this.buttonCloseTitle = 'Cancel';
         break;
     }
     this.popupVisible = true;
     this.currUser = this.model.data;
     // this.myform.instance._refresh();
+    this.onTitleButtonChange();
+    this.titleChange._options._optionManager._options.toolbarItems[4].options.text =
+      this.buttonCloseTitle;
+  }
+
+  onContentReady(e) {
+    this.titleChange = e.component;
+  }
+
+  onTitleButtonChange() {
+    if (this.model == null) return this.buttonCloseTitle;
+    switch (this.model.state) {
+      case FormState.CREATE:
+        this.buttonCloseTitle = 'Cancel';
+        break;
+      case FormState.DETAIL:
+        this.buttonCloseTitle = 'Exit';
+        break;
+      case FormState.EDIT:
+        this.buttonCloseTitle = 'Cancel';
+        break;
+    }
+    return this.buttonCloseTitle;
   }
 
   //#region Options
   closeButtonOptions = {
-    text: 'Cancel',
+    text: this.buttonCloseTitle,
     icon: 'close',
     onClick: (e) => {
       this.popupVisible = false;
@@ -102,8 +131,10 @@ export class UserFormComponent implements OnInit {
           this.popupVisible = false;
           this.onRefreshGrid.emit();
         },
-        (error) => {
-          alert(error);
+        (err) => {
+          if (err.error === 'INVALID_MODEL_DUPLICATED_EMAIL') {
+            this.common.UI.multipleNotify('Email is existed !', 'error', 2000);
+          }
         }
       );
     },
@@ -124,6 +155,9 @@ export class UserFormComponent implements OnInit {
 
     onClick: (e) => {
       this.model.state = FormState.EDIT;
+      this.titleChange._options._optionManager._options.toolbarItems.filter(
+        (t) => t.options.icon == 'close'
+      )[0].options.text = 'Cancel';
       this.myform.instance._refresh();
       this.myform.instance.repaint();
     },
@@ -141,12 +175,15 @@ export class UserFormComponent implements OnInit {
 
       this.userService.edit(this.currUser).subscribe(
         (next) => {
-          debugger;
           //TODO: Call refresh grid
           this.popupVisible = false;
           this.onRefreshGrid.emit();
         },
-        (error) => {}
+        (e: any) => {
+          if (e.error === 'INVALID_MODEL_DUPLICATED_EMAIL') {
+            this.common.UI.multipleNotify('Email is existed !', 'error', 2000);
+          }
+        }
       );
     },
   };
@@ -176,9 +213,7 @@ export class UserFormComponent implements OnInit {
   };
   ////#endregion
 
-  ngOnInit(): void {
-    console.log(this.isAdminRole);
-  }
+  ngOnInit(): void {}
 }
 
 @NgModule({

@@ -1,17 +1,4 @@
 <h2 style="margin: 15px;">Criteria Manage</h2>
-<!-- <div>
-  <div style="position: relative; top:50px; left: 20px;"><dx-check-box (onValueChanged)="onCheckBoxDragChange($event)" [value]="isEnableDrag"text=" Re-arrange (Drag & Drop)"></dx-check-box></div>
-  <div class="input-group rowForm">
-  <div style="margin-right: 10px;">
-    <dx-button stylingMode="contained"
-      text="Add"
-      icon="plus"
-      type="success"
-      (onClick)="onClickAddType($event)">
-    </dx-button>
-  </div>
-  </div>
-</div> -->
 <div>
   <dx-tree-list
         id="employees"
@@ -23,6 +10,7 @@
         parentIdExpr="typeId"
         [(autoExpandAll)]="expanded"
         [columnAutoWidth]="true"
+        [wordWrapEnabled]="true"
         (onInitialized)="onInitTreeList($event)"
         (onToolbarPreparing)="onToolbarPreparing($event)"
         (onCellDblClick)="oncellDblClick($event)"
@@ -34,32 +22,44 @@
             [(allowReordering)]="isEnableDrag"
             [showDragIcons]="false"
         ></dxo-row-dragging>
+        <dxo-scrolling mode="standard"></dxo-scrolling>
         <dxo-search-panel [visible]="true" [highlightSearchText] = "true"></dxo-search-panel>
-        <dxi-column dataField="name"></dxi-column>
-        <dxi-column dataField="description"></dxi-column>
-        <dxi-column style="float: right;" cellTemplate="cellTemplate"></dxi-column>
+        <dxi-column dataField="name" [minWidth]="300" [hidingPriority]="1"></dxi-column>
+        <dxi-column dataField="description"[minWidth]="300" [hidingPriority]="2"></dxi-column>
+        <dxi-column style="float: right;" [minWidth]="200" cellTemplate="cellTemplate"[hidingPriority]="1"></dxi-column>
         <div *dxTemplate="let cell of 'cellTemplate'">
           <div style="float: right; width: auto;">
-          <dx-button *ngIf="cell.data.typeId === null" stylingMode="contained"
-          text="Add"
+          <dx-button  *ngIf="cell.data.typeId === null" stylingMode="contained" style="margin-left: 10px;"
+          hint="Add"
           icon="plus"
           type="success"
           [(disabled)]="isEnableDrag"
           (onClick)="onClickAdd($event, cell.data)">
         </dx-button>
-          <dx-button style="margin-left: 10px;" stylingMode="contained"
-          text="Edit"
+          <dx-button style="margin-left: 10px; background-color: rgb(96, 162, 192);" stylingMode="contained"
+          hint="Edit"
           icon="edit"
-          type="default"
+          type="normal"
           [(disabled)]="isEnableDrag"
           (onClick)="onClickEdit($event, cell.data)">
         </dx-button>
         </div>
       </div>
+      <div *dxTemplate="let cell of 'myToolbarTemplate'">
+        <div style="float: right; width: auto;">
+        <dx-button style="margin-left: 10px;" stylingMode="contained"
+        text="Add"
+        icon="plus"
+        type="success"
+        (onInitialized)="onInitBtnAddType($event)"
+        (onClick)="onClickAddType($event)">
+      </dx-button>
+      </div>
+    </div>
     </dx-tree-list>
   </div>
   <dx-popup
-        [width]="700"
+        width="auto"
         height="auto"
         [showTitle]="true"
         [dragEnabled]="false"
@@ -74,6 +74,13 @@
             location="after"
             [visible]="!isViewDetail"
             [options]="saveButtonOptions">
+        </dxi-toolbar-item>
+        <dxi-toolbar-item
+            widget="dxButton"
+            toolbar="bottom"
+            location="after"
+            [visible]="isViewDetail"
+            [options]="deleteButtonOptions">
         </dxi-toolbar-item>
         <dxi-toolbar-item
             widget="dxButton"
@@ -111,7 +118,7 @@
               [readOnly] = "isViewDetail">
               <dx-validator>
                 <dxi-validation-rule type="required" message="Name is required"></dxi-validation-rule>
-                <dxi-validation-rule type="stringLength" [max]="255" message="Name length must be less than 255 characters"></dxi-validation-rule>
+                <dxi-validation-rule type="stringLength" [max]="255" message="The name should not contain more than 255 characters"></dxi-validation-rule>
             </dx-validator>
             </dx-text-box>
           <p>
@@ -120,41 +127,15 @@
               [(value)] = "criteriaModel.description"
               [readOnly] = "isViewDetail">
               <dx-validator>
-                <dxi-validation-rule type="stringLength" [max]="500" message="Name length must be less than 500 characters"></dxi-validation-rule>
+                <dxi-validation-rule type="stringLength" [max]="500" message="The description should not contain more than 500 characters"></dxi-validation-rule>
             </dx-validator>
             </dx-text-area>
           </p>
       </div>
     </dx-popup>
 <style>
-  .rowForm{
-    padding: 15px;
-    height: 70px;
+  .dx-popover-wrapper .dx-overlay-content {
+    overflow: visible;
+    transform: translate(306px, 210px) !important;
   }
-  .input-group {
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    justify-content: flex-end;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-    width: 100%;
-    }
-    .dx-invalid-message > .dx-overlay-content {
-  z-index: 1501;
-    position: absolute;
-    width: auto;
-    height: 36px;
-    left: 0px;
-    top: 0px;
-    transform: translate(-1px, -35px);
-    transition: all 0s ease 0s;
-}
-.dx-button-mode-text.dx-button-success {
-    background-color: #8bc34a !important;
-    color: #fff !important;
-    box-shadow: none;
-}
 </style>

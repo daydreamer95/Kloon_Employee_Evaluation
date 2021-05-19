@@ -131,18 +131,6 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.IsNotNull(actualModel.Error);
         }
         [TestMethod]
-        public void ADMIN_ADD_USER_WHEN_INVALID_FIRST_NAME_CHARACTER_THEN_ERROR()
-        {
-            var expectedModel = InitUserModel();
-            expectedModel.FirstName = "28Shd&*(^";
-            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-            dataInit.Add(actualModel.Data);
-            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_CHARACTERS", errorMess);
-            Assert.IsFalse(actualModel.IsSuccess);
-            Assert.IsNotNull(actualModel.Error);
-        }
-        [TestMethod]
         public void ADMIN_ADD_USER_WHEN_INVALID_LAST_NAME_THEN_ERROR()
         {
             var expectedModel = InitUserModel();
@@ -175,18 +163,6 @@ namespace Kloon.EmployeePerformance.Test.Api
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
             Assert.AreEqual("INVALID_MODEL_LAST_NAME_MAX_LENGTH", errorMess);
-            Assert.IsFalse(actualModel.IsSuccess);
-            Assert.IsNotNull(actualModel.Error);
-        }
-        [TestMethod]
-        public void ADMIN_ADD_USER_WHEN_INVALID_LAST_NAME_CHARACTER_THEN_ERROR()
-        {
-            var expectedModel = InitUserModel();
-            expectedModel.LastName = "28Shd&*(^";
-            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-            dataInit.Add(actualModel.Data);
-            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-            Assert.AreEqual("INVALID_MODEL_LAST_NAME_CHARACTERS", errorMess);
             Assert.IsFalse(actualModel.IsSuccess);
             Assert.IsNotNull(actualModel.Error);
         }

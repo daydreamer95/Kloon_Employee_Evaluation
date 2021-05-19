@@ -23,6 +23,10 @@ export class Service {
   editCriteria(data: any): any {
     return this.http.put(mainUrl, data);
   }
+  deleteCriteria(id: any): any {
+    const uri = mainUrl + '/' + id;
+    return this.http.delete(uri);
+  }
   orderCriteria(data: any): any {
     const url = mainUrl + '/Order';
     return this.http.post(url, data);

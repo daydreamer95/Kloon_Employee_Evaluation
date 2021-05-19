@@ -278,10 +278,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_MAX_LENGTH");
             }
-            if (Regex.IsMatch(userModel.FirstName, @"^[a-zA-Z]*$") == false)
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_CHARACTERS");
-            }
             #endregion 
 
             #region LastName
@@ -296,10 +292,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
             if (userModel.LastName.Length > 20)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_MAX_LENGTH");
-            }
-            if (Regex.IsMatch(userModel.LastName, @"^[a-zA-Z]*$") == false)
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_CHARACTERS");
             }
             #endregion
 
