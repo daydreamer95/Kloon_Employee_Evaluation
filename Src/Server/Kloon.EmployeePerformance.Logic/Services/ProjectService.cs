@@ -29,6 +29,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
         private readonly IUnitOfWork<EmployeePerformanceContext> _dbContext;
 
         private readonly IEntityRepository<Project> _projects;
+        private readonly IEntityRepository<ProjectUser> _projectUsers;
 
         public ProjectService(
             IAuthenLogicService<ProjectService> logicService
@@ -38,6 +39,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             _dbContext = logicService.DbContext;
 
             _projects = _dbContext.GetRepository<Project>();
+            _projectUsers = _dbContext.GetRepository<ProjectUser>();
         }
 
         public ResultModel<List<ProjectModel>> GetAll(string searchText = "")
@@ -173,6 +175,16 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 })
                 .ThenImplement(currentUser =>
                 {
+
+                    List<ProjectUser> projectUsers = _projectUsers.Query(x => x.ProjectId == id && x.DeletedBy == null && x.DeletedDate == null)
+                        .ToList();
+
+                    foreach (var item in projectUsers)
+                    {
+                        item.DeletedBy = currentUser.Id;
+                        item.DeletedDate = now;
+                    }
+
                     project.DeletedBy = currentUser.Id;
                     project.DeletedDate = now;
 

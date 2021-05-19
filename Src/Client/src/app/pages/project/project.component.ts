@@ -39,6 +39,7 @@ export class ProjectComponent implements OnInit {
   getProjects() {
     this.projectService.getProjects().subscribe(
       ((responeseData: ProjectModel[]) => {
+        this.dataSource = [];
         if (responeseData.length > 0) {
           this.dataSource = responeseData;
         }

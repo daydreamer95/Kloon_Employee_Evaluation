@@ -25,11 +25,13 @@ namespace Kloon.EmployeePerformance.Logic.Services
         private readonly IAuthenLogicService<UserService> _logicService;
         private readonly IUnitOfWork<EmployeePerformanceContext> _dbContext;
         private readonly IEntityRepository<User> _users;
+        private readonly IEntityRepository<ProjectUser> _projectUsers;
         public UserService(IAuthenLogicService<UserService> logicService)
         {
             _logicService = logicService;
             _dbContext = logicService.DbContext;
 
+            _projectUsers = _dbContext.GetRepository<ProjectUser>();
             _users = _dbContext.GetRepository<User>();
         }
 
@@ -107,6 +109,15 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 })
                 .ThenImplement(currentUser =>
                 {
+                    List<ProjectUser> projectUsers = _projectUsers.Query(x => x.UserId == userId && x.DeletedBy == null && x.DeletedDate == null)
+                        .ToList();
+
+                    foreach (var item in projectUsers)
+                    {
+                        item.DeletedBy = currentUser.Id;
+                        item.DeletedDate = now;
+                    }
+
                     user.DeletedBy = currentUser.Id;
                     user.DeletedDate = now;
 
