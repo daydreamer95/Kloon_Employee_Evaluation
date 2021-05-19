@@ -251,7 +251,10 @@ export class ProjectFormComponent implements OnInit {
             ((responeseData: ProjectUserModel) => {
                 notify("Add member to project Success", "success", 5000);
                 this.getProjectMember();
+
                 this.OnInitDataUser();
+
+                this.selectBoxListUsers.load();
             }),
             (
                 error => {
@@ -301,8 +304,6 @@ export class ProjectFormComponent implements OnInit {
                 ((responeseData: ProjectUserModel) => {
                     this.popupVisibleProjectUser = false;
                     this.getProjectMember();
-
-                    this.OnInitDataUser();
                 }),
                 (
                     error => {
