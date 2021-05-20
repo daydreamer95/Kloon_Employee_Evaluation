@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AppInfoService {
-  constructor() {}
+  constructor() { }
 
   public get title() {
-    return 'EmployeePerformance';
+    return 'Kloon';
   }
 
   public get currentYear() {

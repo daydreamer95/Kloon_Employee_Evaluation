@@ -37,6 +37,7 @@ export class CriteriasComponent implements OnInit {
   treeListComp: any;
   btnAddTypeComp: any;
   popupComp: any;
+  tbNameComp: any;
   closeButtonOptions = {
     text: 'Close', icon: 'back', type: 'normal',
     onClick: (e: any) => {
@@ -111,7 +112,18 @@ export class CriteriasComponent implements OnInit {
           },
             (err: any) => {
               this.popupComp.hide();
-              this.common.UI.multipleNotify('Add Error', 'error', 2000);
+              let errMessage = 'Add Error';
+              switch (err.error) {
+                case 'CRITERIA_DUPLICATE':
+                  errMessage = 'This Criteria Name already exists!';
+                  break;
+                case 'CRITERIA_TYPE_DUPLICATE':
+                  errMessage = 'This Criteria Type Name already exists!';
+                  break;
+                default:
+                // code block
+              }
+              this.common.UI.multipleNotify(errMessage, 'error', 2000);
             }
           );
       }
@@ -123,7 +135,18 @@ export class CriteriasComponent implements OnInit {
           },
             (err: any) => {
               this.popupComp.hide();
-              this.common.UI.multipleNotify('Edit Error!', 'error', 2000);
+              let errMessage = 'Edit Error!!';
+              switch (err.error) {
+                case 'CRITERIA_DUPLICATE':
+                  errMessage = 'This Criteria Name already exists!';
+                  break;
+                case 'CRITERIA_TYPE_DUPLICATE':
+                  errMessage = 'This Criteria Type Name already exists!';
+                  break;
+                default:
+                // code block
+              }
+              this.common.UI.multipleNotify(errMessage, 'error', 2000);
             }
           );
       }
@@ -136,6 +159,9 @@ export class CriteriasComponent implements OnInit {
   onInitPopup = (e: any) => {
     this.popupComp = e.component;
   }
+  onInitTbName = (e: any) => {
+    this.tbNameComp = e.component;
+  }
   onHidingPopup = (e: any) => {
     if (this.validationGR != null) {
       // this.criteriaModel = new Criteria();
@@ -143,20 +169,23 @@ export class CriteriasComponent implements OnInit {
     }
     this.isViewDetail = false;
   }
+  onShowPopup = (e: any) => {
+    this.tbNameComp.focus();
+  }
   onClickAdd = (e: any, data: any) => {
     this.isAddOrEditType = false;
-    this.onShowPopup('add', false);
+    this.showPopup('add', false);
     this.criteriaModel.typeId = data.id;
   }
   onClickAddType = (e: any) => {
     this.isAddOrEditType = true;
-    this.onShowPopup('add', true);
+    this.showPopup('add', true);
   }
   onClickEdit = (e: any, data: any) => {
     const isType = data.typeId === null;
     this.isAddOrEditType = isType;
     this.onBindingModel(data);
-    this.onShowPopup('edit', isType);
+    this.showPopup('edit', isType);
   }
   onClickRemove = (e: any, data: any, treeComp: any) => {
     const item = this.treeListComp.getDataSource().items().filter(x => x.key === data.id);
@@ -184,7 +213,7 @@ export class CriteriasComponent implements OnInit {
     this.criteriaModel.description = data.description;
     this.criteriaModel.orderNo = data.orderNo;
   }
-  onShowPopup = (mode: any, isType: boolean) => {
+  showPopup = (mode: any, isType: boolean) => {
     let titleMode = '';
     switch (mode) {
       case 'add':
@@ -283,7 +312,7 @@ export class CriteriasComponent implements OnInit {
     this.isViewDetail = true;
     this.onBindingModel(e.data);
     this.isAddOrEditType = isType;
-    this.onShowPopup('detail', isType);
+    this.showPopup('detail', isType);
   }
   onSearch = (e: any) => {
     this.searchValue = e.component.option('value');
