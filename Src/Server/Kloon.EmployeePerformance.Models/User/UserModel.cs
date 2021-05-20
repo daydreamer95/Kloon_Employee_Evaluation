@@ -16,7 +16,7 @@ namespace Kloon.EmployeePerformance.Models.User
         public int PositionId { get; set; }
         public SexEnum Sex { get; set; }
         public DateTime? DoB { get; set; }
-        public string? PhoneNo { get; set; }
+        public string PhoneNo { get; set; }
         public int RoleId { get; set; }
     }
 }

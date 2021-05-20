@@ -15,7 +15,7 @@ namespace Kloon.EmployeePerformance.DataAccess.Domain
         public int PositionId { get; set; }
         public int? Sex { get; set; }
         public DateTime? DoB { get; set; }
-        public string? PhoneNo { get; set; }
+        public string PhoneNo { get; set; }
         public int RoleId { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }

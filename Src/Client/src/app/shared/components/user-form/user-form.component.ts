@@ -37,7 +37,7 @@ export class UserFormComponent implements OnInit {
   @Output() onRefreshGrid = new EventEmitter<void>();
   @ViewChild(DxFormComponent, { static: false }) myform: DxFormComponent;
 
-  emailPattern: any = /^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@kloon.vn$/;
+  emailPattern: any = /^\s*[A-Za-z0-9-.\\+]+(\\.[_A-Za-z0-9-]+)*@kloon.vn\s*$/;
   isAdminRole = false;
   formState = FormState;
   popupVisible = false;
