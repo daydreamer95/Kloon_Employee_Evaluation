@@ -42,6 +42,34 @@ namespace Kloon.EmployeePerformance.Logic.Services.Base
             return this;
         }
 
+        public ValidationAuthenResult ThenAuthorizeProject(int? projectId, params ProjectRoles[] projectRoles)
+        {
+            if (_result.IsValid)
+            {
+                if (projectId != null && projectId <= 0)
+                {
+                    _result.Error = new ErrorModel(ErrorType.BAD_REQUEST, "Project not found");
+                }
+
+                if (_result.CurrentUser.Role == Roles.USER)
+                {
+                    var currentProject = _result.CurrentUser.ProjectRole.Where(x => x.ProjectId == projectId).FirstOrDefault();
+                    if (currentProject == null)
+                    {
+                        _result.Error = new ErrorModel(ErrorType.BAD_REQUEST, "Data does not exist");
+                    }
+                    if (projectRoles != null && projectRoles.Length != 0)
+                    {
+                        if (!projectRoles.Contains(currentProject.ProjectRoleId))
+                        {
+                            _result.Error = new ErrorModel(ErrorType.NO_ROLE, "No Role Project");
+                        }
+                    }
+                }          
+            }
+            return this;
+        }
+
         public ImplementAuthenResult ThenValidate(Func<LoginUserModel.LoginUser, ErrorModel> func)
         {
             if (_result.IsValid)

@@ -53,31 +53,53 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     IEnumerable<ProjectMD> query = null;
                     if (currentUser.Role == Roles.USER)
                     {
-                        query = _logicService.Cache.Users.GetProjects(currentUser.Id);
+                        query = _logicService.Cache.Users.GetProjects(currentUser.Id).ToList();
+
+                        List<ProjectModel> data = new List<ProjectModel>();
+                        foreach (var item in query)
+                        {
+                            var project = _logicService.Cache.Projects.Get(item.Id);
+
+                            if (project != null)
+                            {
+                                ProjectModel projectModel = new ProjectModel()
+                                {
+                                    Id = item.Id,
+                                    Name = project.Name,
+                                    Description = project.Description,
+                                    Status = (ProjectStatusEnum)project.Status
+                                };
+                                data.Add(projectModel);
+                            }
+                            
+                        }
+                        return data;
                     }
                     else
                     {
                         query = _logicService.Cache.Projects.GetValues();
-                    }
 
-                    if (!string.IsNullOrWhiteSpace(searchText))
-                    {
-                        searchText = searchText.Trim();
-                        query = query.Where(x => x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-                    }
-
-                    var record = query
-                        .OrderBy(x => x.Name)
-                        .Where(x => x.DeletedBy == null && x.DeletedDate == null)
-                        .Select(t => new ProjectModel
+                        if (!string.IsNullOrWhiteSpace(searchText))
                         {
-                            Id = t.Id,
-                            Name = t.Name,
-                            Description = t.Description,
-                            Status = (ProjectStatusEnum)t.Status
-                        })
-                        .ToList();
-                    return record;
+                            searchText = searchText.Trim();
+                            query = query.Where(x => x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+                        }
+
+                        var record = query
+                            .OrderBy(x => x.Name)
+                            .Where(x => x.DeletedBy == null && x.DeletedDate == null)
+                            .Select(t => new ProjectModel
+                            {
+                                Id = t.Id,
+                                Name = t.Name,
+                                Description = t.Description,
+                                Status = (ProjectStatusEnum)t.Status
+                            })
+                            .ToList();
+                        return record;
+                    }
+
+                    
                 });
             return result;
         }

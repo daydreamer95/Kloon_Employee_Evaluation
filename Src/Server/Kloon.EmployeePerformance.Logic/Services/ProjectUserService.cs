@@ -47,6 +47,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {
                     var error = ValidateProjectMember(userId, projectId);
@@ -97,6 +98,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {
                     projectUser = _projectUsers
@@ -127,6 +129,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM, ProjectRoles.MEMBER, ProjectRoles.QA)
                 .ThenValidate(currentUser =>
                 {
                     var project = _projects.Query(x => x.DeletedBy == null && x.DeletedDate == null && x.Id == projectId);
@@ -175,6 +178,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM, ProjectRoles.MEMBER, ProjectRoles.QA)
                 .ThenValidate(currentUser =>
                 {
                     projectUser = _projectUsers.Query(x => x.Id == projectUserId && x.DeletedBy == null && x.DeletedDate == null).FirstOrDefault();
@@ -215,7 +219,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
         {
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
                 .ThenValidate(currentUser => null)
                 .ThenImplement(currentUser =>
                 {
@@ -263,6 +267,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {
                     projectUser = _projectUsers

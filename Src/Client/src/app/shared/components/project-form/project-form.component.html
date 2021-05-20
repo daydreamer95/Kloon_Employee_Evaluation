@@ -19,7 +19,7 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="model.state === formState.CREATE"
+    [visible]="model.state === formState.CREATE && isAdminRole == true"
     [options]="createButtonOptions"
   >
   </dxi-toolbar-item>
@@ -27,7 +27,7 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="model.state === formState.EDIT"
+    [visible]="model.state === formState.EDIT && isAdminRole == true"
     [options]="editButtonOptions"
   >
   </dxi-toolbar-item>
@@ -35,7 +35,7 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="model.state === formState.DETAIL && selectedIndex === 0"
+    [visible]="model.state === formState.DETAIL && selectedIndex === 0 && isAdminRole == true"
     [options]="editButtonOnDetailOptions"
   >
   </dxi-toolbar-item>
@@ -43,7 +43,7 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="model.state === formState.DETAIL && selectedIndex === 0"
+    [visible]="model.state === formState.DETAIL && selectedIndex === 0 && isAdminRole == true"
     [options]="deleteButtonOnDetailOptions"
   >
   </dxi-toolbar-item>
