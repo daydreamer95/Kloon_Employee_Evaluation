@@ -26,7 +26,7 @@
             <dx-form id="form" 
                 [formData]="currUser" 
                 [colCount]="2" 
-                [disabled]="model.state === formState.DETAIL">
+                [readOnly]="model.state === formState.DETAIL">
                     <dxi-item dataField="firstName">
                         <dxi-validation-rule type="required" message="First name is required"></dxi-validation-rule>
                     </dxi-item>
