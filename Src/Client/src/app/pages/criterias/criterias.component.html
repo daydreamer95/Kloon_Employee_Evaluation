@@ -101,8 +101,7 @@
                 [readOnly] = "isViewDetail"
                 displayExpr="name"
                 valueExpr="id"
-                [(value)] = "criteriaModel.typeId"
-              >
+                [(value)] = "criteriaModel.typeId">
               <dx-validator>
                 <dxi-validation-rule type="required" message="Type is required"></dxi-validation-rule>
             </dx-validator>
@@ -118,17 +117,25 @@
               [(value)] = "criteriaModel.name"
               [readOnly] = "isViewDetail">
               <dx-validator>
-                <dxi-validation-rule type="required" message="Name is required"></dxi-validation-rule>
-                <dxi-validation-rule type="stringLength" [max]="255" message="The name should not contain more than 255 characters"></dxi-validation-rule>
+                <dxi-validation-rule type="required"
+                message="Name is required">
+              </dxi-validation-rule>
+                <dxi-validation-rule type="stringLength"
+                [max]="255"
+                message="The name should not contain more than 255 characters"></dxi-validation-rule>
             </dx-validator>
             </dx-text-box>
           <p>
               Description:
               <dx-text-area
+              [height]="90"
               [(value)] = "criteriaModel.description"
               [readOnly] = "isViewDetail">
               <dx-validator>
-                <dxi-validation-rule type="stringLength" [max]="500" message="The description should not contain more than 500 characters"></dxi-validation-rule>
+                <dxi-validation-rule type="stringLength"
+                [max]="500"
+                message="The description should not contain more than 500 characters">
+              </dxi-validation-rule>
             </dx-validator>
             </dx-text-area>
           </p>
