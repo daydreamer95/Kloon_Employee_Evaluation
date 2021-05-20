@@ -62,8 +62,9 @@ export class UserFormComponent implements OnInit {
     private common: CommonService
   ) {
     this.isAdminRole = this.authService.isRoleAdministrator;
-  }
 
+  }
+  
   open() {
     switch (this.model.state) {
       case FormState.CREATE:
@@ -89,7 +90,7 @@ export class UserFormComponent implements OnInit {
 
   //#region Options
   closeButtonOptions = {
-    text: () => {return this.buttonCloseTitle},
+    text: 'Cancel', //() => {return this.buttonCloseTitle},
     icon: 'close',
     onClick: (e) => {
       this.popupVisible = false;
@@ -107,15 +108,25 @@ export class UserFormComponent implements OnInit {
       this.authService.isRoleAdministrator;
       this.userService.add(this.currUser).subscribe(
         (next) => {
-          //TODO: Call refresh grid
+          this.common.UI.multipleNotify("Add Success","Success",2000);
           this.popupVisible = false;
           this.onRefreshGrid.emit();
         },
         (err) => {
+        
           if (err.error === 'INVALID_MODEL_DUPLICATED_EMAIL') {
             this.common.UI.multipleNotify('Email is existed !', 'error', 2000);
           }
-        }
+          else if(err.error === 'INVALID_MODEL_FIRST_NAME_MIN_LENGTH')
+          {
+            this.common.UI.multipleNotify('First Name must have more than 2 character', 'error', 2000);
+          }
+          else if(err.error === 'INVALID_MODEL_FIRST_NAME_MAX_LENGTH')
+          {
+            this.common.UI.multipleNotify('First Name cannot exceed 20 characters','Error',2000);
+          }
+          }
+        
       );
     },
   };
@@ -175,7 +186,7 @@ export class UserFormComponent implements OnInit {
 
   confirmDeleteButtonOptions = {
     icon: 'save',
-    text: 'Submit',
+    text: 'Ok',
     onClick: (e) => {
       this.userService.delete(this.currUser.id).subscribe(
         (next) => {
