@@ -270,7 +270,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_NULL");
             }
-            if (userModel.FirstName.Length > 20)
+            if (userModel.FirstName.Length > 50)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_MAX_LENGTH");
             }
@@ -281,7 +281,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_NULL");
             }
-            if (userModel.LastName.Length > 20)
+            if (userModel.LastName.Length > 50)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_MAX_LENGTH");
             }
