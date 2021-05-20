@@ -189,6 +189,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             {
                 var result = dbContext.GetRepository<CriteriaType>()
                     .Query()
+                    .Where(x => !x.DeletedDate.HasValue && !x.DeletedBy.HasValue)
                     .ToDictionary(t => t.Id, t => new CriteriaTypeMD
                     {
                         Id = t.Id,
@@ -229,6 +230,7 @@ namespace Kloon.EmployeePerformance.Logic.Caches
             {
                 var result = dbContext.GetRepository<Criteria>()
                     .Query()
+                    .Where(x => !x.DeletedDate.HasValue && !x.DeletedBy.HasValue)
                     .ToDictionary(t => t.Id, t => new CriteriaMD
                     {
                         Id = t.Id,
