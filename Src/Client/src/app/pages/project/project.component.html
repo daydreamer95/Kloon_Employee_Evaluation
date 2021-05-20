@@ -1,4 +1,4 @@
-<h2 style="margin: 15px">Project manager</h2>
+<h2 style="margin: 15px">Project management</h2>
 
 <div id="project">
   <dx-data-grid
@@ -9,6 +9,13 @@
     (onToolbarPreparing)="onToolbarPreparing($event)"
     [(disabled)]="loading"
   >
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[15, 30, 50]"
+      [showInfo]="true"
+    >
+    </dxo-pager>
     <dxo-search-panel
       [visible]="true"
       [width]="240"
@@ -17,7 +24,11 @@
 
     <dxi-column dataField="name" dataType="string"></dxi-column>
     <dxi-column dataField="description" dataType="string"></dxi-column>
-    <dxi-column dataField="statusText" dataType="string"></dxi-column>
+    <dxi-column
+      dataField="statusText"
+      dataType="string"
+      caption="Status Project"
+    ></dxi-column>
 
     <dxi-column cellTemplate="cellTemplate"> </dxi-column>
 

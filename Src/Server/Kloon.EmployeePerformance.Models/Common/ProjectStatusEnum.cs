@@ -2,8 +2,8 @@
 {
     public enum ProjectStatusEnum
     {
-        OPEN,
-        PENDING,
-        CLOSED
+        OPEN = 1,
+        PENDING = 2,
+        CLOSED = 3
     }
 }

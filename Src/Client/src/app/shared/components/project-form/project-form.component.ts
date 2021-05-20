@@ -62,7 +62,7 @@ export class ProjectFormComponent implements OnInit {
         },
         {
             id: 3,
-            status: "Close"
+            status: "Closed"
         }
     ];
 
@@ -120,7 +120,7 @@ export class ProjectFormComponent implements OnInit {
 
     createButtonOptions = {
         icon: 'save',
-        text: 'Submit',
+        text: 'Add',
         onClick: (e) => {
             if (this.myForm.instance.validate().isValid) {
                 this.onSubmitForm.emit(this.currentProject);
@@ -129,8 +129,8 @@ export class ProjectFormComponent implements OnInit {
     }
 
     editButtonOptions = {
-        icon: 'save',
-        text: 'Submit',
+        icon: 'edit',
+        text: 'Update',
         onClick: (e) => {
             if (this.myForm.instance.validate().isValid) {
                 this.onSubmitForm.emit(this.currentProject);
@@ -139,7 +139,7 @@ export class ProjectFormComponent implements OnInit {
     }
 
     editButtonOnDetailOptions = {
-        icon: 'save',
+        icon: 'edit',
         text: 'Edit',
         onClick: (e) => {
             this.popupTitle = 'Update Project';
@@ -246,11 +246,15 @@ export class ProjectFormComponent implements OnInit {
 
 
     onAddProjectMember(e): void {
-        var projectId = this.currentProject.id;
+        var projectId = this.model.data.id;
         var userId = this.userSelectId;
+        if (userId === null) {
+            notify("Please choose the user to add to the Project.", "error", 5000);
+            return;
+        }
         this.projectMemberService.add(projectId, userId).subscribe(
             ((responeseData: ProjectUserModel) => {
-                notify("Add member to project Success", "success", 5000);
+                notify("Add a member to project success.", "success", 5000);
                 this.getProjectMember();
                 this.selectBoxUserComp.option('value', null);
                 this.OnInitDataUser();
@@ -317,7 +321,7 @@ export class ProjectFormComponent implements OnInit {
     }
 
     editButtonOnDetailProjectUserOptions = {
-        icon: 'save',
+        icon: 'edit',
         text: 'Edit',
         onClick: (e) => {
             this.popupTitleProjectUser = 'Update Project Member';

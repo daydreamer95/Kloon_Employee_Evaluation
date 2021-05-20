@@ -5,6 +5,12 @@
   height: 100%;
 }
 
+.background-image {
+  background-image: url("../../../assets/logo/kloon-background.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
 .single-card {
   .dx-card {
     width: 330px;
@@ -23,7 +29,7 @@
     }
 
     .header {
-      margin-bottom: 30px;
+      margin-bottom: 0px;
 
       .title {
         color: $base-text-color;

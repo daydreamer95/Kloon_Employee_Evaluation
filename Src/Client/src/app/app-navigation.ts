@@ -10,7 +10,7 @@ export const navigation = [
     icon: 'user'
   },
   {
-    text: 'Project',
+    text: 'Project Management',
     path: '/project',
     icon: 'activefolder'
   },
