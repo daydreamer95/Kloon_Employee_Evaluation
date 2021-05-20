@@ -159,7 +159,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                                           PhoneNo = t.PhoneNo,
                                           RoleId = t.RoleId
                                       }).ToList();
-                    //record = current.Role == Roles.USER ? record.Where(t => t.RoleId != (int)Roles.ADMINISTRATOR).ToList() : record;
+                    record = current.Role == Roles.USER ? record.Where(t => t.RoleId != (int)Roles.ADMINISTRATOR).ToList() : record;
 
                     return record;
 
@@ -331,3 +331,4 @@ namespace Kloon.EmployeePerformance.Logic.Services
         }
     }
 }
+
