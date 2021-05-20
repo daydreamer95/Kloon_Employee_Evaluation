@@ -251,7 +251,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     }
                     else
                     {
-                        var isExis = _criteriaRepository.Query().Any(x => x.CriteriaTypeId == model.TypeId && x.Id == model.Id && !x.DeletedDate.HasValue);
+                        var isExis = _criteriaRepository.Query().Any(x => x.Id == model.Id && !x.DeletedDate.HasValue);
                         if (!isExis)
                         {
                             return new ErrorModel(ErrorType.NOT_EXIST, "NOTFOUND_CRITERIA");
