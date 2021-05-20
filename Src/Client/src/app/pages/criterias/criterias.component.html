@@ -67,6 +67,7 @@
         [showCloseButton]="false"
         (onInitialized)="onInitPopup($event)"
         (onHiding)="onHidingPopup($event)"
+        (onShown)="onShowPopup($event)"
         container=".dx-viewport"
         [(visible)]="popupVisible">
         <dxi-toolbar-item
@@ -114,6 +115,7 @@
               Criteria Name:
             </div>
             <dx-text-box
+            (onInitialized)="onInitTbName($event)"
               [(value)] = "criteriaModel.name"
               [readOnly] = "isViewDetail">
               <dx-validator>
