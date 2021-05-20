@@ -44,19 +44,6 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.AreEqual(expectedModel.PhoneNo, actualModel.Data.PhoneNo);
             Assert.AreEqual(expectedModel.RoleId, actualModel.Data.RoleId);
         }
-
-        [TestMethod]
-        public void ADMIN_ADD_USER_WHEN_INVALID_MODEL_THEN_ERROR()
-        {
-            var expectedModel = InitUserModel();
-            expectedModel = null;
-            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-            dataInit.Add(actualModel.Data);
-            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-            Assert.AreEqual("INVALID_MODEL", errorMess);
-            Assert.IsFalse(actualModel.IsSuccess);
-            Assert.IsNotNull(actualModel.Error);
-        }
         [TestMethod]
         public void ADMIN_ADD_USER_WHEN_INVALID_EMAIL_THEN_ERROR()
         {
@@ -73,7 +60,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         public void ADMIN_ADD_USER_WHEN_INVALID_EMAIL_LENGTH_THEN_ERROR()
         {
             var expectedModel = InitUserModel();
-            expectedModel.Email = "asdfghjklqwertyuiopasdfghjklzxcvbndfhzdhmlsdje3@kloon.vn";
+            expectedModel.Email = "asdfghjklqwertyuiopasdfghjklzxcvbndfwruuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuhzdhmlsdje3@kloon.vn";
             var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
@@ -106,18 +93,6 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.IsNotNull(actualModel.Error);
         }
         [TestMethod]
-        public void ADMIN_ADD_USER_WHEN_INVALID_FIRST_NAME_MIN_LENGTH_THEN_ERROR()
-        {
-            var expectedModel = InitUserModel();
-            expectedModel.FirstName = "a";
-            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-            dataInit.Add(actualModel.Data);
-            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MIN_LENGTH", errorMess);
-            Assert.IsFalse(actualModel.IsSuccess);
-            Assert.IsNotNull(actualModel.Error);
-        }
-        [TestMethod]
         public void ADMIN_ADD_USER_WHEN_INVALID_FIRST_NAME_MAX_LENGTH_THEN_ERROR()
         {
             var expectedModel = InitUserModel();
@@ -142,18 +117,6 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.IsNotNull(actualModel.Error);
         }
         [TestMethod]
-        public void ADMIN_ADD_USER_WHEN_INVALID_LAST_NAME_MIN_LENGTH_THEN_ERROR()
-        {
-            var expectedModel = InitUserModel();
-            expectedModel.LastName = "a";
-            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-            dataInit.Add(actualModel.Data);
-            var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-            Assert.AreEqual("INVALID_MODEL_LAST_NAME_MIN_LENGTH", errorMess);
-            Assert.IsFalse(actualModel.IsSuccess);
-            Assert.IsNotNull(actualModel.Error);
-        }
-        [TestMethod]
         public void ADMIN_ADD_USER_WHEN_INVALID_LAST_NAME_MAX_LENGTH_THEN_ERROR()
         {
             var expectedModel = InitUserModel();
@@ -169,7 +132,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         public void ADMIN_ADD_USER_WHEN_INVALID_PHONE_LENGTH_THEN_ERROR()
         {
             var expectedModel = InitUserModel();
-            expectedModel.LastName = "098765432123645";
+            expectedModel.PhoneNo = "098765432123645";
             var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
@@ -229,7 +192,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         {
             dataInit.ForEach(x =>
             {
-                var uri = _url + "/" + x;
+                var uri = _url + "/" + x.Id;
                 Helper.AdminDelete<bool>(uri);
             });
         }

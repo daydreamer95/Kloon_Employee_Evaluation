@@ -65,31 +65,27 @@ export class AuthService {
     }
   }
 
-  get getUserValue(){
+  get getUserValue() {
     return this.userSubject.value;
   }
 
-  // async getUser() {
-  //   try {
-  //     // Send request
-  //     return {
-  //       isOk: true,
-  //       data: this.userSubject.value
-  //     };
-  //   }
-  //   catch {
-  //     return {
-  //       isOk: false
-  //     };
-  //   }
-  // }
-
-  get getUser(){
+  get getUser() {
     return this.userSubject.value;
   }
 
-  get isRoleAdministrator(){
-    return this.userSubject.value.appRole == AppRolesEnum.ADMINISTRATOR? true: false;
+  public onChangeUserValue(object: any) {
+    let userValue = this.userSubject.value;
+    debugger;
+    for (var property in object) {
+      if (Object.prototype.hasOwnProperty.call(userValue, property)) {
+        userValue[property] = object[property];
+      }
+    }
+    this.userSubject.next(userValue);
+  }
+
+  get isRoleAdministrator() {
+    return this.userSubject.value.appRole == AppRolesEnum.ADMINISTRATOR ? true : false;
   }
 
   async createAccount(email, password) {
@@ -180,7 +176,7 @@ export class AuthGuardService implements CanActivate {
       this.authService.lastAuthenticatedPath = route.routeConfig.path;
     }
 
-    if(isLoggedIn && !isAuthorizeRouting){
+    if (isLoggedIn && !isAuthorizeRouting) {
       this.router.navigate([defaultPath]);
     }
 
@@ -192,20 +188,20 @@ export class AuthGuardService implements CanActivate {
     if (allowedRoles == null || allowedRoles.length === 0) {
       return true;
     }
-  
+
     // get token from local storage or state management
-   const token = this.authService.getUserValue.token;
-  
-      // decode token to read the payload details
+    const token = this.authService.getUserValue.token;
+
+    // decode token to read the payload details
     const decodeToken = this.jwtHelperService.decodeToken(token);
-  
-  // check if it was decoded successfully, if not the token is not valid, deny access
+
+    // check if it was decoded successfully, if not the token is not valid, deny access
     if (!decodeToken) {
       console.log('Invalid token');
       return false;
     }
-  
-  // check if the user roles is in the list of allowed roles, return true if allowed and false if not allowed
+
+    // check if the user roles is in the list of allowed roles, return true if allowed and false if not allowed
     return allowedRoles.includes(decodeToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
   }
 }

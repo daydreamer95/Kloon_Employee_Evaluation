@@ -61,7 +61,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
                    var user = new User()
                    {
-                       Email = userModel.Email,
+                       Email = userModel.Email.Trim(),
                        FirstName = userModel.FirstName.Trim(),
                        LastName = userModel.LastName.Trim(),
                        PositionId = userModel.PositionId,
@@ -159,7 +159,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                                           PhoneNo = t.PhoneNo,
                                           RoleId = t.RoleId
                                       }).ToList();
-                    //record = current.Role == Roles.USER ? record.Where(t => t.RoleId != (int)Roles.ADMINISTRATOR).ToList() : record;
+                    record = current.Role == Roles.USER ? record.Where(t => t.RoleId != (int)Roles.ADMINISTRATOR && t.Id == current.Id).ToList() : record;
 
                     return record;
 
@@ -240,7 +240,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 })
                 .ThenImplement(current =>
                 {
-                    user.Email = userModel.Email;
+                    user.Email = userModel.Email.Trim();
                     user.FirstName = userModel.FirstName.Trim();
                     user.LastName = userModel.LastName.Trim();
                     user.PositionId = userModel.PositionId;
@@ -270,7 +270,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_NULL");
             }
-            if (userModel.FirstName.Length > 20)
+            if (userModel.FirstName.Length > 50)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_MAX_LENGTH");
             }
@@ -281,7 +281,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_NULL");
             }
-            if (userModel.LastName.Length > 20)
+            if (userModel.LastName.Length > 50)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_MAX_LENGTH");
             }
@@ -297,7 +297,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_MAX_LENGTH");
             }
 
-            string validEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@kloon.vn$";
+            string validEmail = "^\\s*[A-Za-z0-9-.\\+]+(\\.[_A-Za-z0-9-]+)*@kloon.vn\\s*$";
             if (Regex.IsMatch(userModel.Email, validEmail, RegexOptions.IgnoreCase) == false)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_FORMAT_WRONG");
@@ -313,15 +313,15 @@ namespace Kloon.EmployeePerformance.Logic.Services
             #endregion
 
             #region Selectable Attribute
-            if (string.IsNullOrEmpty(userModel.PositionId.ToString()))
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_POSITION_NULL");
-            }
-            if (string.IsNullOrEmpty(userModel.Sex.ToString()))
+            //if (string.IsNullOrEmpty(userModel.PositionId.ToString()))
+            //{
+            //    return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_POSITION_NULL");
+            //}
+            if (!Enum.IsDefined(typeof(SexEnum), userModel.RoleId))
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_SEX_NULL");
             }
-            if (string.IsNullOrEmpty(userModel.RoleId.ToString()))
+            if (!Enum.IsDefined(typeof(Roles), userModel.RoleId))
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_ROLE_NULL");
             }
@@ -331,3 +331,4 @@ namespace Kloon.EmployeePerformance.Logic.Services
         }
     }
 }
+
