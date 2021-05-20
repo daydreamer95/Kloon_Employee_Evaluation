@@ -18,22 +18,22 @@ namespace Kloon.EmployeePerformance.Test.Api
         public void InitData()
         {
             InitUserData();
-
-            InitAdminData();
         }
 
         [TestCleanup]
         public void CleanData()
         {
             ClearUserData();
-
-            ClearAdminData();
         }
         [TestMethod]
         public void ADMIN_ADD_USER_WHEN_VALID_DATA_THEN_SUCCESS()
         {
             var expectedModel = InitUserModel();
-            var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
+            if (actualModel.Error == null)
+            {
+                dataInit.Add(actualModel.Data);
+            }
             dataInit.Add(actualModel.Data);
             Assert.AreEqual(expectedModel.Email, actualModel.Data.Email);
             Assert.AreEqual(expectedModel.FirstName, actualModel.Data.FirstName);
@@ -56,7 +56,6 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.AreEqual("INVALID_MODEL", errorMess);
             Assert.IsFalse(actualModel.IsSuccess);
             Assert.IsNotNull(actualModel.Error);
-
         }
         [TestMethod]
         public void ADMIN_ADD_USER_WHEN_INVALID_EMAIL_THEN_ERROR()
@@ -74,7 +73,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         public void ADMIN_ADD_USER_WHEN_INVALID_EMAIL_LENGTH_THEN_ERROR()
         {
             var expectedModel = InitUserModel();
-            expectedModel.Email = "asdfghjklqwertyuiopasdfghjklzxcvbnmlsdje3@gmail.com";
+            expectedModel.Email = "asdfghjklqwertyuiopasdfghjklzxcvbndfhzdhmlsdje3@kloon.vn";
             var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
@@ -215,10 +214,6 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.IsNotNull(actualModel.Error);
         }
 
-        //[TestMethod]
-        //public void USER_ADD_USER_HAVE_NO_PERMISSION_THEN_ERROR()
-        //{
-        //}
 
         #region Init User
         private void InitUserData()
@@ -235,56 +230,21 @@ namespace Kloon.EmployeePerformance.Test.Api
             dataInit.ForEach(x =>
             {
                 var uri = _url + "/" + x;
-                Helper.UserDelete<bool>(uri);
+                Helper.AdminDelete<bool>(uri);
             });
         }
         private UserModel InitUserModel()
         {
             var model = new UserModel
             {
-                Email = "Email: " + rand(),
-                FirstName = "Username: " + rand(),
-                LastName = "Lastname: " + rand(),
-                PositionId = (int)ProjectRoles.MEMBER,
-                Sex = SexEnum.FEMALE,
+                Email = "Email" + rand() + "@kloon.vn",
+                FirstName = "Firstname " + rand(),
+                LastName = "Lastname " + rand(),
+                PositionId = new Random().Next(1, 3),
+                Sex = (SexEnum)new Random().Next(1, 2),
                 DoB = DateTime.Today.AddDays(-new Random().Next(20 * 635)),
-                PhoneNo = "Phone: " + rand(),
-                RoleId = (int)Roles.USER,
-            };
-            return model;
-        }
-        #endregion
-
-        #region Init Admin
-        private void InitAdminData()
-        {
-            var userModel = InitAdminModel();
-            var createResult = Helper.AdminPost<UserModel>(_url, userModel);
-            if (createResult.Error == null)
-            {
-                dataInit.Add(createResult.Data);
-            }
-        }
-        private void ClearAdminData()
-        {
-            dataInit.ForEach(x =>
-            {
-                var uri = _url + "/" + x;
-                Helper.AdminDelete<bool>(uri);
-            });
-        }
-        private UserModel InitAdminModel()
-        {
-            var model = new UserModel
-            {
-                Email = "Email: " + rand(),
-                FirstName = "Username: " + rand(),
-                LastName = "Lastname: " + rand(),
-                PositionId = (int)ProjectRoles.MEMBER,
-                Sex = SexEnum.FEMALE,
-                DoB = DateTime.Today.AddDays(-new Random().Next(20 * 635)),
-                PhoneNo = "Phone: " + rand(),
-                RoleId = (int)Roles.ADMINISTRATOR,
+                PhoneNo = "0" + rand(),
+                RoleId = new Random().Next(1, 2),
             };
             return model;
         }
