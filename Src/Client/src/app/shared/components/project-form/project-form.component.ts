@@ -9,6 +9,7 @@ import DataSource from 'devextreme/data/data_source';
 import { confirm } from "devextreme/ui/dialog";
 import { ProjectUserModel } from '../../models/project-user.model';
 import { ProjectModel } from '../../models/project.model';
+import { ProjectRolesEnum, UserApp } from '../../models/user-app.model';
 import { UserModel } from '../../models/user.model';
 import { AuthService } from '../../services';
 import { CommonService } from '../../services/common.service';
@@ -45,8 +46,10 @@ export class ProjectFormComponent implements OnInit {
 
     popupVisibleProjectUser = false;
     popupTitleProjectUser = '';
+    userCurrent: UserApp = null;
 
     selectBoxUserComp: any;
+    buttonAddUserComp: any;
 
     constructor(
         private projectMemberService: ProjectUserService,
@@ -54,6 +57,7 @@ export class ProjectFormComponent implements OnInit {
         private commonService: CommonService
     ) {
         this.isAdminRole = this.authService.isRoleAdministrator;
+        this.userCurrent = this.authService.getUser;
     }
     ngOnInit() {
     }
@@ -179,6 +183,9 @@ export class ProjectFormComponent implements OnInit {
                     const data = await this.projectMemberService.GetTopFiveUserNotInProject(this.currentProject.id, "").toPromise();
                     this.selectBoxUserComp.option('items', data);
                     this.selectBoxUserComp.option('value', null);
+
+                    this.selectBoxUserComp.option('visible', this.isProjectleaderProject());
+                    this.buttonAddUserComp.option('visible', this.isProjectleaderProject());
                     return data;
                 }
             })
@@ -216,7 +223,9 @@ export class ProjectFormComponent implements OnInit {
                     icon: 'add',
                     width: 'auto',
                     text: 'Add',
-                    onClick: this.onAddProjectMember.bind(this)
+                    //visible: this.isProjectleaderProject(),
+                    onClick: this.onAddProjectMember.bind(this),
+                    onInitialized: this.onInitButtonAddUser.bind(this)
                 }
             },
             {
@@ -241,6 +250,7 @@ export class ProjectFormComponent implements OnInit {
                     value: "id",
                     searchEnabled: true,
                     placeholder: "Search User",
+                    //visible: this.isProjectleaderProject(),
                     onValueChanged: (e) => {
                         this.userSelectId = e.value;
                     },
@@ -252,6 +262,10 @@ export class ProjectFormComponent implements OnInit {
 
     onInitSelectBoxUser(e) {
         this.selectBoxUserComp = e.component;
+    }
+
+    onInitButtonAddUser(e) {
+        this.buttonAddUserComp = e.component;
     }
 
 
@@ -329,6 +343,17 @@ export class ProjectFormComponent implements OnInit {
         }
     }
 
+    isProjectleaderProject(): boolean {
+        if (this.userCurrent == null) {
+            return false;
+        }
+        var data = this.userCurrent.projectRoles.filter(x => x.projectId == this.currentProject.id && x.projectRoleId == ProjectRolesEnum.PM);
+        return (
+            this.isAdminRole == true ||
+            (this.isAdminRole == false && data.length > 0)
+        );
+    }
+
     editButtonOnDetailProjectUserOptions = {
         icon: 'edit',
         text: 'Edit',
@@ -364,7 +389,6 @@ export class ProjectFormComponent implements OnInit {
                         )
                     )
                 }
-                //this.projectUserS
             });
         }
     }
