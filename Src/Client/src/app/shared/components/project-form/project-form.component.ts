@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule, DxSelectBoxModule, DxTabPanelModule } from 'devextreme-angular';
+import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule, DxSelectBoxModule, DxTabPanelModule, DxScrollViewModule, DxTemplateModule } from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
 
@@ -31,7 +31,7 @@ export class ProjectFormComponent implements OnInit {
 
     selectBoxListUsers: any = {};
     dataSource: ProjectUserModel[];
-    gridColumns = ['email', 'firstName', 'lastName', 'projectRole'];
+    gridColumns = ['no', 'email', 'firstName', 'lastName', 'projectRole'];
     loading = false;
     listUserNotInProject: UserModel[];
     userSelect: UserModel;
@@ -201,6 +201,10 @@ export class ProjectFormComponent implements OnInit {
                 this.dataSource = [];
                 if (responeseData.length > 0) {
                     this.dataSource = responeseData;
+                    this.dataSource.forEach((element, index) => {
+                        element.no = index + 1;
+                    });
+                    console.log(this.dataSource);
                 }
                 this.loading = false;
             }),
@@ -212,7 +216,6 @@ export class ProjectFormComponent implements OnInit {
             )
         )
     }
-
 
     onToolbarPreparing(e) {
         e.toolbarOptions.items.unshift(
@@ -411,7 +414,8 @@ export class ProjectFormComponent implements OnInit {
         DxPopupModule,
         DxFormModule,
         DxSelectBoxModule,
-        DxTabPanelModule
+        DxTabPanelModule,
+        DxScrollViewModule
     ],
     declarations: [ProjectFormComponent],
     exports: [ProjectFormComponent]
