@@ -171,7 +171,7 @@ export class UserFormComponent implements OnInit {
           if (currentLoggedInUserId == this.currUser.id) {
             this.authService.onChangeUserValue(this.currUser);
           }
-          if (this.currUser.roleId == currentLoggedInUserRoleId) {
+          if (this.currUser.roleId != currentLoggedInUserRoleId) {
             this.authService.logOut();
           }
           //#endregion
