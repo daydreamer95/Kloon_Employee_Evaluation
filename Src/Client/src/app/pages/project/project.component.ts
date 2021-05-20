@@ -3,8 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxPopupModule, DxLoadPanelModule } from 'devextreme-angular';
 import { ProjectFormComponent, ProjectFormModel, ProjectFormModule, ProjectFormState } from '../../shared/components/project-form/project-form.component';
 import { ProjectService } from '../../shared/services/project.service';
-import notify from 'devextreme/ui/notify';
 import { ProjectModel } from 'src/app/shared/models/project.model';
+import { AuthService } from 'src/app/shared/services';
+import { CommonService } from 'src/app/shared/services/common.service';
 
 
 @Component({
@@ -23,12 +24,15 @@ export class ProjectComponent implements OnInit {
 
   currentProject: ProjectFormModel = new ProjectFormModel();
   selectedIndex: number = 0;
+  isAdminRole: boolean = false;
 
   //#endregion
   constructor(
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private authService: AuthService,
+    private commonService: CommonService
   ) {
-
+    this.isAdminRole = this.authService.isRoleAdministrator;
   }
 
   ngOnInit(): void {
@@ -48,7 +52,7 @@ export class ProjectComponent implements OnInit {
       (
         error => {
           this.loading = false;
-          notify(error.message, 'error', 5000);
+          this.commonService.UI.multipleNotify(error.error, 'error', 2000);
         }
       )
     )
@@ -62,6 +66,7 @@ export class ProjectComponent implements OnInit {
         icon: 'add',
         width: 'auto',
         text: 'Add',
+        visible: this.isAdminRole,
         onClick: this.onOpenAddProjectPopup.bind(this)
       }
     });
@@ -90,7 +95,7 @@ export class ProjectComponent implements OnInit {
       (
         error => {
           this.loading = false;
-          notify(error.message, 'error', 5000);
+          this.commonService.UI.multipleNotify(error.error, 'error', 2000);
         }
       )
     )
@@ -102,7 +107,7 @@ export class ProjectComponent implements OnInit {
     if (data.id === 0) {
       this.projectService.add(data).subscribe(
         ((responeseData: ProjectModel) => {
-          notify("Add Project Success", "success", 5000);
+          this.commonService.UI.multipleNotify("Add Project Success", 'success', 2000);
           this.currentProject.state = ProjectFormState.DETAIL;
           this.currentProject.data = responeseData;
           this.selectedIndex = 1;
@@ -113,7 +118,7 @@ export class ProjectComponent implements OnInit {
         (
           error => {
             this.loading = false;
-            notify(error.error, 'error', 5000);
+            this.commonService.UI.multipleNotify(error.error, 'error', 2000);
           }
         )
       )
@@ -121,7 +126,7 @@ export class ProjectComponent implements OnInit {
     else {
       this.projectService.edit(data).subscribe(
         ((responeseData: ProjectModel) => {
-          notify("Update Project Success", "success", 5000);
+          this.commonService.UI.multipleNotify("Update Project Success", "success", 2000);
 
           this.currentProject.state = ProjectFormState.DETAIL;
           this.currentProject.data = responeseData;
@@ -133,7 +138,7 @@ export class ProjectComponent implements OnInit {
         (
           error => {
             this.loading = false;
-            notify(error.error, 'error', 5000);
+            this.commonService.UI.multipleNotify(error.error, 'error', 2000);
           }
         )
       )
@@ -144,7 +149,7 @@ export class ProjectComponent implements OnInit {
     if (data) {
       this.projectService.delete(this.currentProject.data.id).subscribe(
         (() => {
-          notify("Delete Project Success", "success", 5000);
+          this.commonService.UI.multipleNotify("Delete Project Success", "success", 2000);
           this.projectFormComponent.close();
           this.getProjects();
 
@@ -152,7 +157,7 @@ export class ProjectComponent implements OnInit {
         (
           error => {
             this.loading = false;
-            notify(error.error, 'error', 5000);
+            this.commonService.UI.multipleNotify(error.error, 'error', 2000);
           }
         )
       )

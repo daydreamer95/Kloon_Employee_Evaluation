@@ -7,10 +7,12 @@ import DataSource from 'devextreme/data/data_source';
 
 
 import { confirm } from "devextreme/ui/dialog";
-import notify from 'devextreme/ui/notify';
 import { ProjectUserModel } from '../../models/project-user.model';
 import { ProjectModel } from '../../models/project.model';
+import { ProjectRolesEnum, UserApp } from '../../models/user-app.model';
 import { UserModel } from '../../models/user.model';
+import { AuthService } from '../../services';
+import { CommonService } from '../../services/common.service';
 import { ProjectUserService } from '../../services/project-user.service';
 
 @Component({
@@ -40,13 +42,22 @@ export class ProjectFormComponent implements OnInit {
     popupTitle = '';
     currentProject: ProjectModel;
 
+    isAdminRole: boolean = false;
+
     popupVisibleProjectUser = false;
     popupTitleProjectUser = '';
+    userCurrent: UserApp = null;
 
     selectBoxUserComp: any;
+    buttonAddUserComp: any;
 
-    constructor(private projectMemberService: ProjectUserService) {
-
+    constructor(
+        private projectMemberService: ProjectUserService,
+        private authService: AuthService,
+        private commonService: CommonService
+    ) {
+        this.isAdminRole = this.authService.isRoleAdministrator;
+        this.userCurrent = this.authService.getUser;
     }
     ngOnInit() {
     }
@@ -172,6 +183,9 @@ export class ProjectFormComponent implements OnInit {
                     const data = await this.projectMemberService.GetTopFiveUserNotInProject(this.currentProject.id, "").toPromise();
                     this.selectBoxUserComp.option('items', data);
                     this.selectBoxUserComp.option('value', null);
+
+                    this.selectBoxUserComp.option('visible', this.isProjectleaderProject());
+                    this.buttonAddUserComp.option('visible', this.isProjectleaderProject());
                     return data;
                 }
             })
@@ -179,6 +193,9 @@ export class ProjectFormComponent implements OnInit {
     }
 
     getProjectMember() {
+        if (this.currentProject.id == 0) {
+            return;
+        }
         this.projectMemberService.GetProjectMember(this.currentProject.id).subscribe(
             ((responeseData: ProjectUserModel[]) => {
                 this.dataSource = [];
@@ -190,7 +207,7 @@ export class ProjectFormComponent implements OnInit {
             (
                 error => {
                     this.loading = false;
-                    notify(error.message, 'error', 5000);
+                    this.commonService.UI.multipleNotify(error.error, 'error', 2000);
                 }
             )
         )
@@ -206,7 +223,9 @@ export class ProjectFormComponent implements OnInit {
                     icon: 'add',
                     width: 'auto',
                     text: 'Add',
-                    onClick: this.onAddProjectMember.bind(this)
+                    //visible: this.isProjectleaderProject(),
+                    onClick: this.onAddProjectMember.bind(this),
+                    onInitialized: this.onInitButtonAddUser.bind(this)
                 }
             },
             {
@@ -231,6 +250,7 @@ export class ProjectFormComponent implements OnInit {
                     value: "id",
                     searchEnabled: true,
                     placeholder: "Search User",
+                    //visible: this.isProjectleaderProject(),
                     onValueChanged: (e) => {
                         this.userSelectId = e.value;
                     },
@@ -244,27 +264,30 @@ export class ProjectFormComponent implements OnInit {
         this.selectBoxUserComp = e.component;
     }
 
+    onInitButtonAddUser(e) {
+        this.buttonAddUserComp = e.component;
+    }
+
 
     onAddProjectMember(e): void {
         var projectId = this.model.data.id;
         var userId = this.userSelectId;
         if (userId === null) {
-            notify("Please choose the user to add to the Project.", "error", 5000);
+            this.commonService.UI.multipleNotify("Please choose the user to add to the Project.", "error", 2000);
             return;
         }
         this.projectMemberService.add(projectId, userId).subscribe(
             ((responeseData: ProjectUserModel) => {
-                notify("Add a member to project success.", "success", 5000);
+                this.commonService.UI.multipleNotify("Add a member to project success.", "success", 2000);
                 this.getProjectMember();
                 this.selectBoxUserComp.option('value', null);
                 this.OnInitDataUser();
-                this.selectBoxListUsers.load();               
+                this.selectBoxListUsers.load();
             }),
             (
                 error => {
                     this.loading = false;
-                    console.log(error);
-                    notify(error.error, 'error', 5000);
+                    this.commonService.UI.multipleNotify(error.error, 'error', 2000);
                 }
             )
         )
@@ -282,7 +305,7 @@ export class ProjectFormComponent implements OnInit {
             (
                 error => {
                     this.loading = false;
-                    notify(error.message, 'error', 5000);
+                    this.commonService.UI.multipleNotify(error.error, 'error', 2000);
                 }
             )
         )
@@ -313,11 +336,22 @@ export class ProjectFormComponent implements OnInit {
                 (
                     error => {
                         this.loading = false;
-                        notify(error.error, 'error', 5000);
+                        this.commonService.UI.multipleNotify(error.error, 'error', 2000);
                     }
                 )
             )
         }
+    }
+
+    isProjectleaderProject(): boolean {
+        if (this.userCurrent == null) {
+            return false;
+        }
+        var data = this.userCurrent.projectRoles.filter(x => x.projectId == this.currentProject.id && x.projectRoleId == ProjectRolesEnum.PM);
+        return (
+            this.isAdminRole == true ||
+            (this.isAdminRole == false && data.length > 0)
+        );
     }
 
     editButtonOnDetailProjectUserOptions = {
@@ -338,7 +372,7 @@ export class ProjectFormComponent implements OnInit {
                 if (dialogResult) {
                     this.projectMemberService.delete(this.projectUserFormModel.data.projectId, this.projectUserFormModel.data.id).subscribe(
                         (() => {
-                            notify("Delete Project Member Success", "success", 5000);
+                            this.commonService.UI.multipleNotify("Delete Project Member Success", "success", 2000);
                             this.popupVisibleProjectUser = false;
                             this.getProjectMember();
 
@@ -350,12 +384,11 @@ export class ProjectFormComponent implements OnInit {
                         (
                             error => {
                                 this.loading = false;
-                                notify(error.error, 'error', 5000);
+                                this.commonService.UI.multipleNotify(error.error, 'error', 5000);
                             }
                         )
                     )
                 }
-                //this.projectUserS
             });
         }
     }

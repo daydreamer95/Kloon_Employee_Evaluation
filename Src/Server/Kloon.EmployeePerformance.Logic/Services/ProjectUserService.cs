@@ -46,7 +46,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
             DateTime now = DateTime.Now;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {
                     var error = ValidateProjectMember(userId, projectId);
@@ -96,7 +97,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
             ProjectUser projectUser = null;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {
                     projectUser = _projectUsers
@@ -105,6 +107,11 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     if (projectUser == null)
                     {
                         return new ErrorModel(ErrorType.NOT_EXIST, "Project Member not found");
+                    }
+
+                    if (projectUser.UserId == currentUser.Id)
+                    {
+                        return new ErrorModel(ErrorType.BAD_REQUEST, "You must not delete yourself in the project");
                     }
                     return null;
                 })
@@ -127,6 +134,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM, ProjectRoles.MEMBER, ProjectRoles.QA)
                 .ThenValidate(currentUser =>
                 {
                     var project = _projects.Query(x => x.DeletedBy == null && x.DeletedDate == null && x.Id == projectId);
@@ -175,6 +183,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             var result = _logicService
                 .Start()
                 .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM, ProjectRoles.MEMBER, ProjectRoles.QA)
                 .ThenValidate(currentUser =>
                 {
                     projectUser = _projectUsers.Query(x => x.Id == projectUserId && x.DeletedBy == null && x.DeletedDate == null).FirstOrDefault();
@@ -215,7 +224,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
         {
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
                 .ThenValidate(currentUser => null)
                 .ThenImplement(currentUser =>
                 {
@@ -262,7 +271,8 @@ namespace Kloon.EmployeePerformance.Logic.Services
             ProjectUser projectUser = null;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
+                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {
                     projectUser = _projectUsers

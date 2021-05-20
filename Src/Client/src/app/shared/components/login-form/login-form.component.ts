@@ -33,6 +33,12 @@ export class LoginFormComponent {
   onCreateAccountClick = () => {
     this.router.navigate(['/create-account']);
   }
+
+  setFocus = (e) => {
+    setTimeout(() => {
+      e.component.focus();
+    }, 0);
+  }
 }
 @NgModule({
   imports: [
