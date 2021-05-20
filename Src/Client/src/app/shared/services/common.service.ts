@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import notify from 'devextreme/ui/notify';
+import { confirm } from 'devextreme/ui/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +70,9 @@ export class CommonService {
       });
 
     },
+    confirmBox: (message: string, title: string) => {
+      return confirm('<i>' + message + '</i>', title);
+    }
   };
 
   constructor() { }

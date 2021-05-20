@@ -50,7 +50,14 @@ export class CriteriasComponent implements OnInit {
   };
   deleteButtonOptions = {
     text: 'Delete', hint: 'Remove', type: 'danger', icon: 'remove',
-    onClick: (e: any) => { this.onClickRemove(e, this.criteriaModel, this.treeListComp); }
+    onClick: (e: any) => {
+      this.common.UI.confirmBox('Do you want delete record?', 'Notice').then((result) => {
+        const a = window.innerWidth;
+        if (result) {
+          this.onClickRemove(e, this.criteriaModel, this.treeListComp);
+        }
+      }, (err: any) => { });
+    }
   };
 
   expandedRowKeys: Array<number> = [1, 2];

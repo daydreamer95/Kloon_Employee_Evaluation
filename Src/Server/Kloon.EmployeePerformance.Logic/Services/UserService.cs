@@ -270,10 +270,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_NULL");
             }
-            if (userModel.FirstName.Length < 1)
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_MIN_LENGTH");
-            }
             if (userModel.FirstName.Length > 20)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_FIRST_NAME_MAX_LENGTH");
@@ -284,10 +280,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
             if (string.IsNullOrEmpty(userModel.LastName))
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_NULL");
-            }
-            if (userModel.LastName.Length < 1)
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_LAST_NAME_MIN_LENGTH");
             }
             if (userModel.LastName.Length > 20)
             {
@@ -300,7 +292,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_NULL");
             }
-            if (userModel.Email.Length > 40)
+            if (userModel.Email.Length > 75)
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_EMAIL_MAX_LENGTH");
             }
