@@ -14,14 +14,18 @@
         [visible]="true" 
         [width]="240" 
         placeholder="Search..."></dxo-search-panel>
+       
         <dxi-column dataField="firstName" dataType="string"></dxi-column>
         <dxi-column dataField="lastName" dataType="string"></dxi-column>
         <dxi-column dataField="email" dataType="string"></dxi-column>
-        <dxi-column dataField="positionId" caption="Position">  
-        <dxo-lookup [dataSource]="positionDataSource" valueExpr="id" displayExpr="name"></dxo-lookup>
+        <dxi-column dataField="sex"  caption="Sex">
+            <dxo-lookup [dataSource]="sexDataSource" valueExpr="value" displayExpr="caption"></dxo-lookup>
         </dxi-column>
-        <dxi-column dataField="phoneNo" dataType="string"> </dxi-column>
-        <dxi-column cellTemplate="cellTemplate" caption="Action">
+       <dxi-column dataField="roleId" caption="Role">
+           <dxo-lookup [dataSource]="roleDataSource" valueExpr="value" displayExpr="caption"></dxo-lookup>
+       </dxi-column>
+        
+        <dxi-column cellTemplate="cellTemplate" caption="Detail">
         </dxi-column>
         <div *dxTemplate="let data of 'cellTemplate'">
             <dx-button

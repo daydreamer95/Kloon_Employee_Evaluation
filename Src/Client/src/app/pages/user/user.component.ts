@@ -3,10 +3,14 @@ import { UserService } from './../../shared/services/user.service';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxPopupModule} from 'devextreme-angular';
-import { UserModel } from 'src/app/shared/models/user.model';
-import { PositionModel } from 'src/app/shared/models/position.model';
-import { PositionService } from 'src/app/shared/services/position.service';
+import { EnumUserSex, UserModel } from 'src/app/shared/models/user.model';
+
+
 import { AuthService } from 'src/app/shared/services';
+import { PositionService } from 'src/app/shared/services/position.service';
+import { PositionModel } from 'src/app/shared/models/position.model';
+import { AppRolesEnum } from 'src/app/shared/models/user-app.model';
+
 
 @Component({
   selector: 'app-user',
@@ -15,9 +19,18 @@ import { AuthService } from 'src/app/shared/services';
 })
 export class UserComponent implements OnInit {
   //#region Init variable
-  dataSource: UserModel[]
-  positionDataSource: PositionModel[];
+  dataSource: UserModel[];
+  positionDataSource : PositionModel[];
+  
   isAdminRole = false;
+  sexDataSource = [
+    { caption: 'Male', value: EnumUserSex.MALE },
+    { caption: 'Female', value: EnumUserSex.FEMALE },
+  ];
+  roleDataSource = [
+    { caption: 'ADMINISTRATOR', value: AppRolesEnum.ADMINISTRATOR },
+    { caption: 'USER', value: AppRolesEnum.USER },
+  ];
   
   gridColumns: ['email', 'firstName', 'lastName', 'position', 'phoneNo'];
 
@@ -25,15 +38,17 @@ export class UserComponent implements OnInit {
   currUser: UserFormModel = new UserFormModel();
   //#endregion
 
-  constructor(private userService: UserService,private positionService: PositionService, private authService:AuthService) {
+  constructor(private userService: UserService, private authService:AuthService, private positionService: PositionService) {
     userService.getUsers("").subscribe(
-      next => {
-        this.dataSource = next; 
+      next => {   
+          
+       this.dataSource = next;
+       
       },
       error => {
       }
     );
-
+ 
     this.positionService.getPositions().subscribe(
       next => {
         this.positionDataSource = next;
