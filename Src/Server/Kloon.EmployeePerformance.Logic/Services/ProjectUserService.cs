@@ -46,7 +46,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             DateTime now = DateTime.Now;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
                 .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {
@@ -97,7 +97,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             ProjectUser projectUser = null;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
                 .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {
@@ -107,6 +107,11 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     if (projectUser == null)
                     {
                         return new ErrorModel(ErrorType.NOT_EXIST, "Project Member not found");
+                    }
+
+                    if (projectUser.UserId == currentUser.Id)
+                    {
+                        return new ErrorModel(ErrorType.BAD_REQUEST, "You must not delete yourself in the project");
                     }
                     return null;
                 })
@@ -266,7 +271,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             ProjectUser projectUser = null;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR)
+                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
                 .ThenAuthorizeProject(projectId, ProjectRoles.PM)
                 .ThenValidate(currentUser =>
                 {

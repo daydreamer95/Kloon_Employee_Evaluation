@@ -2,7 +2,7 @@ export class UserApp {
     firstName: string;
     lastName: string;
     appRole: AppRolesEnum;
-    projectRole: ProjectRoleModel;
+    projectRoles: ProjectRoleModel[];
     isSuccessful: boolean;
     email: string;
     token:string;
@@ -24,6 +24,6 @@ export enum ProjectRolesEnum {
 }
 
 export class ProjectRoleModel {
-    projectId: Int16Array;
+    projectId: number;
     projectRoleId: ProjectRolesEnum;
 }

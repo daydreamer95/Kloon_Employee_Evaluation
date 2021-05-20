@@ -177,7 +177,7 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="projectUserFormModel.state === 0"
+    [visible]="projectUserFormModel.state === 0 && isProjectleaderProject() == true"
     [options]="editButtonProjectUserOptions"
   >
   </dxi-toolbar-item>
@@ -185,7 +185,7 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="projectUserFormModel.state === 1"
+    [visible]="projectUserFormModel.state === 1 && isProjectleaderProject() == true"
     [options]="editButtonOnDetailProjectUserOptions"
   >
   </dxi-toolbar-item>
@@ -193,7 +193,7 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="projectUserFormModel.state === 1"
+    [visible]="projectUserFormModel.state === 1 && isProjectleaderProject() == true"
     [options]="deleteButtonOnDetailProjectUserOptions"
   >
   </dxi-toolbar-item>
