@@ -1,6 +1,6 @@
 <dx-popup
   width="60%"
-  height="auto"
+  height="70%"
   [showTitle]="false"
   title="Project"
   [dragEnabled]="true"
@@ -35,7 +35,11 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="model.state === formState.DETAIL && selectedIndex === 0 && isAdminRole == true"
+    [visible]="
+      model.state === formState.DETAIL &&
+      selectedIndex === 0 &&
+      isAdminRole == true
+    "
     [options]="editButtonOnDetailOptions"
   >
   </dxi-toolbar-item>
@@ -43,7 +47,11 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="model.state === formState.DETAIL && selectedIndex === 0 && isAdminRole == true"
+    [visible]="
+      model.state === formState.DETAIL &&
+      selectedIndex === 0 &&
+      isAdminRole == true
+    "
     [options]="deleteButtonOnDetailOptions"
   >
   </dxi-toolbar-item>
@@ -116,14 +124,17 @@
               [showBorders]="true"
               (onToolbarPreparing)="onToolbarPreparing($event)"
               [(disabled)]="loading"
+              [height]="550"
             >
+              <dxo-scrolling mode="infinite"></dxo-scrolling>
+              <dxo-sorting mode="none"></dxo-sorting>
               <dxo-search-panel
                 [visible]="true"
                 [width]="240"
                 placeholder="Search"
               >
               </dxo-search-panel>
-
+              <dxi-column dataField="no" dataType="number" sortOrder="asc" width="50" ></dxi-column>
               <dxi-column dataField="email" dataType="string"></dxi-column>
               <dxi-column dataField="firstName" dataType="string"></dxi-column>
               <dxi-column dataField="lastName" dataType="string"></dxi-column>
@@ -177,7 +188,9 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="projectUserFormModel.state === 0 && isProjectleaderProject() == true"
+    [visible]="
+      projectUserFormModel.state === 0 && isProjectleaderProject() == true
+    "
     [options]="editButtonProjectUserOptions"
   >
   </dxi-toolbar-item>
@@ -185,7 +198,9 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="projectUserFormModel.state === 1 && isProjectleaderProject() == true"
+    [visible]="
+      projectUserFormModel.state === 1 && isProjectleaderProject() == true
+    "
     [options]="editButtonOnDetailProjectUserOptions"
   >
   </dxi-toolbar-item>
@@ -193,7 +208,9 @@
     widget="dxButton"
     toolbar="bottom"
     location="before"
-    [visible]="projectUserFormModel.state === 1 && isProjectleaderProject() == true"
+    [visible]="
+      projectUserFormModel.state === 1 && isProjectleaderProject() == true
+    "
     [options]="deleteButtonOnDetailProjectUserOptions"
   >
   </dxi-toolbar-item>
@@ -212,12 +229,17 @@
       [colCount]="1"
       [readOnly]="projectUserFormModel.state === 1"
     >
-      <dxi-item dataField="email" [readOnly]="true"> </dxi-item>
+      <dxi-item
+        dataField="email"
+        editorType="dxTextBox"
+        [editorOptions]="{ readOnly: true }"
+      >
+      </dxi-item>
 
       <dxi-item
         dataField="projectRoleId"
         editorType="dxSelectBox"
-        [label]="{ text: 'Status' }"
+        [label]="{ text: 'Role' }"
         [editorOptions]="{
           items: listProjectUserRole,
           displayExpr: 'status',
