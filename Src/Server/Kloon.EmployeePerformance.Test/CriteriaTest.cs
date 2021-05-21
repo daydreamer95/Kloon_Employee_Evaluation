@@ -279,6 +279,50 @@ namespace Kloon.EmployeePerformance.Test
             var errorMes = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
             Assert.AreEqual("NOTFOUND_CRITERIA", errorMes);
         }
+
+        [TestMethod]
+        public void Criteria_Admin_Edit_When_DuplicateType_Then_Error()
+        {
+            var newName = "New Name Edit" + rand();
+            var itemType = dataInit.First(x => x.TypeId == null);
+            var getResult = Helper.AdminGet<CriteriaModel>($"{_url}/{itemType.Id}");
+
+            var modelForDuplicate = BuildCriteriaTypeModel();
+            var suplicateRersult = Helper.AdminPost<CriteriaModel>(_url, modelForDuplicate);
+            Assert.IsTrue(suplicateRersult.IsSuccess);
+
+            var editModel = suplicateRersult.Data;
+            // set duplicate name
+            editModel.Name = itemType.Name;
+
+            var editResult = Helper.AdminPut<CriteriaModel>(_url, editModel);
+
+            Assert.IsFalse(editResult.IsSuccess);
+            var errorMes = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("CRITERIA_TYPE_DUPLICATE", errorMes);
+        }
+
+        [TestMethod]
+        public void Criteria_Admin_Edit_When_Duplicate_Criteria_Then_Error()
+        {
+            var newName = "New Name Edit" + rand();
+            var itemType = dataInit.First(x => x.TypeId != null);
+            var getResult = Helper.AdminGet<CriteriaModel>($"{_url}/{itemType.Id}");
+
+            var modelForDuplicate = BuildCriteriaModel(itemType.TypeId.Value);
+            var suplicateRersult = Helper.AdminPost<CriteriaModel>(_url, modelForDuplicate);
+            Assert.IsTrue(suplicateRersult.IsSuccess);
+
+            var editModel = suplicateRersult.Data;
+            // set duplicate name
+            editModel.Name = itemType.Name;
+
+            var editResult = Helper.AdminPut<CriteriaModel>(_url, editModel);
+
+            Assert.IsFalse(editResult.IsSuccess);
+            var errorMes = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("CRITERIA_DUPLICATE", errorMes);
+        }
         #endregion
 
         #region Delete

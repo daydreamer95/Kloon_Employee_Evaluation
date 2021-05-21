@@ -157,7 +157,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                             CreatedBy = 1,
                             OrderNo = maxOrderType + 1,
                             CreatedDate = DateTime.UtcNow,
-                            Description = model.Description.Trim()
+                            Description = model.Description
                         };
                         _criteriaTypeRepository.Add(entity);
                     }
@@ -172,7 +172,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                             OrderNo = maxOrderType + 1,
                             CreatedDate = DateTime.UtcNow,
                             CriteriaTypeId = model.TypeId.Value,
-                            Description = model.Description.Trim()
+                            Description = model.Description
                         };
                         _criteriaRepository.Add(entity);
                     }
@@ -249,17 +249,17 @@ namespace Kloon.EmployeePerformance.Logic.Services
                             return new ErrorModel(ErrorType.NOT_EXIST, "NOTFOUND_CRITERIATYPE");
                         }
 
-                        var isDuplicate = _criteriaTypeRepository.Query().Any(x => x.Name.ToLower().Equals(model.Name.ToLower().Trim()) && x.Id != model.Id);
+                        var isDuplicate = _criteriaTypeRepository.Query().Any(t => t.Name.ToLower().Equals(model.Name.ToLower().Trim()) && t.Id != model.Id);
                         if(isDuplicate)
                             return new ErrorModel(ErrorType.NOT_EXIST, "CRITERIA_TYPE_DUPLICATE");
                     }
                     else
                     {
-                        var isExis = _criteriaRepository.Query().Any(x => x.Id == model.Id && !x.DeletedDate.HasValue);
+                        var isExis = _criteriaRepository.Query().Any(t => t.Id == model.Id && !t.DeletedDate.HasValue);
                         if (!isExis)
                             return new ErrorModel(ErrorType.NOT_EXIST, "NOTFOUND_CRITERIA");
 
-                        var isDuplicate = _criteriaRepository.Query().Any(x => x.Name.ToLower().Equals(model.Name.Trim().ToLower()) && x.Id != model.Id && x.CriteriaTypeId != model.TypeId);
+                        var isDuplicate = _criteriaRepository.Query().Any(t => t.Name.ToLower().Equals(model.Name.Trim().ToLower()) && t.Id != model.Id && t.CriteriaTypeId == model.TypeId);
                         if (isDuplicate)
                             return new ErrorModel(ErrorType.NOT_EXIST, "CRITERIA_DUPLICATE");
                     }
@@ -268,9 +268,9 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenImplement(x => {
                     if (model.TypeId == null)
                     {
-                        var entity = _criteriaTypeRepository.Query().Where(x => x.Id.Equals(model.Id) && !x.DeletedDate.HasValue).FirstOrDefault();
+                        var entity = _criteriaTypeRepository.Query().Where(t => t.Id.Equals(model.Id) && !t.DeletedDate.HasValue).FirstOrDefault();
                         entity.Name = model.Name.Trim();
-                        entity.Description = model.Description.Trim();
+                        entity.Description = model.Description;
                         entity.ModifiedDate = DateTime.UtcNow;
                         _criteriaTypeRepository.Edit(entity);
                     }
@@ -286,7 +286,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                             entity.OrderNo = maxOrderType + 1;
 
                         entity.Name = model.Name.Trim();
-                        entity.Description = model.Description.Trim();
+                        entity.Description = model.Description;
                         entity.ModifiedDate = DateTime.UtcNow;
                         entity.CriteriaTypeId = model.TypeId.Value;
                         _criteriaRepository.Edit(entity);
