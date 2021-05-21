@@ -4,7 +4,7 @@
     [showTitle]="true" 
     [(title)]="popupTitle" 
     [dragEnabled]="true"
-    [closeOnOutsideClick]="true" 
+    [closeOnOutsideClick]="false" 
     [showCloseButton]="true" 
     [(visible)]="popupVisible"
     (onInitialized)="onContentReady($event)">
@@ -33,7 +33,7 @@
                     <dxi-item dataField="lastName">
                         <dxi-validation-rule type="required" message="Last name is required"></dxi-validation-rule>
                     </dxi-item>
-                    <dxi-item dataField="email" helpText="Enter email with domain @kloon.vn">
+                    <dxi-item dataField="email" helpText="Email must have domain @kloon.vn">
                     <dxi-validation-rule type="pattern" [pattern]="emailPattern" message="Email is wrong format">
                     </dxi-validation-rule>
                     <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
@@ -82,7 +82,7 @@
     [showTitle]="true" 
     title="DELETE CONFIRM" 
     [dragEnabled]="true"
-    [closeOnOutsideClick]="true" [showCloseButton]="true" 
+    [closeOnOutsideClick]="false" [showCloseButton]="true" 
     [(visible)]="popupConfirmDeleteVisible">>
         <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="before" [options]="confirmDeleteButtonOptions">
         </dxi-toolbar-item>

@@ -64,7 +64,6 @@ export class UserFormComponent implements OnInit {
     private jwtHelperService: JwtHelperService
   ) {
     this.isAdminRole = this.authService.isRoleAdministrator;
-
   }
 
   open() {
@@ -110,23 +109,15 @@ export class UserFormComponent implements OnInit {
       this.authService.isRoleAdministrator;
       this.userService.add(this.currUser).subscribe(
         (next) => {
-          this.common.UI.multipleNotify("Add Success", "Success", 2000);
+          this.common.UI.multipleNotify('Add Success', 'Success', 2000);
           this.popupVisible = false;
           this.onRefreshGrid.emit();
         },
         (err) => {
-
           if (err.error === 'INVALID_MODEL_DUPLICATED_EMAIL') {
             this.common.UI.multipleNotify('Email is existed !', 'error', 2000);
           }
-          else if (err.error === 'INVALID_MODEL_FIRST_NAME_MIN_LENGTH') {
-            this.common.UI.multipleNotify('First Name must have more than 2 character', 'error', 2000);
-          }
-          else if (err.error === 'INVALID_MODEL_FIRST_NAME_MAX_LENGTH') {
-            this.common.UI.multipleNotify('First Name cannot exceed 20 characters', 'Error', 2000);
-          }
         }
-
       );
     },
   };
@@ -163,15 +154,27 @@ export class UserFormComponent implements OnInit {
 
       this.userService.edit(this.currUser).subscribe(
         (next) => {
-          //#region Temp solution for 
-          let decodedToken = this.jwtHelperService.decodeToken(this.authService.getUserValue.token);
-          const currentLoggedInUserId = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"];
-          const currentLoggedInUserRoleId = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+          //#region Temp solution for
+          debugger;
+          let decodedToken = this.jwtHelperService.decodeToken(
+            this.authService.getUserValue.token
+          );
+          const currentLoggedInUserId =
+            decodedToken[
+              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid'
+            ];
+          const currentLoggedInUserRoleId =
+            decodedToken[
+              'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+            ];
 
           if (currentLoggedInUserId == this.currUser.id) {
             this.authService.onChangeUserValue(this.currUser);
           }
-          if (this.currUser.roleId != currentLoggedInUserRoleId) {
+          if (
+            this.currUser.roleId != currentLoggedInUserRoleId &&
+            this.currUser.id == currentLoggedInUserId
+          ) {
             this.authService.logOut();
           }
           //#endregion
@@ -207,13 +210,21 @@ export class UserFormComponent implements OnInit {
           this.popupVisible = false;
           this.onRefreshGrid.emit();
         },
-        (error) => { }
+        (e: any) => {
+          if (e.error === 'Cannot delete yourself') {
+            this.common.UI.multipleNotify(
+              'Action denied...Cannot delete yourself !',
+              'error',
+              2000
+            );
+          }
+        }
       );
     },
   };
   ////#endregion
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 }
 
 @NgModule({
@@ -229,7 +240,7 @@ export class UserFormComponent implements OnInit {
   declarations: [UserFormComponent],
   exports: [UserFormComponent],
 })
-export class UserFormModule { }
+export class UserFormModule {}
 
 export class UserFormModel {
   state: FormState;
