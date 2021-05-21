@@ -401,85 +401,104 @@ namespace Kloon.EmployeePerformance.Test.Api
 
         #region GetAll
         [TestMethod]
-        public void ADMIN_GETALL_WHEN_NULLSEARCHTEXT_THEN_SUCCESS()
+        public void Admin_GetAll_When_nullsearchText_Then_Success()
         {
+
             var result = Helper.AdminGet<List<UserModel>>(_url);
             Assert.IsNotNull(result.Data);
             Assert.IsTrue(result.Data.Count > 0);
+
         }
+
+
         [TestMethod]
-        public void ADMIN_GETALL_SEARCH_WHEN_VALIDDATA_THEN_SUCCESS()
+        public void Admin_GetAll_Search_When_ValidData_Then_Success()
         {
+
             var searchText = "";
             var item = dataInit.FirstOrDefault();
             if (item != null)
                 searchText = item.FirstName + item.LastName + item.Email;
             var url = $"{_url}?key ={ searchText}";
             var result = Helper.AdminGet<List<UserModel>>(url);
+
             Assert.IsNotNull(result.Data);
             Assert.IsTrue(result.Data.Count > 0);
+
         }
+
+
         [TestMethod]
-        public void USER_GETALL_THEN_SUCCESS()
+        public void User_GetAll_Then_Success()
         {
             var result = Helper.UserGet<List<UserModel>>(_url);
 
             Assert.IsNotNull(result.Data);
             Assert.IsFalse(result.Data.Count > 2);
+
         }
+
         #endregion
+
 
         #region GetbyId
         [TestMethod]
-        public void ADMIN_GETBYID_VALIDUSERID_SUCCESS()
+        public void Admin_GetById_ValidUserId_Success()
         {
             var item = dataInit.FirstOrDefault();
             var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
             var resultItem = getResult.Data;
 
+
             Assert.IsNotNull(resultItem);
 
             Assert.AreEqual(item.Id, resultItem.Id);
+
+
         }
         [TestMethod]
-        public void ADMIN_GETBYID_INVALIDUSERID_ERROR()
+        public void Admin_GetById_InvalidUserModel_Error()
         {
             var item = dataInit.FirstOrDefault();
-            item.Id = 0;
+
             var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var itemDelete = Helper.AdminDelete<bool>($"{_url}/{item.Id}");
+            var getResult2 = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
 
-            var errorMess = JsonConvert.DeserializeObject<string>(getResult.Error.Message);
 
+            var errorMess = JsonConvert.DeserializeObject<string>(getResult2.Error.Message);
 
-            Assert.IsNotNull(errorMess);
             Assert.AreEqual("User not found", errorMess);
+
         }
+
         [TestMethod]
-        public void USER_GETBYID_VALIDUSERID_SUCCESS()
+        public void User_GetById_ValidUserId_Success()
         {
+
             var item = dataInit.FirstOrDefault();
             var getResult = Helper.UserGet<UserModel>($"{_url}/{item.Id}");
             var resultItem = getResult.Data;
             Assert.IsNotNull(resultItem);
             Assert.AreEqual(item.Id, resultItem.Id);
         }
+
         [TestMethod]
-        public void USER_GETBYID_INVALIDUSERID_ERROR()
+        public void User_GetById_InvalidUserId_Error()
         {
             var item = dataInit.FirstOrDefault();
             item.Id = 0;
             var getResult = Helper.UserGet<UserModel>($"{_url}/{item.Id}");
-
             var errorMess = JsonConvert.DeserializeObject<string>(getResult.Error.Message);
-
             Assert.IsNotNull(errorMess);
             Assert.AreEqual("User not found", errorMess);
         }
         #endregion
 
+
         #region Delete
         [TestMethod]
-        public void ADMIN_DELETE_USER_WHEN_VALIDMODEL_THEN_SUCCESS()
+        public void Admin_Delete_User_When_ValidModel_Then_Success()
         {
             var item = dataInit.FirstOrDefault();
 
@@ -495,30 +514,20 @@ namespace Kloon.EmployeePerformance.Test.Api
             Assert.IsFalse(itemDelete.IsSuccess);
             Assert.AreEqual("User not found", errorMess);
         }
-        [TestMethod]
-        public void ADMIN_DELETE_USER_WHEN_INVALIDMODEL_THEN_ERROR()
-        {
-            var item = dataInit.FirstOrDefault();
-            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
-            Assert.IsNotNull(getResult.Data);
 
-            item.Id = 0;
-            var deleteResult = Helper.AdminDelete<bool>($"{_url}/{item.Id}");
-            var errorMess = JsonConvert.DeserializeObject<string>(deleteResult.Error.Message);
-            Assert.IsFalse(deleteResult.IsSuccess);
-            Assert.AreEqual("User not found", errorMess);
-        }
         [TestMethod]
-        public void USER_DELETE_USER_NOPERMISSION_FAIL()
+        public void User_Delete_User_NoPermission_Fail()
         {
             var item = dataInit.FirstOrDefault();
 
             var getResult = Helper.UserGet<UserModel>($"{_url}/{item.Id}");
             Assert.IsNotNull(getResult.Data);
 
+
             var deleteResult = Helper.UserDelete<bool>($"{_url}/{item.Id}");
             var errorMess = JsonConvert.DeserializeObject<string>(deleteResult.Error.Message);
             Assert.IsFalse(deleteResult.Data);
+
             Assert.AreEqual("No Role", errorMess);
         }
         #endregion
