@@ -1,12 +1,11 @@
 <dx-popup
-  width="60%"
-  height="70%"
   [showTitle]="false"
   title="Project"
   [dragEnabled]="true"
   [closeOnOutsideClick]="true"
   [showCloseButton]="false"
   [(visible)]="popupVisible"
+  (onShown)="setFocus($event)"
 >
   <dxo-paging [pageSize]="10"></dxo-paging>
   <dxo-pager
@@ -21,6 +20,7 @@
     location="before"
     [visible]="model.state === formState.CREATE && isAdminRole == true"
     [options]="createButtonOptions"
+    [(disabled)]="disabledCreateUser"
   >
   </dxi-toolbar-item>
   <dxi-toolbar-item
@@ -72,13 +72,18 @@
             [formData]="currentProject"
             [colCount]="1"
             [readOnly]="model.state === formState.DETAIL"
+            
           >
             <dxi-item
               dataField="id"
               editorType="dxNumberBox"
               [visible]="false"
             ></dxi-item>
-            <dxi-item dataField="name">
+            <dxi-item
+              dataField="name"
+              editorType="dxTextBox"
+              [editorOptions]="{ onInitialized: onInitTbName }"
+            >
               <dxi-validation-rule
                 type="required"
                 message="Name is required"
@@ -88,7 +93,7 @@
             <dxi-item
               dataField="description"
               editorType="dxTextArea"
-              [editorOptions]="{ height: 200, maxLength: 500 }"
+              [editorOptions]="{ height: 90, maxLength: 500 }"
             >
             </dxi-item>
             <dxi-item
@@ -124,17 +129,21 @@
               [showBorders]="true"
               (onToolbarPreparing)="onToolbarPreparing($event)"
               [(disabled)]="loading"
-              [height]="550"
+              [height]="auto"
             >
               <dxo-scrolling mode="infinite"></dxo-scrolling>
               <dxo-sorting mode="none"></dxo-sorting>
               <dxo-search-panel
                 [visible]="true"
-                [width]="240"
                 placeholder="Search"
               >
               </dxo-search-panel>
-              <dxi-column dataField="no" dataType="number" sortOrder="asc" width="50" ></dxi-column>
+              <dxi-column
+                dataField="no"
+                dataType="number"
+                sortOrder="asc"
+                width="50"
+              ></dxi-column>
               <dxi-column dataField="email" dataType="string"></dxi-column>
               <dxi-column dataField="firstName" dataType="string"></dxi-column>
               <dxi-column dataField="lastName" dataType="string"></dxi-column>
@@ -175,8 +184,6 @@
 </dx-popup>
 
 <dx-popup
-  width="30%"
-  height="auto"
   [showTitle]="true"
   [(title)]="popupTitleProjectUser"
   [dragEnabled]="true"
