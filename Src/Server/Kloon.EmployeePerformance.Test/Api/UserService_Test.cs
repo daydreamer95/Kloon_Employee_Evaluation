@@ -157,7 +157,7 @@ namespace Kloon.EmployeePerformance.Test.Api
         public void ADMIN_ADD_USER_WHEN_INVALID_POSITION_NULL_THEN_ERROR()
         {
             var expectedModel = InitUserModel();
-            expectedModel.PositionId = 4;
+            expectedModel.PositionId = 34;
             var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
             dataInit.Add(actualModel.Data);
             var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
@@ -212,183 +212,191 @@ namespace Kloon.EmployeePerformance.Test.Api
 
             var model = new UserModel()
             {
-
+                Email = "Email" + rand() + "@kloon.vn",
+                FirstName = "Firstname " + rand(),
+                LastName = "Lastname " + rand(),
+                PositionId = new Random().Next(1, 3),
+                Sex = (SexEnum)new Random().Next(1, 2),
+                DoB = DateTime.Today.AddDays(-new Random().Next(20 * 635)),
+                PhoneNo = "0" + rand(),
+                RoleId = new Random().Next(1, 2),
             };
-            editModel.Email = "Email" + rand() + "@kloon.vn";
-            editModel.FirstName = "Firstname " + rand();
-            editModel.LastName = "Lastname " + rand();
-            editModel.PositionId = new Random().Next(1, 3);
-            editModel.Sex = (SexEnum)new Random().Next(1, 2);
-            editModel.DoB = DateTime.Today.AddDays(-new Random().Next(20 * 635));
-            editModel.PhoneNo = "0" + rand();
-            editModel.RoleId = new Random().Next(1, 2);
+
+            editModel.Email = model.Email;
+            editModel.FirstName = model.FirstName;
+            editModel.LastName = model.LastName;
+            editModel.PositionId = model.PositionId;
+            editModel.Sex = model.Sex;
+            editModel.DoB = model.DoB;
+            editModel.PhoneNo = model.PhoneNo;
+            editModel.RoleId = model.RoleId;
 
             var editResult = Helper.AdminPut<UserModel>(_url, editModel);
 
-            //Assert.IsTrue(editResult.IsSuccess);
-            //Assert.AreEqual(newModel.Email, editResult.Data.Email);
-            //Assert.AreEqual(newModel.FirstName, editResult.Data.FirstName);
-            //Assert.AreEqual(newModel.LastName, editResult.Data.LastName);
-            //Assert.AreEqual(newModel.PositionId, editResult.Data.PositionId);
-            //Assert.AreEqual(newModel.Sex, editResult.Data.Sex);
-            //Assert.AreEqual(newModel.DoB, editResult.Data.DoB);
-            //Assert.AreEqual(newModel.PhoneNo, editResult.Data.PhoneNo);
-            //Assert.AreEqual(newModel.RoleId, editResult.Data.RoleId);
+            Assert.IsTrue(editResult.IsSuccess);
+            Assert.AreEqual(model.Email, editResult.Data.Email);
+            Assert.AreEqual(model.FirstName, editResult.Data.FirstName);
+            Assert.AreEqual(model.LastName, editResult.Data.LastName);
+            Assert.AreEqual(model.PositionId, editResult.Data.PositionId);
+            Assert.AreEqual(model.Sex, editResult.Data.Sex);
+            Assert.AreEqual(model.DoB, editResult.Data.DoB);
+            Assert.AreEqual(model.PhoneNo, editResult.Data.PhoneNo);
+            Assert.AreEqual(model.RoleId, editResult.Data.RoleId);
         }
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_EMAIL_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.Email = null;
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_EMAIL_NULL", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_EMAIL_LENGTH_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.Email = "asdfghjklqwertyuiopasdfghjklzxcvbndfwruuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuhzdhmlsdje3@kloon.vn";
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_EMAIL_MAX_LENGTH", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_EMAIL_WRONG_FORMAT_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.Email = "xcvbnmlsdje3@gmaildASfcoASfm";
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_EMAIL_FORMAT_WRONG", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_EMAIL_DUPLICATE_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.Email = dataInit.FirstOrDefault().Email;
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_DUPLICATED_EMAIL", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_FIRST_NAME_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.FirstName = null;
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_FIRST_NAME_NULL", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_FIRST_NAME_MAX_LENGTH_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.FirstName = "asdfghjklpoaerjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjajkhlrgaoiregiaortubamroptuiaoprbjyariouyoiiuytrewqasf";
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MAX_LENGTH", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_LAST_NAME_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.LastName = null;
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_LAST_NAME_NULL", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_LAST_NAME_MAX_LENGTH_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.LastName = "asdfghjklpoiuytreoi;hrgpoijiotguuWEJHYTIOP/t4ojhieoth[E49TYIOPGYHT09gj[4o[gjwqasf";
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_LAST_NAME_MAX_LENGTH", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_PHONE_LENGTH_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.PhoneNo = "098765432123645";
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_PHONE_MAX_LENGTH", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_POSITION_NULL_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.PositionId = 4;
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_POSITION_NULL", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_SEX_NULL_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.Sex = (SexEnum)3;
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_SEX_NULL", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void ADMIN_EDIT_USER_WHEN_INVALID_ROLE_NULL_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    expectedModel.RoleId = 4;
-        //    var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
-        //    dataInit.Add(actualModel.Data);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.AreEqual("INVALID_MODEL_ROLE_NULL", errorMess);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.IsNotNull(actualModel.Error);
-        //}
-        //[TestMethod]
-        //public void USER_EDIT_USER_WHEN_HAVE_NO_PERMISSION_THEN_ERROR()
-        //{
-        //    var expectedModel = InitUserModel();
-        //    var actualModel = Helper.UserPost<UserModel>(_url, expectedModel);
-        //    var errorMess = JsonConvert.DeserializeObject<string>(actualModel.Error.Message);
-        //    Assert.IsNull(actualModel.Data);
-        //    Assert.IsFalse(actualModel.IsSuccess);
-        //    Assert.AreEqual("No Role", errorMess);
-        //}
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_EMAIL_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.Email = null;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_NULL", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_EMAIL_LENGTH_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.Email = "asdfghjklqwertyuiopasdfghjklzxcvbndfwruuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuhzdhmlsdje3@kloon.vn"; ;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_MAX_LENGTH", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_EMAIL_WRONG_FORMAT_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.Email = "ahgiospg@gmail.comDGh"; ;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_EMAIL_FORMAT_WRONG", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_EMAIL_DUPLICATE_THEN_ERROR()
+        {
+            var expectedModel = InitUserModel();
+            var actualModel = Helper.AdminPost<UserModel>(_url, expectedModel);
+            if (actualModel.Error == null)
+            {
+                dataInit.Add(actualModel.Data);
+            }
+            var actualItem = dataInit.Last();
+
+            var item = dataInit.First();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+
+            editModel.Email = actualItem.Email;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_DUPLICATED_EMAIL", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_FIRST_NAME_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.FirstName = null;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_NULL", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_FIRST_NAME_MAX_LENGTH_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.FirstName = "asdfghjklpoaerjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjajkhlrgaoiregiaortubamroptuiaoprbjyariouyoiiuytrewqasf";
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_FIRST_NAME_MAX_LENGTH", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_LAST_NAME_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.LastName = null;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_NULL", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_LAST_NAME_MAX_LENGTH_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.LastName = "asdfghjklpoaerjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjajkhlrgaoiregiaortubamroptuiaoprbjyariouyoiiuytrewqasf";
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_LAST_NAME_MAX_LENGTH", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_PHONE_LENGTH_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.PhoneNo = "65461265464646";
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_PHONE_MAX_LENGTH", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_POSITION_NULL_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.PositionId = 34;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_POSITION_NULL", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_SEX_NULL_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.Sex = (SexEnum)5;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_SEX_NULL", errorMess);
+        }
+        [TestMethod]
+        public void ADMIN_EDIT_USER_WHEN_INVALID_ROLE_NULL_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.RoleId = 4;
+            var editResult = Helper.AdminPut<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.AreEqual("INVALID_MODEL_ROLE_NULL", errorMess);
+        }
+        [TestMethod]
+        public void USER_EDIT_USER_WHEN_HAVE_NO_PERMISSION_THEN_ERROR()
+        {
+            var item = dataInit.FirstOrDefault();
+            var getResult = Helper.AdminGet<UserModel>($"{_url}/{item.Id}");
+            var editModel = getResult.Data;
+            editModel.FirstName = "ueser have no permission";
+            var editResult = Helper.UserPost<UserModel>(_url, editModel);
+            var errorMess = JsonConvert.DeserializeObject<string>(editResult.Error.Message);
+            Assert.IsNull(editResult.Data);
+            Assert.IsFalse(editResult.IsSuccess);
+            Assert.AreEqual("No Role", errorMess);
+        }
         #endregion
 
         #region Init User
