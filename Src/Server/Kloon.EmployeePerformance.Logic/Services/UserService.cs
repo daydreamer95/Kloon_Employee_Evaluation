@@ -177,13 +177,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         {
                             userMD = _logicService.Cache.Users.Get(userId);
                             if (userMD == null)
-                            {
                                 return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
-                            }
-                            if (userMD.DeletedBy == null && userMD.DeletedDate == null)
-                            {
-                                return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
-                            }
                             return null;
                         })
                         .ThenImplement(current =>
