@@ -177,13 +177,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         {
                             userMD = _logicService.Cache.Users.Get(userId);
                             if (userMD == null)
-                            {
                                 return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
-                            }
-                            if (userMD.DeletedBy == null && userMD.DeletedDate == null)
-                            {
-                                return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
-                            }
                             return null;
                         })
                         .ThenImplement(current =>
@@ -256,13 +250,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
         private ErrorModel ValidateUser(UserModel userModel)
         {
-            #region UserModel
-            if (userModel == null)
-            {
-                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL");
-            }
-            #endregion
-
             #region FirstName
             if (string.IsNullOrEmpty(userModel.FirstName))
             {
@@ -312,10 +299,12 @@ namespace Kloon.EmployeePerformance.Logic.Services
 
             #region Selectable Attribute
 
-            //if (string.IsNullOrEmpty(userModel.PositionId.ToString()))
-            //{
-            //    return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_POSITION_NULL");
-            //}
+            var position = _logicService.Cache.Position.GetValues();
+
+            if (!position.Any(x => x.Id == userModel.PositionId))
+            {
+                return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_POSITION_NULL");
+            }
             if (!Enum.IsDefined(typeof(SexEnum), userModel.Sex))
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_SEX_NULL");

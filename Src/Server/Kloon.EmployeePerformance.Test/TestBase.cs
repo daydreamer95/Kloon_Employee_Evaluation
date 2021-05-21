@@ -69,7 +69,7 @@ namespace Kloon.EmployeePerformance.Test
 
                 var adminLogin = new LoginModel
                 {
-                    Email = "admin@kloon.com",
+                    Email = "admin@kloon.vn",
                     Password = "123456"
                 };
                 var adminResult = client.PostAsJsonAsync(loginUrl, adminLogin).Result;
@@ -84,7 +84,7 @@ namespace Kloon.EmployeePerformance.Test
             {
                 var userLogin = new LoginModel
                 {
-                    Email = "user@kloon.com",
+                    Email = "user@kloon.vn",
                     Password = "123456"
                 };
                 var userResult = client.PostAsJsonAsync(loginUrl, userLogin).Result;
