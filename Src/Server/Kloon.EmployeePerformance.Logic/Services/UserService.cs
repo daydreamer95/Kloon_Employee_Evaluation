@@ -48,7 +48,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     {
                         return error;
                     };
-                    var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Email.Equals(userModel.Email));
+                    var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Email.Trim().Equals(userModel.Email.Trim()));
                     if (registedEmail)
                     {
                         return new ErrorModel(ErrorType.DUPLICATED, "INVALID_MODEL_DUPLICATED_EMAIL");
@@ -177,14 +177,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                         {
                             userMD = _logicService.Cache.Users.Get(userId);
                             if (userMD == null)
-                            {
                                 return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
-                            }
-                            if (userMD.DeletedBy == null && userMD.DeletedDate == null)
-                            {
-                                return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
-                            }
-
                             return null;
                         })
                         .ThenImplement(current =>
@@ -200,8 +193,6 @@ namespace Kloon.EmployeePerformance.Logic.Services
                                 DoB = userMD.DoB,
                                 PhoneNo = userMD.PhoneNo,
                                 RoleId = userMD.RoleId
-
-
                             };
                             return user;
                         });
@@ -222,7 +213,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                     {
                         return error;
                     }
-                    var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Id != userModel.Id && x.Email.Equals(userModel.Email));
+                    var registedEmail = _logicService.Cache.Users.GetValues().Any(x => x.Id != userModel.Id && x.Email.Trim().Equals(userModel.Email.Trim()));
                     if (registedEmail)
                     {
                         return new ErrorModel(ErrorType.DUPLICATED, "INVALID_MODEL_DUPLICATED_EMAIL");
@@ -256,6 +247,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 });
             return result;
         }
+
         private ErrorModel ValidateUser(UserModel userModel)
         {
             #region UserModel
@@ -313,11 +305,12 @@ namespace Kloon.EmployeePerformance.Logic.Services
             #endregion
 
             #region Selectable Attribute
+
             //if (string.IsNullOrEmpty(userModel.PositionId.ToString()))
             //{
             //    return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_POSITION_NULL");
             //}
-            if (!Enum.IsDefined(typeof(SexEnum), userModel.RoleId))
+            if (!Enum.IsDefined(typeof(SexEnum), userModel.Sex))
             {
                 return new ErrorModel(ErrorType.BAD_REQUEST, "INVALID_MODEL_SEX_NULL");
             }
