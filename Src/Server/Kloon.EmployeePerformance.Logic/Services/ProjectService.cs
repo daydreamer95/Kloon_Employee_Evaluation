@@ -112,12 +112,21 @@ namespace Kloon.EmployeePerformance.Logic.Services
                 .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
                 .ThenValidate(current =>
                 {
+                    if (current.Role == Roles.USER)
+                    {
+                        var users = _logicService.Cache.Projects.GetUsers(projectId);
+                        var userInProject = users.Where(x => x.Id == current.Id).FirstOrDefault();
+                        if (userInProject == null)
+                        {
+                            return new ErrorModel(ErrorType.BAD_REQUEST, "You do not have access to this project");
+                        }
+                    }
+                    
                     project = _projects.Query(x => x.Id == projectId && x.DeletedBy == null && x.DeletedDate == null).FirstOrDefault();
                     if (project == null)
                     {
                         return new ErrorModel(ErrorType.NOT_EXIST, "Project not found");
                     }
-
                     return null;
                 })
                 .ThenImplement(current =>
