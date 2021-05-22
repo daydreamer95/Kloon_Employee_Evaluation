@@ -1,4 +1,6 @@
 <dx-popup
+  [maxWidth] = "1000"
+  height="auto"
   [showTitle]="false"
   title="Project"
   [dragEnabled]="true"
@@ -130,6 +132,7 @@
               (onToolbarPreparing)="onToolbarPreparing($event)"
               [(disabled)]="loading"
               [height]="auto"
+              [minHeight]="300"
             >
               <dxo-scrolling mode="infinite"></dxo-scrolling>
               <dxo-sorting mode="none"></dxo-sorting>
@@ -145,8 +148,7 @@
                 width="50"
               ></dxi-column>
               <dxi-column dataField="email" dataType="string"></dxi-column>
-              <dxi-column dataField="firstName" dataType="string"></dxi-column>
-              <dxi-column dataField="lastName" dataType="string"></dxi-column>
+              <dxi-column dataField="fullName" dataType="string"></dxi-column>
               <dxi-column
                 dataField="projectRole"
                 dataType="string"
@@ -190,6 +192,8 @@
   [closeOnOutsideClick]="true"
   [showCloseButton]="false"
   [(visible)]="popupVisibleProjectUser"
+  [maxWidth]=500
+  height="auto"
 >
   <dxi-toolbar-item
     widget="dxButton"

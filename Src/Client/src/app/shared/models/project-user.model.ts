@@ -9,6 +9,7 @@ export class ProjectUserModel {
     lastName: string;
     projectRoleId: number;
     projectRole: string;
+    fullName: string;
   
     constructor(init?: Partial<ProjectUserModel>) {
       Object.assign(this, init);

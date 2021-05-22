@@ -20,6 +20,13 @@ namespace Kloon.EmployeePerformance.Models.Project
         public string LastName { get; set; }
         public SexEnum Sex { get; set; } = SexEnum.MALE;
         public ProjectRoles ProjectRoleId { get; set; } = ProjectRoles.MEMBER;
+        public string FullName
+        {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
         public string ProjectRole 
         {
             get
