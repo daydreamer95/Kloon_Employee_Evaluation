@@ -46,8 +46,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             DateTime now = DateTime.Now;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
-                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
+                .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(currentUser =>
                 {
                     var error = ValidateProjectMember(userId, projectId);
@@ -97,8 +96,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             ProjectUser projectUser = null;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
-                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
+                .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(currentUser =>
                 {
                     projectUser = _projectUsers
@@ -271,8 +269,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             ProjectUser projectUser = null;
             var result = _logicService
                 .Start()
-                .ThenAuthorize(Roles.ADMINISTRATOR, Roles.USER)
-                .ThenAuthorizeProject(projectId, ProjectRoles.PM)
+                .ThenAuthorize(Roles.ADMINISTRATOR)
                 .ThenValidate(currentUser =>
                 {
                     projectUser = _projectUsers
@@ -315,7 +312,7 @@ namespace Kloon.EmployeePerformance.Logic.Services
             var user = _users.Query(x => x.Id == userId && x.DeletedBy == null && x.DeletedDate == null).FirstOrDefault();
             if (user == null)
             {
-                return new ErrorModel(ErrorType.NOT_EXIST, "User not found");
+                return new ErrorModel(ErrorType.NOT_EXIST, "Please choose the user to add to the Project.");
             }
             var project = _projects.Query(x => x.Id == projectId && x.DeletedBy == null && x.DeletedDate == null).FirstOrDefault();
             if (project == null)

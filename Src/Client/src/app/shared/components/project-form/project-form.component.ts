@@ -1,7 +1,18 @@
 import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { DxButtonModule, DxDataGridModule, DxFormComponent, DxFormModule, DxPopupModule, DxSelectBoxModule, DxTabPanelModule, DxScrollViewModule, DxTemplateModule } from 'devextreme-angular';
+import {
+    DxButtonModule,
+    DxDataGridModule,
+    DxFormComponent,
+    DxFormModule,
+    DxPopupModule,
+    DxSelectBoxModule,
+    DxTabPanelModule,
+    DxScrollViewModule,
+    DxTemplateModule,
+    DxNumberBoxModule
+} from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
 
@@ -33,6 +44,7 @@ export class ProjectFormComponent implements OnInit {
     dataSource: ProjectUserModel[];
     gridColumns = ['no', 'email', 'firstName', 'lastName', 'projectRole'];
     loading = false;
+    disabledCreateUser = false;
     listUserNotInProject: UserModel[];
     userSelect: UserModel;
     userSelectId: number = 0;
@@ -50,6 +62,7 @@ export class ProjectFormComponent implements OnInit {
 
     selectBoxUserComp: any;
     buttonAddUserComp: any;
+    initTextboxNameComp: any;
 
     constructor(
         private projectMemberService: ProjectUserService,
@@ -133,9 +146,11 @@ export class ProjectFormComponent implements OnInit {
         icon: 'save',
         text: 'Add',
         onClick: (e) => {
+            this.disabledCreateUser = true;
             if (this.myForm.instance.validate().isValid) {
                 this.onSubmitForm.emit(this.currentProject);
             };
+            this.disabledCreateUser = false;
         },
     }
 
@@ -167,6 +182,12 @@ export class ProjectFormComponent implements OnInit {
             result.then((dialogResult: boolean) => {
                 this.onConfirmDelete.emit(dialogResult);
             });
+        }
+    }
+
+    setFocus(e) {
+        if (this.model.state == ProjectFormState.CREATE) {
+            this.myForm.instance.getEditor("name").focus();
         }
     }
 
@@ -204,7 +225,6 @@ export class ProjectFormComponent implements OnInit {
                     this.dataSource.forEach((element, index) => {
                         element.no = index + 1;
                     });
-                    console.log(this.dataSource);
                 }
                 this.loading = false;
             }),
@@ -224,7 +244,6 @@ export class ProjectFormComponent implements OnInit {
                 widget: 'dxButton',
                 options: {
                     icon: 'add',
-                    width: 'auto',
                     text: 'Add',
                     //visible: this.isProjectleaderProject(),
                     onClick: this.onAddProjectMember.bind(this),
@@ -253,7 +272,6 @@ export class ProjectFormComponent implements OnInit {
                     value: "id",
                     searchEnabled: true,
                     placeholder: "Search User",
-                    //visible: this.isProjectleaderProject(),
                     onValueChanged: (e) => {
                         this.userSelectId = e.value;
                     },
@@ -350,11 +368,8 @@ export class ProjectFormComponent implements OnInit {
         if (this.userCurrent == null) {
             return false;
         }
-        var data = this.userCurrent.projectRoles.filter(x => x.projectId == this.currentProject.id && x.projectRoleId == ProjectRolesEnum.PM);
-        return (
-            this.isAdminRole == true ||
-            (this.isAdminRole == false && data.length > 0)
-        );
+
+        return this.isAdminRole == true;
     }
 
     editButtonOnDetailProjectUserOptions = {
