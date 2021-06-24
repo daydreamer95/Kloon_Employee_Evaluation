@@ -5,15 +5,17 @@
 bin
 obj
 
-/Src/Server/.vs
+/Src/Server/.vs duognhoang
 /Src/Server/*/obj
-/Src/Server/*/bin
 
 
-# Build results
 # build folder is nowadays used for build scripts and should not be ignored
 /Src/Server/Kloon.EmployeePerformance.DataAccess/obj
 /Src/Server/Kloon.EmployeePerformance.Logic/obj
 /Src/Server/Kloon.EmployeePerformance.Models/obj
 /Src/Server/Kloon.EmployeePerformance.WebAPI/obj
+
+
+
+duonghoang
 
